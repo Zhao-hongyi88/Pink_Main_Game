@@ -1,0 +1,35 @@
+[gd_resource type="Resource" script_class="MainAxisDefinition" load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://systems/main_axis/main_axis_definition.gd" id="1_definition"]
+[ext_resource type="Script" path="res://systems/main_axis/main_axis_step.gd" id="2_step"]
+
+[sub_resource type="Resource" id="MainAxisStep_prologue"]
+script = ExtResource("2_step")
+id = &"prologue"
+title = "序章：抵达"
+summary = "进入故事世界并建立初始情境。当前仅验证主线节点读取、存档与页面切换。"
+next_step_id = &"investigation"
+scene_route = &"story"
+required_systems = Array[StringName]([&"dialogue"])
+
+[sub_resource type="Resource" id="MainAxisStep_investigation"]
+script = ExtResource("2_step")
+id = &"investigation"
+title = "第一幕：调查"
+summary = "预留 NPC、对话与证据系统的联合入口；当前按钮会推进到下一主线节点。"
+next_step_id = &"recollection"
+scene_route = &"story"
+required_systems = Array[StringName]([&"npc", &"dialogue", &"evidence"])
+
+[sub_resource type="Resource" id="MainAxisStep_recollection"]
+script = ExtResource("2_step")
+id = &"recollection"
+title = "第二幕：回忆"
+summary = "预留证据触发回忆的流程节点；完成后结束本阶段的占位主线。"
+scene_route = &"story"
+required_systems = Array[StringName]([&"evidence", &"memory"])
+
+[resource]
+script = ExtResource("1_definition")
+initial_step_id = &"prologue"
+steps = Array[ExtResource("2_step")]([SubResource("MainAxisStep_prologue"), SubResource("MainAxisStep_investigation"), SubResource("MainAxisStep_recollection")])

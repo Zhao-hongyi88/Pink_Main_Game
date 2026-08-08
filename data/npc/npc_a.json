@@ -1,0 +1,56 @@
+{
+	"npc_id": "npc_a",
+	"display_name": "NPC_A",
+	"portrait": "",
+	"name_unlock_key": "basic_info",
+	"dialogues": [
+		{
+			"text": "NPC_A：这里是测试对话01。",
+			"unlock_key": ""
+		},
+		{
+			"text": "NPC_A：这里是测试对话02。",
+			"unlock_key": "basic_info"
+		},
+		{
+			"text": "NPC_A：这里是测试对话03。",
+			"unlock_key": ""
+		},
+		{
+			"text": "NPC_A：这里是测试对话04。",
+			"unlock_key": "work_info"
+		},
+		{
+			"text": "NPC_A：这里是测试对话05。",
+			"unlock_key": ""
+		}
+	],
+	"notes": [
+		{
+			"key": "basic_info",
+			"header": "基本信息",
+			"content": "姓名：NPC_A"
+		},
+		{
+			"key": "additional_info",
+			"header": "补充信息",
+			"content": "性别：未知\n年龄：未知"
+		},
+		{
+			"key": "work_info",
+			"header": "职业信息",
+			"content": "职业：测试职业"
+		},
+		{
+			"key": "experience_summary",
+			"header": "经历摘要",
+			"content": "这里是测试资料文本04。"
+		},
+		{
+			"key": "extra_info",
+			"header": "补充资料",
+			"content": "这里是测试资料文本05。"
+		}
+	],
+	"memory_scene": "res://scenes/memory/memory_test.tscn"
+}

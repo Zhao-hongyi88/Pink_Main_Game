@@ -1,0 +1,216 @@
+[gd_scene load_steps=10 format=3]
+
+[ext_resource type="Script" path="res://scripts/npc/npc_base.gd" id="1_script"]
+
+[sub_resource type="Gradient" id="Gradient_background"]
+offsets = PackedFloat32Array(0, 1)
+colors = PackedColorArray(0.0352941, 0.0196078, 0.0470588, 1, 0.137255, 0.0705882, 0.129412, 1)
+
+[sub_resource type="GradientTexture2D" id="Texture_background"]
+gradient = SubResource("Gradient_background")
+width = 1152
+height = 648
+fill_from = Vector2(0, 0)
+fill_to = Vector2(1, 1)
+
+[sub_resource type="Gradient" id="Gradient_character"]
+offsets = PackedFloat32Array(0, 0.55, 1)
+colors = PackedColorArray(0.121569, 0.0745098, 0.14902, 1, 0.27451, 0.145098, 0.25098, 1, 0.101961, 0.0588235, 0.129412, 1)
+
+[sub_resource type="GradientTexture2D" id="Texture_character"]
+gradient = SubResource("Gradient_character")
+width = 600
+height = 600
+fill_from = Vector2(0.5, 0)
+fill_to = Vector2(0.5, 1)
+
+[sub_resource type="Gradient" id="Gradient_dialogue"]
+offsets = PackedFloat32Array(0, 1)
+colors = PackedColorArray(0.105882, 0.0627451, 0.129412, 0.98, 0.184314, 0.101961, 0.180392, 0.98)
+
+[sub_resource type="GradientTexture2D" id="Texture_dialogue"]
+gradient = SubResource("Gradient_dialogue")
+width = 640
+height = 220
+fill_from = Vector2(0, 0.5)
+fill_to = Vector2(1, 0.5)
+
+[sub_resource type="Gradient" id="Gradient_notes"]
+offsets = PackedFloat32Array(0, 1)
+colors = PackedColorArray(0.160784, 0.101961, 0.168627, 0.98, 0.105882, 0.0588235, 0.117647, 0.98)
+
+[sub_resource type="GradientTexture2D" id="Texture_notes"]
+gradient = SubResource("Gradient_notes")
+width = 480
+height = 600
+fill_from = Vector2(0, 0)
+fill_to = Vector2(1, 1)
+
+[node name="NPCBase" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_script")
+
+[node name="Background" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = SubResource("Texture_background")
+expand_mode = 1
+stretch_mode = 6
+mouse_filter = 2
+
+[node name="CharacterArea" type="TextureRect" parent="."]
+unique_name_in_owner = true
+layout_mode = 1
+anchor_left = 0.03
+anchor_top = 0.04
+anchor_right = 0.59
+anchor_bottom = 0.95
+grow_horizontal = 2
+grow_vertical = 2
+texture = SubResource("Texture_character")
+expand_mode = 1
+stretch_mode = 6
+mouse_filter = 2
+
+[node name="NPCName" type="Label" parent="."]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
+anchor_left = 0.06
+anchor_top = 0.47
+anchor_right = 0.54
+anchor_bottom = 0.56
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(0.980392, 0.917647, 0.956863, 1)
+theme_override_font_sizes/font_size = 30
+text = "NPC"
+
+[node name="DialoguePanel" type="Control" parent="."]
+unique_name_in_owner = true
+layout_mode = 1
+anchor_left = 0.045
+anchor_top = 0.59
+anchor_right = 0.59
+anchor_bottom = 0.95
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="DialogueBackground" type="TextureRect" parent="DialoguePanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = SubResource("Texture_dialogue")
+expand_mode = 1
+stretch_mode = 6
+mouse_filter = 2
+
+[node name="DialogueText" type="Label" parent="DialoguePanel"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 26.0
+offset_top = 24.0
+offset_right = -26.0
+offset_bottom = -82.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(0.956863, 0.878431, 0.929412, 1)
+theme_override_font_sizes/font_size = 19
+text = "测试对话"
+autowrap_mode = 2
+
+[node name="ContinueButton" type="Button" parent="DialoguePanel"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -194.0
+offset_top = -66.0
+offset_right = -24.0
+offset_bottom = -18.0
+grow_horizontal = 0
+grow_vertical = 0
+theme_override_font_sizes/font_size = 16
+text = "CONTINUE"
+
+[node name="NotePanel" type="Control" parent="."]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
+anchor_left = 0.62
+anchor_top = 0.035
+anchor_right = 0.975
+anchor_bottom = 0.86
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="NotePanelBackground" type="TextureRect" parent="NotePanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = SubResource("Texture_notes")
+expand_mode = 1
+stretch_mode = 6
+mouse_filter = 2
+
+[node name="NoteTitleLabel" type="Label" parent="NotePanel"]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_left = 18.0
+offset_top = 14.0
+offset_right = -18.0
+offset_bottom = 50.0
+grow_horizontal = 2
+theme_override_colors/font_color = Color(0.937255, 0.792157, 0.890196, 1)
+theme_override_font_sizes/font_size = 21
+text = "PROFILE NOTES"
+
+[node name="NoteContainer" type="VBoxContainer" parent="NotePanel"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 16.0
+offset_top = 58.0
+offset_right = -16.0
+offset_bottom = -14.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 6
+
+[node name="MemoryButton" type="Button" parent="."]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
+anchor_left = 0.65
+anchor_top = 0.875
+anchor_right = 0.95
+anchor_bottom = 0.96
+grow_horizontal = 2
+grow_vertical = 2
+disabled = true
+theme_override_font_sizes/font_size = 18
+text = "进入回忆"
