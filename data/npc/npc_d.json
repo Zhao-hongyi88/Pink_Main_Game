@@ -1,0 +1,41 @@
+{
+	"npc_id": "npc_d",
+	"display_name": "NPC_D",
+	"portrait": "",
+	"name_unlock_key": "basic_info",
+	"dialogues": [
+		{
+			"text": "NPC_D: Placeholder dialogue 01.",
+			"unlock_key": ""
+		},
+		{
+			"text": "NPC_D: Placeholder dialogue 02.",
+			"unlock_key": "basic_info"
+		},
+		{
+			"text": "NPC_D: Placeholder dialogue 03.",
+			"unlock_key": ""
+		},
+		{
+			"text": "NPC_D: Placeholder dialogue 04.",
+			"unlock_key": "d_extra_info"
+		},
+		{
+			"text": "NPC_D: Placeholder dialogue 05.",
+			"unlock_key": ""
+		}
+	],
+	"notes": [
+		{
+			"key": "basic_info",
+			"header": "Basic Information",
+			"content": "NPC_D placeholder basic information."
+		},
+		{
+			"key": "d_extra_info",
+			"header": "Additional Information",
+			"content": "NPC_D placeholder additional information."
+		}
+	],
+	"memory_scene": "res://scenes/memory/memory_test.tscn"
+}

@@ -1,0 +1,33 @@
+{
+	"npc_id": "npc_b",
+	"display_name": "NPC_B",
+	"portrait": "",
+	"name_unlock_key": "basic_info",
+	"dialogues": [
+		{
+			"text": "NPC_B: Placeholder dialogue 01.",
+			"unlock_key": ""
+		},
+		{
+			"text": "NPC_B: Placeholder dialogue 02.",
+			"unlock_key": "basic_info"
+		},
+		{
+			"text": "NPC_B: Placeholder dialogue 03.",
+			"unlock_key": "b_extra_info"
+		}
+	],
+	"notes": [
+		{
+			"key": "basic_info",
+			"header": "Basic Information",
+			"content": "NPC_B placeholder basic information."
+		},
+		{
+			"key": "b_extra_info",
+			"header": "Additional Information",
+			"content": "NPC_B placeholder additional information."
+		}
+	],
+	"memory_scene": "res://scenes/memory/memory_test.tscn"
+}
