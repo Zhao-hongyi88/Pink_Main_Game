@@ -1,0 +1,108 @@
+[gd_scene load_steps=5 format=3 uid="uid://npc_a_memory_001"]
+
+[ext_resource type="Script" path="res://scripts/memory/npc_a/npc_a_memory.gd" id="1_npc_a"]
+[ext_resource type="PackedScene" uid="uid://memory_base_001" path="res://scenes/memory/memory_base.tscn" id="2_memory_base"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_notice"]
+size = Vector2(200, 120)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_record"]
+size = Vector2(200, 120)
+
+[node name="NPCAMemory" instance=ExtResource("2_memory_base")]
+script = ExtResource("1_npc_a")
+npc_id = "npc_a"
+memory_id = "npc_a_memory_01"
+
+[node name="Background" type="ColorRect" parent="." index="0"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.12, 0.14, 0.2, 1)
+
+[node name="SceneTitle" type="Label" parent="Background"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -150.0
+offset_top = 40.0
+offset_right = 150.0
+offset_bottom = 80.0
+grow_horizontal = 2
+text = "回忆场景：秋招现场"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ObservationPoints" type="Node2D" parent="." index="1"]
+
+[node name="RecruitmentNotice" type="Node2D" parent="ObservationPoints"]
+position = Vector2(350, 300)
+
+[node name="Area2D" type="Area2D" parent="ObservationPoints/RecruitmentNotice"]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="ObservationPoints/RecruitmentNotice/Area2D"]
+shape = SubResource("RectangleShape2D_notice")
+
+[node name="NoticePanel" type="Panel" parent="ObservationPoints/RecruitmentNotice"]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -100.0
+offset_top = -60.0
+offset_right = 100.0
+offset_bottom = 60.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="Label" type="Label" parent="ObservationPoints/RecruitmentNotice/NoticePanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "📄 招聘公告
+(点击调查)"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="JobSearchRecord" type="Node2D" parent="ObservationPoints"]
+position = Vector2(800, 300)
+
+[node name="Area2D" type="Area2D" parent="ObservationPoints/JobSearchRecord"]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="ObservationPoints/JobSearchRecord/Area2D"]
+shape = SubResource("RectangleShape2D_record")
+
+[node name="RecordPanel" type="Panel" parent="ObservationPoints/JobSearchRecord"]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -100.0
+offset_top = -60.0
+offset_right = 100.0
+offset_bottom = 60.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="Label" type="Label" parent="ObservationPoints/JobSearchRecord/RecordPanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "📋 求职记录
+(点击调查)"
+horizontal_alignment = 1
+vertical_alignment = 1
