@@ -1,0 +1,60 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://scripts/ui/time_display.gd" id="1_script"]
+
+[sub_resource type="Gradient" id="Gradient_placeholder"]
+offsets = PackedFloat32Array(0, 1)
+colors = PackedColorArray(0.160784, 0.0901961, 0.172549, 0.96, 0.0862745, 0.0470588, 0.105882, 0.96)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_placeholder"]
+gradient = SubResource("Gradient_placeholder")
+width = 256
+height = 96
+fill_from = Vector2(0, 0.5)
+fill_to = Vector2(1, 0.5)
+
+[node name="TimeDisplay" type="Control"]
+custom_minimum_size = Vector2(190, 74)
+layout_mode = 3
+anchors_preset = 0
+script = ExtResource("1_script")
+
+[node name="Background" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = SubResource("GradientTexture2D_placeholder")
+expand_mode = 1
+stretch_mode = 6
+mouse_filter = 2
+
+[node name="TimeTitle" type="Label" parent="."]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 28.0
+grow_horizontal = 2
+theme_override_colors/font_color = Color(0.709804, 0.584314, 0.682353, 1)
+theme_override_font_sizes/font_size = 15
+text = "TIME LEFT"
+horizontal_alignment = 2
+
+[node name="TimeValue" type="Label" parent="."]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -42.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_colors/font_color = Color(0.941176, 0.843137, 0.901961, 1)
+theme_override_font_sizes/font_size = 20
+text = "78H 23Min"
+horizontal_alignment = 2
+vertical_alignment = 1
