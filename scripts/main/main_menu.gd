@@ -2,13 +2,22 @@ extends Control
 
 const NPC_ROSTER_PATH := "res://data/npc/npc_roster.json"
 const NPC_ROSTER_SCRIPT = preload("res://scripts/npc/npc_roster.gd")
+const INTRO_TIME_DISPLAY_DURATION := 0.35
+const INTRO_ARCHIVE_DURATION := 0.45
+const INTRO_START_DURATION := 0.5
+const INTRO_RULE_DURATION := 0.3
 
 @onready var start_button: Button = %StartButton
 @onready var rule_button: Button = %RuleButton
 @onready var rule_panel: Control = %RulePanel
 @onready var archive_panel: Control = %ArchivePanel
+@onready var time_display: Control = %TimeDisplay
 
 var npc_roster: RefCounted
+var _intro_tween: Tween
+var _intro_layout_captured := false
+var _time_display_final_position := Vector2.ZERO
+var _archive_panel_final_position := Vector2.ZERO
 
 
 func _ready() -> void:
@@ -16,6 +25,85 @@ func _ready() -> void:
 	rule_button.pressed.connect(_on_rule_button_pressed)
 	rule_panel.get_node("%CloseButton").pressed.connect(_on_rule_panel_close_pressed)
 	_setup_archive()
+	call_deferred("_play_intro_animation")
+
+
+func _play_intro_animation() -> void:
+	if _intro_tween != null and _intro_tween.is_valid():
+		_intro_tween.kill()
+
+	if not _intro_layout_captured:
+		_time_display_final_position = time_display.position
+		_archive_panel_final_position = archive_panel.position
+		_intro_layout_captured = true
+
+	_restore_intro_final_state()
+	start_button.pivot_offset = start_button.size * 0.5
+
+	time_display.position = _time_display_final_position + Vector2(0.0, -20.0)
+	time_display.modulate.a = 0.0
+	archive_panel.position = _archive_panel_final_position + Vector2(-30.0, 0.0)
+	archive_panel.modulate.a = 0.0
+	start_button.scale = Vector2(0.85, 0.85)
+	start_button.modulate.a = 0.0
+	rule_button.modulate.a = 0.0
+
+	_intro_tween = create_tween()
+	_intro_tween.set_parallel(true)
+	_intro_tween.tween_property(
+		time_display,
+		"position",
+		_time_display_final_position,
+		INTRO_TIME_DISPLAY_DURATION
+	).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+	_intro_tween.tween_property(
+		time_display,
+		"modulate:a",
+		1.0,
+		INTRO_TIME_DISPLAY_DURATION
+	).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+	_intro_tween.tween_property(
+		archive_panel,
+		"position",
+		_archive_panel_final_position,
+		INTRO_ARCHIVE_DURATION
+	).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+	_intro_tween.tween_property(
+		archive_panel,
+		"modulate:a",
+		1.0,
+		INTRO_ARCHIVE_DURATION
+	).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+	_intro_tween.tween_property(
+		start_button,
+		"scale",
+		Vector2.ONE,
+		INTRO_START_DURATION
+	).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	_intro_tween.tween_property(
+		start_button,
+		"modulate:a",
+		1.0,
+		INTRO_START_DURATION
+	).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+	_intro_tween.tween_property(
+		rule_button,
+		"modulate:a",
+		1.0,
+		INTRO_RULE_DURATION
+	).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+
+
+func _restore_intro_final_state() -> void:
+	if not _intro_layout_captured:
+		return
+	time_display.position = _time_display_final_position
+	time_display.modulate.a = 1.0
+	archive_panel.position = _archive_panel_final_position
+	archive_panel.modulate.a = 1.0
+	start_button.scale = Vector2.ONE
+	start_button.modulate.a = 1.0
+	rule_button.modulate.a = 1.0
 
 
 func _on_start_button_pressed() -> void:

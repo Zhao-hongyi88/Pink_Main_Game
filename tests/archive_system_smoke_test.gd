@@ -61,9 +61,22 @@ func _verify_archive_and_sequence_progression() -> void:
 	_assert_archive_ui(archive, 1, ordered_npc_ids[0])
 
 	archive.get_node("%ArchiveButton").pressed.emit()
-	assert(archive.get_node("%SelectionPanel").visible)
+	var selection_panel := archive.get_node("%SelectionPanel") as PanelContainer
+	assert(selection_panel.visible)
+	assert(selection_panel.modulate.a < 1.0)
+	assert(selection_panel.scale.is_equal_approx(Vector2(0.96, 0.96)))
+	await get_tree().create_timer(0.35).timeout
+	assert(selection_panel.visible)
+	assert(is_equal_approx(selection_panel.modulate.a, 1.0))
+	assert(selection_panel.scale.is_equal_approx(Vector2.ONE))
+	assert(selection_panel.pivot_offset.is_equal_approx(selection_panel.size / 2.0))
+
 	archive.get_node("%CloseButton").pressed.emit()
-	assert(not archive.get_node("%SelectionPanel").visible)
+	assert(selection_panel.visible)
+	await get_tree().create_timer(0.3).timeout
+	assert(not selection_panel.visible)
+
+	await _verify_archive_animation_interruptions(archive, selection_panel)
 
 	# Preserve concrete NPC_A progress while Archive selection changes later.
 	var first_progress := GameState.get_or_create_npc_progress(ordered_npc_ids[0])
@@ -81,9 +94,15 @@ func _verify_archive_and_sequence_progression() -> void:
 	_assert_archive_ui(archive, 2, ordered_npc_ids[1])
 
 	# Manual selection back to the first NPC survives another MainMenu entry.
+	archive.get_node("%ArchiveButton").pressed.emit()
+	await get_tree().create_timer(0.35).timeout
+	assert(archive.get_node("%SelectionPanel").visible)
 	archive.get_npc_button(ordered_npc_ids[0]).pressed.emit()
 	assert(GameState.selected_npc_id == ordered_npc_ids[0])
 	assert(archive.get_node("%SelectedNPCLabel").text == "SELECTED: %s" % roster.get_display_name(ordered_npc_ids[0]))
+	assert(archive.get_node("%SelectionPanel").visible)
+	await get_tree().create_timer(0.3).timeout
+	assert(not archive.get_node("%SelectionPanel").visible)
 	_dispose_main_menu(menu)
 	menu = await _create_main_menu()
 	archive = menu.get_node("%ArchivePanel")
@@ -128,6 +147,41 @@ func _verify_archive_and_sequence_progression() -> void:
 	assert(GameState.selected_npc_id == ordered_npc_ids[0])
 	assert(GameState.unlocked_npc_ids.size() == ordered_npc_ids.size())
 	_dispose_main_menu(menu)
+
+
+func _verify_archive_animation_interruptions(archive: Variant, selection_panel: PanelContainer) -> void:
+	var archive_button := archive.get_node("%ArchiveButton") as Button
+	var close_button := archive.get_node("%CloseButton") as Button
+
+	# Closing during opening must finish closed without stale animation state.
+	archive_button.pressed.emit()
+	await get_tree().create_timer(0.08).timeout
+	close_button.pressed.emit()
+	await get_tree().create_timer(0.3).timeout
+	assert(not selection_panel.visible)
+
+	# Reopening during closing must stay visible after the old close would have completed.
+	archive_button.pressed.emit()
+	await get_tree().create_timer(0.08).timeout
+	close_button.pressed.emit()
+	await get_tree().create_timer(0.08).timeout
+	archive_button.pressed.emit()
+	await get_tree().create_timer(0.35).timeout
+	assert(selection_panel.visible)
+	assert(is_equal_approx(selection_panel.modulate.a, 1.0))
+	assert(selection_panel.scale.is_equal_approx(Vector2.ONE))
+
+	# Repeated open requests must converge on one stable open state.
+	archive_button.pressed.emit()
+	archive_button.pressed.emit()
+	archive_button.pressed.emit()
+	await get_tree().create_timer(0.35).timeout
+	assert(selection_panel.visible)
+	assert(is_equal_approx(selection_panel.modulate.a, 1.0))
+	assert(selection_panel.scale.is_equal_approx(Vector2.ONE))
+	close_button.pressed.emit()
+	await get_tree().create_timer(0.3).timeout
+	assert(not selection_panel.visible)
 
 
 func _assert_archive_ui(archive: Variant, unlocked_count: int, selected_npc_id: StringName) -> void:

@@ -9,6 +9,13 @@ extends Control
 
 var roster: RefCounted
 var _buttons_by_id: Dictionary = {}
+var _selection_tween: Tween
+var _selection_should_be_open := false
+var _selection_animation_id := 0
+
+const SELECTION_OPEN_SCALE := Vector2(0.96, 0.96)
+const SELECTION_OPEN_DURATION := 0.3
+const SELECTION_CLOSE_DURATION := 0.25
 
 
 func _ready() -> void:
@@ -69,15 +76,63 @@ func _build_npc_buttons() -> void:
 
 func _on_archive_button_pressed() -> void:
 	refresh()
-	selection_panel.show()
+	_open_selection_panel()
 
 
 func _on_close_button_pressed() -> void:
-	selection_panel.hide()
+	_close_selection_panel()
 
 
 func _on_npc_button_pressed(npc_id: StringName) -> void:
 	if not GameState.select_npc(npc_id):
 		return
 	refresh()
+	_close_selection_panel()
+
+
+func _open_selection_panel() -> void:
+	_selection_should_be_open = true
+	_selection_animation_id += 1
+	_kill_selection_tween()
+	selection_panel.pivot_offset = selection_panel.size / 2.0
+
+	if not selection_panel.visible:
+		selection_panel.modulate.a = 0.0
+		selection_panel.scale = SELECTION_OPEN_SCALE
+		selection_panel.show()
+
+	_selection_tween = create_tween().set_parallel(true)
+	_selection_tween.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+	_selection_tween.tween_property(selection_panel, "modulate:a", 1.0, SELECTION_OPEN_DURATION)
+	_selection_tween.tween_property(selection_panel, "scale", Vector2.ONE, SELECTION_OPEN_DURATION)
+
+
+func _close_selection_panel() -> void:
+	if not selection_panel.visible:
+		_selection_should_be_open = false
+		return
+
+	_selection_should_be_open = false
+	_selection_animation_id += 1
+	var animation_id := _selection_animation_id
+	_kill_selection_tween()
+	selection_panel.pivot_offset = selection_panel.size / 2.0
+
+	_selection_tween = create_tween().set_parallel(true)
+	_selection_tween.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
+	_selection_tween.tween_property(selection_panel, "modulate:a", 0.0, SELECTION_CLOSE_DURATION)
+	_selection_tween.tween_property(selection_panel, "scale", SELECTION_OPEN_SCALE, SELECTION_CLOSE_DURATION)
+	_selection_tween.chain().tween_callback(_finish_selection_close.bind(animation_id))
+
+
+func _finish_selection_close(animation_id: int) -> void:
+	if animation_id != _selection_animation_id or _selection_should_be_open:
+		return
 	selection_panel.hide()
+	_selection_tween = null
+
+
+func _kill_selection_tween() -> void:
+	if _selection_tween != null and _selection_tween.is_valid():
+		_selection_tween.kill()
+	_selection_tween = null

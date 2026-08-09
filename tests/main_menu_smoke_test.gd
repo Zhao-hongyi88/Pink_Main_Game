@@ -82,6 +82,63 @@ func _ready() -> void:
 
 	var countdown: TimeDisplay = menu.get_node("%TimeDisplay")
 	assert(countdown is Control)
+	var intro_archive_panel := menu.get_node("%ArchivePanel") as Control
+	var intro_start_button := menu.get_node("%StartButton") as StartButton
+	var intro_rule_button := menu.get_node("%RuleButton") as Button
+	assert(intro_archive_panel != null)
+	assert(intro_start_button != null)
+	assert(intro_rule_button != null)
+
+	# Deferred intro finishes at the authored scene layout and can be safely replayed.
+	await get_tree().create_timer(0.65).timeout
+	var final_time_position := countdown.position
+	var final_archive_position := intro_archive_panel.position
+	var final_start_position := intro_start_button.position
+	assert(is_equal_approx(countdown.modulate.a, 1.0))
+	assert(is_equal_approx(intro_archive_panel.modulate.a, 1.0))
+	assert(intro_start_button.scale.is_equal_approx(Vector2.ONE))
+	assert(is_equal_approx(intro_start_button.modulate.a, 1.0))
+	assert(is_equal_approx(intro_rule_button.modulate.a, 1.0))
+
+	menu._play_intro_animation()
+	var first_intro_tween: Tween = menu._intro_tween
+	assert(first_intro_tween != null and first_intro_tween.is_running())
+	assert(countdown.position.is_equal_approx(final_time_position + Vector2(0.0, -20.0)))
+	assert(is_zero_approx(countdown.modulate.a))
+	assert(intro_archive_panel.position.is_equal_approx(final_archive_position + Vector2(-30.0, 0.0)))
+	assert(is_zero_approx(intro_archive_panel.modulate.a))
+	assert(intro_start_button.position.is_equal_approx(final_start_position))
+	assert(intro_start_button.scale.is_equal_approx(Vector2(0.85, 0.85)))
+	assert(is_zero_approx(intro_start_button.modulate.a))
+	assert(intro_start_button.pivot_offset.is_equal_approx(intro_start_button.size * 0.5))
+	assert(is_zero_approx(intro_rule_button.modulate.a))
+
+	# Intro does not disable input, and replay kills only the previous intro tween.
+	assert(not intro_start_button.disabled)
+	assert(intro_start_button.pressed.get_connections().size() == 1)
+	intro_rule_button.pressed.emit()
+	assert(menu.get_node("%RulePanel").visible)
+	menu.get_node("%RulePanel/%CloseButton").pressed.emit()
+	intro_archive_panel.get_node("%ArchiveButton").pressed.emit()
+	assert(intro_archive_panel.get_node("%SelectionPanel").visible)
+	intro_archive_panel.get_node("%CloseButton").pressed.emit()
+	intro_start_button.mouse_entered.emit()
+	assert(intro_start_button.is_gear_rotation_active())
+	menu._play_intro_animation()
+	assert(not first_intro_tween.is_valid())
+	assert(intro_start_button.is_gear_rotation_active())
+	intro_start_button.mouse_exited.emit()
+
+	await get_tree().create_timer(0.65).timeout
+	assert(countdown.position.is_equal_approx(final_time_position))
+	assert(intro_archive_panel.position.is_equal_approx(final_archive_position))
+	assert(intro_start_button.position.is_equal_approx(final_start_position))
+	assert(intro_start_button.scale.is_equal_approx(Vector2.ONE))
+	assert(is_equal_approx(countdown.modulate.a, 1.0))
+	assert(is_equal_approx(intro_archive_panel.modulate.a, 1.0))
+	assert(is_equal_approx(intro_start_button.modulate.a, 1.0))
+	assert(is_equal_approx(intro_rule_button.modulate.a, 1.0))
+
 	var time_child_names := PackedStringArray()
 	for child in countdown.get_children():
 		time_child_names.append(child.name)
@@ -161,6 +218,8 @@ func _ready() -> void:
 	archive.get_node("%ArchiveButton").pressed.emit()
 	assert(archive.get_node("%SelectionPanel").visible)
 	archive.get_node("%CloseButton").pressed.emit()
+	assert(archive.get_node("%SelectionPanel").visible)
+	await get_tree().create_timer(0.3).timeout
 	assert(not archive.get_node("%SelectionPanel").visible)
 	assert(not GameState.select_npc(ordered_npc_ids[1]))
 
