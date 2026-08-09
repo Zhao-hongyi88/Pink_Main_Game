@@ -27,6 +27,7 @@ func _on_complete_memory_pressed() -> void:
 		return
 	if GameState.mark_memory_completed(current_npc_id):
 		_show_memory_completed()
+		SceneRouter.go_to(&"home")
 
 
 func _show_memory_completed() -> void:
@@ -36,7 +37,11 @@ func _show_memory_completed() -> void:
 
 func _on_back_pressed() -> void:
 	if return_npc_data_path.is_empty() or current_npc_id.is_empty():
-		push_error("MemoryTest: 缺少返回上下文，无法返回 NPCBase。")
+		push_error("MemoryTest: missing return context; cannot return to NPCBase.")
+		return
+	var progress := GameState.get_npc_progress(current_npc_id)
+	if progress != null and progress.memory_completed:
+		SceneRouter.go_to(&"home")
 		return
 	SceneRouter.go_to(&"npc_base", {
 		"npc_data_path": return_npc_data_path,

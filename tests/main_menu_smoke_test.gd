@@ -1,14 +1,13 @@
 extends Node
 
-## Main Menu 模块、倒计时与目标场景冒烟测试。
-
-const NPC_DATA_PATH := "res://data/npc/npc_a.json"
+const ROSTER_SCRIPT = preload("res://scripts/npc/npc_roster.gd")
 
 
 class StartNavigationProbe:
 	extends Node
 
 	var expected_data_path := ""
+	var expected_npc_id: StringName = &""
 
 
 	func _ready() -> void:
@@ -22,13 +21,13 @@ class StartNavigationProbe:
 		assert(npc_base is NPCBase)
 		assert(npc_base.npc_data_path == expected_data_path)
 		assert(npc_base.npc_data.source_path == expected_data_path)
-		assert(npc_base.npc_data.npc_id == &"npc_a")
-		assert(npc_base.npc_name.text == "NPC_A")
+		assert(npc_base.npc_data.npc_id == expected_npc_id)
 		print("MAIN_MENU_SMOKE_TEST: PASS")
 		get_tree().quit(0)
 
 
 func _ready() -> void:
+	GameState.clear_runtime_state()
 	assert(ResourceLoader.exists(SceneRouter.ROUTES[&"lobby"]))
 	assert(SceneRouter.ROUTES[&"npc_base"] == "res://scenes/npc/npc_base.tscn")
 	var lobby_scene: PackedScene = load(SceneRouter.ROUTES[&"lobby"])
@@ -38,6 +37,11 @@ func _ready() -> void:
 	assert(lobby.get_child(0) is Label)
 	assert(lobby.get_child(0).text == "Lobby Test")
 	lobby.free()
+
+	var roster: RefCounted = ROSTER_SCRIPT.new()
+	assert(roster.load_from_json("res://data/npc/npc_roster.json"), roster.get_error_message())
+	var ordered_npc_ids: Array[StringName] = roster.get_ordered_npc_ids()
+	assert(ordered_npc_ids.size() >= 2)
 
 	var menu_scene: PackedScene = load("res://scenes/main/main_menu.tscn")
 	var menu := menu_scene.instantiate()
@@ -51,6 +55,7 @@ func _ready() -> void:
 		"BackgroundPlaceholder",
 		"RuleButton",
 		"TimeDisplay",
+		"ArchivePanel",
 		"StartButton",
 		"RulePanel",
 	]))
@@ -98,13 +103,41 @@ func _ready() -> void:
 	rules_panel.get_node("%CloseButton").pressed.emit()
 	assert(not rules_panel.visible)
 
+	# Archive is data-driven: only the first roster entry starts unlocked and selected.
+	var archive: Variant = menu.get_node("%ArchivePanel")
+	assert(archive.get_npc_button_count() == ordered_npc_ids.size())
+	assert(archive.get_node("%NPCButtonContainer").get_child_count() == ordered_npc_ids.size())
+	assert(GameState.selected_npc_id == ordered_npc_ids[0])
+	assert(GameState.unlocked_npc_ids.size() == 1)
+	assert(GameState.is_npc_unlocked(ordered_npc_ids[0]))
+	assert(not archive.get_npc_button(ordered_npc_ids[0]).disabled)
+	assert(archive.get_npc_button(ordered_npc_ids[1]).disabled)
+	assert(archive.get_npc_button(ordered_npc_ids[1]).text.contains("Locked"))
+	assert(archive.get_node("%SelectedNPCLabel").text == "SELECTED: %s" % roster.get_display_name(ordered_npc_ids[0]))
+	archive.get_node("%ArchiveButton").pressed.emit()
+	assert(archive.get_node("%SelectionPanel").visible)
+	archive.get_node("%CloseButton").pressed.emit()
+	assert(not archive.get_node("%SelectionPanel").visible)
+	assert(not GameState.select_npc(ordered_npc_ids[1]))
+
+	# A newly unlocked roster entry can be selected and START resolves its data path dynamically.
+	assert(GameState.unlock_npc(ordered_npc_ids[1]))
+	archive.refresh()
+	archive.get_npc_button(ordered_npc_ids[1]).pressed.emit()
+	assert(GameState.selected_npc_id == ordered_npc_ids[1])
+	assert(archive.get_node("%SelectedNPCLabel").text == "SELECTED: %s" % roster.get_display_name(ordered_npc_ids[1]))
+
+	var main_menu_source := FileAccess.get_file_as_string("res://scripts/main/main_menu.gd")
+	assert(main_menu_source.find("INITIAL_NPC_DATA_PATH") == -1)
+	assert(main_menu_source.find("npc_a.json") == -1)
+	assert(main_menu_source.find("\"npc_a\"") == -1)
+	assert(main_menu_source.find("&\"npc_a\"") == -1)
 	var start_button: Button = menu.get_node("%StartButton")
 	assert(start_button.pressed.get_connections().size() == 1)
 	assert(menu.has_method("_start_game"))
-	assert(menu.INITIAL_NPC_DATA_PATH == NPC_DATA_PATH)
 
-	# 真实执行 START，确认 payload 让公共 NPCBase 加载 npc_a.json。
 	var navigation_probe := StartNavigationProbe.new()
-	navigation_probe.expected_data_path = NPC_DATA_PATH
+	navigation_probe.expected_npc_id = ordered_npc_ids[1]
+	navigation_probe.expected_data_path = roster.get_data_path(ordered_npc_ids[1])
 	get_tree().root.add_child(navigation_probe)
 	start_button.pressed.emit()

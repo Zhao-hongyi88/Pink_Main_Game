@@ -29,14 +29,9 @@ class MemoryRoundTripProbe:
 		assert(memory_test.current_npc_id == expected_npc_id)
 		assert(memory_test.get_node("Label").text == "Memory Test")
 
-		var complete_button: Button = memory_test.get_node("%CompleteMemoryButton")
+		# An incomplete Memory Back returns to the same NPCData and preserves all page state.
 		var back_button: Button = memory_test.get_node("%BackButton")
-		assert(not complete_button.disabled)
 		assert(not back_button.disabled)
-		complete_button.pressed.emit()
-		assert(GameState.get_npc_progress(expected_npc_id).memory_completed)
-		assert(complete_button.disabled)
-		assert(complete_button.text == "Memory Completed")
 		back_button.pressed.emit()
 
 		await get_tree().process_frame
@@ -50,7 +45,7 @@ class MemoryRoundTripProbe:
 		assert(returned_npc.dialogue_completed)
 		assert(returned_npc.get_node("%ContinueButton").disabled)
 		assert(returned_npc.memory_ready)
-		assert(returned_npc.memory_completed)
+		assert(not returned_npc.memory_completed)
 		assert(returned_npc.get_node("%MemoryButton").visible)
 		assert(not returned_npc.get_node("%MemoryButton").disabled)
 		assert(returned_npc.get_node("%NPCName").visible)
@@ -59,6 +54,32 @@ class MemoryRoundTripProbe:
 		var note_container: VBoxContainer = returned_npc.get_node("%NoteContainer")
 		assert(note_container.get_child(0) == returned_npc._note_items_by_key["basic_info"])
 		assert(note_container.get_child(1) == returned_npc._note_items_by_key["work_info"])
+		assert(FileAccess.get_file_as_string(expected_data_path) == original_json)
+
+		# Completing Memory marks only the current NPC, then returns home for roster progression.
+		returned_npc.get_node("%MemoryButton").pressed.emit()
+		await get_tree().process_frame
+		await get_tree().process_frame
+		memory_test = get_tree().current_scene
+		assert(memory_test.name == "MemoryTest")
+		var complete_button: Button = memory_test.get_node("%CompleteMemoryButton")
+		assert(not complete_button.disabled)
+		complete_button.pressed.emit()
+		assert(GameState.get_npc_progress(expected_npc_id).memory_completed)
+
+		await get_tree().process_frame
+		await get_tree().process_frame
+		var main_menu := get_tree().current_scene
+		assert(main_menu is Control)
+		assert(main_menu.name == "MainMenu")
+		var roster: RefCounted = main_menu.get("npc_roster")
+		assert(roster != null)
+		var next_npc_id: StringName = roster.get_next_npc_id(expected_npc_id)
+		assert(not next_npc_id.is_empty())
+		assert(GameState.is_npc_unlocked(expected_npc_id))
+		assert(GameState.is_npc_unlocked(next_npc_id))
+		assert(GameState.selected_npc_id == next_npc_id)
+		assert(main_menu.get_node("%ArchivePanel").get_node("%SelectedNPCLabel").text == "SELECTED: %s" % roster.get_display_name(next_npc_id))
 		assert(FileAccess.get_file_as_string(expected_data_path) == original_json)
 
 		print("NPC_BASE_SMOKE_TEST: PASS")

@@ -1,0 +1,24 @@
+{
+	"npcs": [
+		{
+			"npc_id": "npc_a",
+			"data_path": "res://data/npc/npc_a.json"
+		},
+		{
+			"npc_id": "npc_b",
+			"data_path": "res://data/npc/npc_b.json"
+		},
+		{
+			"npc_id": "npc_c",
+			"data_path": "res://data/npc/npc_c.json"
+		},
+		{
+			"npc_id": "npc_d",
+			"data_path": "res://data/npc/npc_d.json"
+		},
+		{
+			"npc_id": "npc_e",
+			"data_path": "res://data/npc/npc_e.json"
+		}
+	]
+}
