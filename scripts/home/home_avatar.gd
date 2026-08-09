@@ -8,6 +8,7 @@ signal movement_stopped(final_position: Vector2)
 @export_range(0.0, 100.0, 0.5, "or_greater") var stopping_distance := 6.0
 
 @onready var navigation_agent: NavigationAgent2D = %NavigationAgent2D
+@onready var visual: Node = %VisualPlaceholder
 
 var _target_global_position := Vector2.ZERO
 var _is_moving := false
@@ -52,6 +53,7 @@ func _physics_process(_delta: float) -> void:
 		velocity = Vector2.ZERO
 		return
 	velocity = movement_direction * move_speed
+	_update_horizontal_facing()
 	move_and_slide()
 
 	if global_position.distance_to(_target_global_position) <= stopping_distance:
@@ -83,6 +85,13 @@ func _enable_navigation_after_sync() -> void:
 	_navigation_ready = true
 	if _is_moving:
 		navigation_agent.target_position = _target_global_position
+
+
+func _update_horizontal_facing() -> void:
+	if velocity.x > 0.0:
+		visual.set("flip_h", false)
+	elif velocity.x < 0.0:
+		visual.set("flip_h", true)
 
 
 func _stop_movement() -> void:

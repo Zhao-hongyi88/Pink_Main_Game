@@ -19,6 +19,7 @@ script = ExtResource("1_script")
 [node name="VisualPlaceholder" type="Sprite2D" parent="."]
 unique_name_in_owner = true
 texture = SubResource("Texture_avatar_placeholder")
+flip_h = false
 
 [node name="NavigationAgent2D" type="NavigationAgent2D" parent="."]
 unique_name_in_owner = true
