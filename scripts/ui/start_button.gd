@@ -40,15 +40,15 @@ func _start_gear_rotation() -> void:
 	_gear_tween.tween_property(
 		gear_back,
 		"rotation",
-		gear_back.rotation + TAU,
+		TAU,
 		rotation_duration
-	)
+	).as_relative().set_trans(Tween.TRANS_LINEAR)
 	_gear_tween.tween_property(
 		gear_front,
 		"rotation",
-		gear_front.rotation - TAU,
+		-TAU,
 		rotation_duration
-	)
+	).as_relative().set_trans(Tween.TRANS_LINEAR)
 
 
 func _stop_gear_rotation() -> void:

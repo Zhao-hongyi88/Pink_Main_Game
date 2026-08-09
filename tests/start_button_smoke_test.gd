@@ -27,6 +27,7 @@ func _verify_standalone_hover_rotation() -> void:
 	assert(gear_front.mouse_filter == Control.MOUSE_FILTER_IGNORE)
 	assert(gear_back.texture != null)
 	assert(gear_front.texture != null)
+	start_button.gear_speed = 20.0
 
 	var script_source := FileAccess.get_file_as_string("res://scripts/ui/start_button.gd")
 	var scene_source := FileAccess.get_file_as_string("res://scenes/ui/start_button.tscn")
@@ -35,15 +36,28 @@ func _verify_standalone_hover_rotation() -> void:
 	assert(script_source.find("GameState") == -1)
 	assert(script_source.find("Archive") == -1)
 	assert(script_source.find("res://") == -1)
+	assert(script_source.find("as_relative()") != -1)
+	assert(script_source.find("Tween.TRANS_LINEAR") != -1)
+	assert(script_source.find("set_loops()") != -1)
+	assert(script_source.find("set_parallel(true)") != -1)
 	assert(scene_source.find("AnimationPlayer") == -1)
 
 	var initial_back_rotation := gear_back.rotation
 	var initial_front_rotation := gear_front.rotation
+	var rotation_duration: float = TAU / start_button.gear_speed
 	start_button.mouse_entered.emit()
 	assert(start_button.is_gear_rotation_active())
-	await get_tree().create_timer(0.12).timeout
-	assert(gear_back.rotation > initial_back_rotation)
-	assert(gear_front.rotation < initial_front_rotation)
+	await get_tree().create_timer(rotation_duration * 1.25).timeout
+	assert(start_button.is_gear_rotation_active())
+	assert(gear_back.rotation > initial_back_rotation + TAU)
+	assert(gear_front.rotation < initial_front_rotation - TAU)
+
+	var first_cycle_back_rotation := gear_back.rotation
+	var first_cycle_front_rotation := gear_front.rotation
+	await get_tree().create_timer(rotation_duration * 1.25).timeout
+	assert(start_button.is_gear_rotation_active())
+	assert(gear_back.rotation > first_cycle_back_rotation)
+	assert(gear_front.rotation < first_cycle_front_rotation)
 
 	start_button.mouse_exited.emit()
 	assert(not start_button.is_gear_rotation_active())
@@ -52,9 +66,11 @@ func _verify_standalone_hover_rotation() -> void:
 	await get_tree().create_timer(0.12).timeout
 	assert(is_equal_approx(gear_back.rotation, held_back_rotation))
 	assert(is_equal_approx(gear_front.rotation, held_front_rotation))
+	assert(not is_zero_approx(held_back_rotation))
+	assert(not is_zero_approx(held_front_rotation))
 
 	start_button.mouse_entered.emit()
-	await get_tree().create_timer(0.12).timeout
+	await get_tree().create_timer(rotation_duration * 0.5).timeout
 	assert(gear_back.rotation > held_back_rotation)
 	assert(gear_front.rotation < held_front_rotation)
 	start_button.mouse_exited.emit()
