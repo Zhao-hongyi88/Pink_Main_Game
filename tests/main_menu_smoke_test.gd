@@ -52,21 +52,65 @@ func _ready() -> void:
 	for child in menu.get_children():
 		direct_child_names.append(child.name)
 	assert(direct_child_names == PackedStringArray([
-		"BackgroundPlaceholder",
+		"Background",
+		"HomeWorld",
 		"RuleButton",
 		"TimeDisplay",
 		"ArchivePanel",
 		"StartButton",
 		"RulePanel",
 	]))
+	var background := menu.get_node("Background") as TextureRect
+	assert(background != null)
+	assert(not menu.has_node("BackgroundPlaceholder"))
+	assert(background.get_index() == 0)
+	assert(background.get_index() < menu.get_node("HomeWorld").get_index())
+	assert(is_zero_approx(background.anchor_left))
+	assert(is_zero_approx(background.anchor_top))
+	assert(is_equal_approx(background.anchor_right, 1.0))
+	assert(is_equal_approx(background.anchor_bottom, 1.0))
+	assert(is_zero_approx(background.offset_left))
+	assert(is_zero_approx(background.offset_top))
+	assert(is_zero_approx(background.offset_right))
+	assert(is_zero_approx(background.offset_bottom))
+	assert(background.grow_horizontal == Control.GROW_DIRECTION_BOTH)
+	assert(background.grow_vertical == Control.GROW_DIRECTION_BOTH)
+	assert(background.expand_mode == TextureRect.EXPAND_IGNORE_SIZE)
+	assert(background.stretch_mode == TextureRect.STRETCH_KEEP_ASPECT_COVERED)
+	assert(background.mouse_filter == Control.MOUSE_FILTER_IGNORE)
+	assert(background.texture != null)
 
 	var countdown: TimeDisplay = menu.get_node("%TimeDisplay")
 	assert(countdown is Control)
 	var time_child_names := PackedStringArray()
 	for child in countdown.get_children():
 		time_child_names.append(child.name)
-	assert(time_child_names == PackedStringArray(["Background", "TimeTitle", "TimeValue"]))
-	assert(countdown.get_child(0) is TextureRect)
+	assert(time_child_names == PackedStringArray([
+		"Background",
+		"ClockIcon",
+		"TimeTitle",
+		"TimeValueFrame",
+		"TimeValue",
+	]))
+	var time_background := countdown.get_node("Background") as TextureRect
+	var clock_icon := countdown.get_node("ClockIcon") as TextureRect
+	var time_title := countdown.get_node("TimeTitle") as Label
+	var time_value_frame := countdown.get_node("TimeValueFrame") as TextureRect
+	var time_value := countdown.get_node("%TimeValue") as Label
+	assert(time_background != null)
+	assert(clock_icon != null)
+	assert(time_title != null)
+	assert(time_value_frame != null)
+	assert(time_value != null)
+	assert(time_background.mouse_filter == Control.MOUSE_FILTER_IGNORE)
+	assert(clock_icon.mouse_filter == Control.MOUSE_FILTER_IGNORE)
+	assert(time_value_frame.mouse_filter == Control.MOUSE_FILTER_IGNORE)
+	assert(time_background.texture != null)
+	assert(clock_icon.texture != null)
+	assert(time_value_frame.texture != null)
+	assert(time_title.text == "TIME LEFT")
+	var time_display_source := FileAccess.get_file_as_string("res://scripts/ui/time_display.gd")
+	assert(time_display_source.find("time_title") == -1)
 	countdown.set_running(false)
 	countdown.remaining_seconds = 62
 	assert(countdown.get_remaining_seconds() == 62)

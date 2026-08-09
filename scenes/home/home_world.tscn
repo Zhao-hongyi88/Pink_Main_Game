@@ -1,0 +1,17 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="PackedScene" path="res://scenes/home/home_avatar.tscn" id="1_avatar"]
+
+[sub_resource type="NavigationPolygon" id="NavigationPolygon_home_floor"]
+vertices = PackedVector2Array(220, 130, 920, 130, 920, 520, 220, 520, 500, 260, 650, 260, 650, 370, 500, 370)
+polygons = Array[PackedInt32Array]([PackedInt32Array(0, 1, 5, 4), PackedInt32Array(1, 2, 6, 5), PackedInt32Array(7, 6, 2, 3), PackedInt32Array(0, 4, 7, 3)])
+
+[node name="HomeWorld" type="Node2D"]
+
+[node name="NavigationRegion2D" type="NavigationRegion2D" parent="."]
+unique_name_in_owner = true
+navigation_polygon = SubResource("NavigationPolygon_home_floor")
+
+[node name="HomeAvatar" parent="." instance=ExtResource("1_avatar")]
+unique_name_in_owner = true
+position = Vector2(360, 430)

@@ -53,6 +53,7 @@ func _verify_archive_and_sequence_progression() -> void:
 	# First entry only: the first roster NPC is unlocked and selected without hardcoding in MainMenu.
 	var menu := await _create_main_menu()
 	var archive: Variant = menu.get_node("%ArchivePanel")
+	_assert_archive_visual_contract(archive)
 	assert(GameState.selected_npc_id == ordered_npc_ids[0])
 	assert(GameState.unlocked_npc_ids.size() == 1)
 	assert(GameState.is_npc_unlocked(ordered_npc_ids[0]))
@@ -139,6 +140,35 @@ func _assert_archive_ui(archive: Variant, unlocked_count: int, selected_npc_id: 
 		assert(button != null)
 		assert(button.disabled == (index >= unlocked_count))
 		assert(button.text.contains("Locked") == (index >= unlocked_count))
+
+
+func _assert_archive_visual_contract(archive: Variant) -> void:
+	assert(archive is Control)
+	assert(archive.get_node("%ArchiveButton") is Button)
+	assert(archive.get_node("%SelectedNPCLabel") is Label)
+	assert(archive.get_node("%SelectionPanel") is PanelContainer)
+	assert(archive.get_node("%NPCButtonContainer") is VBoxContainer)
+	assert(archive.get_node("%CloseButton") is Button)
+
+	var paper_background := archive.get_node("%SelectionPanel/PaperBackground") as TextureRect
+	assert(paper_background != null)
+	assert(paper_background.mouse_filter == Control.MOUSE_FILTER_IGNORE)
+	assert(paper_background.texture != null)
+	assert(paper_background.get_index() < archive.get_node("%SelectionPanel/MarginContainer").get_index())
+
+	assert(archive.theme != null)
+	for style_name: StringName in [&"normal", &"hover", &"pressed", &"disabled"]:
+		assert(archive.theme.has_stylebox(style_name, &"Button"))
+
+	var archive_button := archive.get_node("%ArchiveButton") as Button
+	var close_button := archive.get_node("%CloseButton") as Button
+	var dynamic_button: Button = archive.get_npc_button(ordered_npc_ids[0])
+	for button: Button in [archive_button, close_button, dynamic_button]:
+		assert(button != null)
+		assert(button.get_theme_stylebox(&"normal") != null)
+		assert(button.get_theme_stylebox(&"hover") != null)
+		assert(button.get_theme_stylebox(&"pressed") != null)
+		assert(button.get_theme_stylebox(&"disabled") != null)
 
 
 func _create_main_menu() -> Control:

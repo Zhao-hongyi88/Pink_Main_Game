@@ -1,6 +1,76 @@
-[gd_scene load_steps=2 format=3]
+[gd_scene load_steps=9 format=3]
 
 [ext_resource type="Script" path="res://scripts/ui/archive_panel.gd" id="1_script"]
+
+[sub_resource type="Gradient" id="Gradient_paper_placeholder"]
+offsets = PackedFloat32Array(0, 0.52, 1)
+colors = PackedColorArray(0.980392, 0.898039, 0.929412, 1, 0.937255, 0.788235, 0.85098, 1, 0.847059, 0.65098, 0.760784, 1)
+
+[sub_resource type="GradientTexture2D" id="Texture_paper_placeholder"]
+gradient = SubResource("Gradient_paper_placeholder")
+width = 320
+height = 194
+fill_from = Vector2(0, 0)
+fill_to = Vector2(1, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBox_button_normal"]
+bg_color = Color(0.270588, 0.145098, 0.239216, 0.94)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.760784, 0.431373, 0.627451, 0.85)
+corner_radius_top_left = 7
+corner_radius_top_right = 7
+corner_radius_bottom_right = 7
+corner_radius_bottom_left = 7
+
+[sub_resource type="StyleBoxFlat" id="StyleBox_button_hover"]
+bg_color = Color(0.45098, 0.231373, 0.376471, 0.98)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.94902, 0.631373, 0.788235, 1)
+corner_radius_top_left = 7
+corner_radius_top_right = 7
+corner_radius_bottom_right = 7
+corner_radius_bottom_left = 7
+
+[sub_resource type="StyleBoxFlat" id="StyleBox_button_pressed"]
+bg_color = Color(0.211765, 0.109804, 0.184314, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.862745, 0.466667, 0.690196, 1)
+corner_radius_top_left = 7
+corner_radius_top_right = 7
+corner_radius_bottom_right = 7
+corner_radius_bottom_left = 7
+
+[sub_resource type="StyleBoxFlat" id="StyleBox_button_disabled"]
+bg_color = Color(0.2, 0.180392, 0.207843, 0.82)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.4, 0.360784, 0.415686, 0.7)
+corner_radius_top_left = 7
+corner_radius_top_right = 7
+corner_radius_bottom_right = 7
+corner_radius_bottom_left = 7
+
+[sub_resource type="Theme" id="Theme_archive"]
+Button/colors/font_color = Color(1, 0.890196, 0.94902, 1)
+Button/colors/font_disabled_color = Color(0.639216, 0.6, 0.65098, 1)
+Button/colors/font_hover_color = Color(1, 0.94902, 0.980392, 1)
+Button/colors/font_pressed_color = Color(1, 0.815686, 0.913725, 1)
+Button/font_sizes/font_size = 16
+Button/styles/disabled = SubResource("StyleBox_button_disabled")
+Button/styles/hover = SubResource("StyleBox_button_hover")
+Button/styles/normal = SubResource("StyleBox_button_normal")
+Button/styles/pressed = SubResource("StyleBox_button_pressed")
 
 [node name="ArchivePanel" type="Control"]
 custom_minimum_size = Vector2(320, 260)
@@ -8,6 +78,7 @@ layout_mode = 3
 anchors_preset = 0
 offset_right = 320.0
 offset_bottom = 260.0
+theme = SubResource("Theme_archive")
 script = ExtResource("1_script")
 
 [node name="ArchiveButton" type="Button" parent="."]
@@ -43,6 +114,13 @@ anchors_preset = 10
 anchor_right = 1.0
 offset_bottom = 194.0
 grow_horizontal = 2
+
+[node name="PaperBackground" type="TextureRect" parent="SelectionPanel"]
+layout_mode = 2
+mouse_filter = 2
+texture = SubResource("Texture_paper_placeholder")
+expand_mode = 1
+stretch_mode = 6
 
 [node name="MarginContainer" type="MarginContainer" parent="SelectionPanel"]
 layout_mode = 2
