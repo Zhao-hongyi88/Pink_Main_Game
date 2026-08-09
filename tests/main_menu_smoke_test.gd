@@ -53,6 +53,7 @@ func _ready() -> void:
 		direct_child_names.append(child.name)
 	assert(direct_child_names == PackedStringArray([
 		"BackgroundPlaceholder",
+		"HomeWorld",
 		"RuleButton",
 		"TimeDisplay",
 		"ArchivePanel",

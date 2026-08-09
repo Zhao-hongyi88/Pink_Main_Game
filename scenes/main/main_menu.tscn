@@ -1,9 +1,10 @@
-[gd_scene load_steps=8 format=3]
+[gd_scene load_steps=9 format=3]
 
 [ext_resource type="Script" path="res://scripts/main/main_menu.gd" id="1_script"]
 [ext_resource type="PackedScene" path="res://scenes/ui/time_display.tscn" id="2_time"]
 [ext_resource type="PackedScene" path="res://scenes/ui/rule_panel.tscn" id="3_rules"]
 [ext_resource type="PackedScene" path="res://scenes/ui/archive_panel.tscn" id="4_archive"]
+[ext_resource type="PackedScene" path="res://scenes/home/home_world.tscn" id="5_home_world"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBox_button"]
 bg_color = Color(0.203922, 0.12549, 0.231373, 1)
@@ -38,6 +39,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 2
 script = ExtResource("1_script")
 
 [node name="BackgroundPlaceholder" type="ColorRect" parent="."]
@@ -49,6 +51,9 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0.0588235, 0.0352941, 0.0705882, 1)
 mouse_filter = 2
+
+[node name="HomeWorld" parent="." instance=ExtResource("5_home_world")]
+unique_name_in_owner = true
 
 [node name="RuleButton" type="Button" parent="."]
 unique_name_in_owner = true
