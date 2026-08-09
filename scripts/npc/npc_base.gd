@@ -3,13 +3,15 @@ extends Control
 
 ## 公共 NPC 页面。静态内容来自 NPCData，运行时状态来自 GameState 中的 NPCProgress。
 
-const NOTE_ITEM_SCENE: PackedScene = preload("res://scenes/npc/note_item.tscn")
+const NOTE_ITEM_SCENE: PackedScene = preload("res://scenes/ui/npc/note_card.tscn")
 
 @export_file("*.json") var npc_data_path := ""
 
 @onready var character_area: TextureRect = %CharacterArea
 @onready var npc_name: Label = %NPCName
+@onready var identity_label: Label = %IdentityLabel
 @onready var dialogue_panel: Control = %DialoguePanel
+@onready var speaker_name: Label = %SpeakerName
 @onready var dialogue_text: Label = %DialogueText
 @onready var continue_button: Button = %ContinueButton
 @onready var note_panel: Control = %NotePanel
@@ -99,7 +101,23 @@ func _load_npc_data(path: String) -> bool:
 	_name_unlock_key = npc_data.name_unlock_key
 	memory_scene_path = npc_data.memory_scene
 	_note_data = npc_data.notes.duplicate(true)
+	identity_label.text = _get_identity_display_text()
+	speaker_name.text = "UNKNOWN"
 	return _apply_portrait(npc_data.portrait)
+
+
+func _get_identity_display_text() -> String:
+	for note: Dictionary in _note_data:
+		if StringName(str(note.get("key", "")).strip_edges()) != _name_unlock_key:
+			continue
+		var header := str(note.get("header", "")).strip_edges()
+		var content := str(note.get("content", "")).strip_edges()
+		if header.is_empty():
+			return content
+		if content.is_empty():
+			return header
+		return "%s · %s" % [header, content]
+	return npc_data.display_name
 
 
 func _apply_portrait(portrait_path: String) -> bool:
@@ -160,6 +178,8 @@ func _restore_page_state() -> void:
 	character_area.show()
 	dialogue_panel.show()
 	npc_name.hide()
+	identity_label.hide()
+	speaker_name.text = "UNKNOWN"
 	note_panel.hide()
 	for note_item in _note_items:
 		note_item.hide()
@@ -194,7 +214,13 @@ func _restore_revealed_notes() -> void:
 	if not _name_unlock_key.is_empty() and bool(
 		npc_progress.unlocked_keys.get(String(_name_unlock_key), false)
 	):
-		npc_name.show()
+		_show_identity_info()
+
+
+func _show_identity_info() -> void:
+	npc_name.show()
+	identity_label.show()
+	speaker_name.text = npc_data.display_name
 
 
 func _show_note_item(note_key: String, order_index: int) -> void:
@@ -226,7 +252,7 @@ func unlock_info(unlock_key: String) -> bool:
 	else:
 		push_warning("NPCBase: 合法 key 没有对应 NoteItem，跳过 UI：%s" % unlocked_key)
 	if StringName(unlocked_key) == _name_unlock_key:
-		npc_name.show()
+		_show_identity_info()
 	return true
 
 
@@ -266,6 +292,8 @@ func _on_memory_pressed() -> void:
 func _show_load_error() -> void:
 	npc_name.text = "NPC DATA ERROR"
 	npc_name.hide()
+	identity_label.hide()
+	speaker_name.text = "UNKNOWN"
 	dialogue_text.text = "无法读取 NPC 数据。"
 	continue_button.disabled = true
 	note_panel.hide()

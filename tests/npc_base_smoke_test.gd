@@ -49,6 +49,8 @@ class MemoryRoundTripProbe:
 		assert(returned_npc.get_node("%MemoryButton").visible)
 		assert(not returned_npc.get_node("%MemoryButton").disabled)
 		assert(returned_npc.get_node("%NPCName").visible)
+		assert(returned_npc.get_node("%IdentityLabel").visible)
+		assert(returned_npc.get_node("%SpeakerName").text == returned_npc.npc_data.display_name)
 		assert(returned_npc.get_node("%NotePanel").visible)
 		assert(returned_npc.npc_progress.revealed_note_keys == ["basic_info", "work_info"])
 		var note_container: VBoxContainer = returned_npc.get_node("%NoteContainer")
@@ -108,6 +110,7 @@ func _ready() -> void:
 	var npc_base_source := FileAccess.get_file_as_string("res://scripts/npc/npc_base.gd")
 	assert(npc_base_source.find("npc_a.json") == -1)
 	assert(npc_base_source.find("NPC_A") == -1)
+	assert(npc_base_source.find("res://scenes/ui/npc/note_card.tscn") != -1)
 
 	var npc_scene: PackedScene = load(NPC_SCENE_PATH)
 	var npc_base := npc_scene.instantiate()
@@ -116,6 +119,8 @@ func _ready() -> void:
 	await get_tree().process_frame
 
 	var npc_name: Label = npc_base.get_node("%NPCName")
+	var identity_label: Label = npc_base.get_node("%IdentityLabel")
+	var speaker_name: Label = npc_base.get_node("%SpeakerName")
 	var dialogue_text: Label = npc_base.get_node("%DialogueText")
 	var continue_button: Button = npc_base.get_node("%ContinueButton")
 	var note_panel: Control = npc_base.get_node("%NotePanel")
@@ -136,12 +141,29 @@ func _ready() -> void:
 	assert(npc_base.revealed_note_count == 0)
 	assert(npc_base.npc_progress.revealed_note_keys.is_empty())
 	assert(not npc_name.visible)
+	assert(not identity_label.visible)
+	assert(speaker_name.text == "UNKNOWN")
 	assert(not note_panel.visible)
 	assert(not continue_button.disabled)
 	assert(not memory_button.visible)
 	assert(memory_button.disabled)
 	assert(note_container.get_child_count() == expected_notes.size())
 	assert(npc_base.get_node("%CharacterArea").texture != null)
+	var portrait_frame := npc_base.get_node("CharacterDisplay/PortraitFrame") as TextureRect
+	assert(portrait_frame != null)
+	assert(portrait_frame.texture != null)
+	assert(portrait_frame.mouse_filter == Control.MOUSE_FILTER_IGNORE)
+	assert(npc_base.get_node("%CharacterArea").get_parent().name == "CharacterDisplay")
+	assert(npc_base.get_node("%DialogueText").get_parent().name == "DialogueBox")
+	assert(npc_base.get_node("%SpeakerName").get_parent().name == "DialogueBox")
+	assert(npc_base.get_node("%NoteContainer").get_parent() is ScrollContainer)
+	var expected_identity_note: Dictionary = expected_notes.filter(
+		func(note: Dictionary) -> bool: return note["key"] == expected_data["name_unlock_key"]
+	)[0]
+	assert(identity_label.text.contains(expected_identity_note["header"]))
+	assert(identity_label.text.contains(expected_identity_note["content"]))
+	for style_name: StringName in [&"normal", &"hover", &"pressed", &"disabled"]:
+		assert(memory_button.get_theme_stylebox(style_name) != null)
 
 	var expected_note_keys: Array[String] = []
 	for note_data: Dictionary in expected_notes:
@@ -177,6 +199,8 @@ func _ready() -> void:
 	assert(final_unlock_progress.revealed_note_keys == ["basic_info"])
 	assert(final_unlock_npc._note_items_by_key["basic_info"].visible)
 	assert(final_unlock_npc.get_node("%NPCName").visible)
+	assert(final_unlock_npc.get_node("%IdentityLabel").visible)
+	assert(final_unlock_npc.get_node("%SpeakerName").text == formal_data.display_name)
 	assert(final_unlock_npc.get_node("%NotePanel").visible)
 	assert(final_unlock_npc.memory_ready)
 	assert(final_continue_button.disabled)
@@ -216,6 +240,8 @@ func _ready() -> void:
 	assert(npc_base.npc_progress.revealed_note_keys == ["basic_info"])
 	assert(npc_base.revealed_note_count == 1)
 	assert(npc_base.get_node("%NPCName").visible)
+	assert(npc_base.get_node("%IdentityLabel").visible)
+	assert(npc_base.get_node("%SpeakerName").text == formal_data.display_name)
 	assert(npc_base.get_node("%NotePanel").visible)
 	assert(not npc_base.unlock_info("basic_info"))
 	continue_button.pressed.emit()
@@ -245,6 +271,8 @@ func _ready() -> void:
 	assert(not npc_base.dialogue_completed)
 	assert(not continue_button.disabled)
 	assert(npc_base.get_node("%NPCName").visible)
+	assert(npc_base.get_node("%IdentityLabel").visible)
+	assert(npc_base.get_node("%SpeakerName").text == formal_data.display_name)
 	assert(npc_base.get_node("%NotePanel").visible)
 	assert(not npc_base.get_node("%MemoryButton").visible)
 	assert(npc_base.npc_progress.unlocked_keys == unlocked_before_restore)
