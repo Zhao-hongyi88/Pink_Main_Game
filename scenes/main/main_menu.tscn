@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3]
+[gd_scene load_steps=10 format=3]
 
 [ext_resource type="Script" path="res://scripts/main/main_menu.gd" id="1_script"]
 [ext_resource type="PackedScene" path="res://scenes/ui/time_display.tscn" id="2_time"]
@@ -6,6 +6,17 @@
 [ext_resource type="PackedScene" path="res://scenes/ui/archive_panel.tscn" id="4_archive"]
 [ext_resource type="PackedScene" path="res://scenes/home/home_world.tscn" id="5_home_world"]
 [ext_resource type="PackedScene" path="res://scenes/ui/start_button.tscn" id="6_start"]
+
+[sub_resource type="Gradient" id="Gradient_background_placeholder"]
+offsets = PackedFloat32Array(0, 0.55, 1)
+colors = PackedColorArray(0.0588235, 0.0352941, 0.0705882, 1, 0.0941176, 0.054902, 0.109804, 1, 0.0352941, 0.0235294, 0.0470588, 1)
+
+[sub_resource type="GradientTexture2D" id="Texture_background_placeholder"]
+gradient = SubResource("Gradient_background_placeholder")
+width = 1152
+height = 648
+fill_from = Vector2(0.15, 0)
+fill_to = Vector2(0.85, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBox_button"]
 bg_color = Color(0.203922, 0.12549, 0.231373, 1)
@@ -29,14 +40,16 @@ grow_vertical = 2
 mouse_filter = 2
 script = ExtResource("1_script")
 
-[node name="BackgroundPlaceholder" type="ColorRect" parent="."]
+[node name="Background" type="TextureRect" parent="."]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-color = Color(0.0588235, 0.0352941, 0.0705882, 1)
+texture = SubResource("Texture_background_placeholder")
+expand_mode = 1
+stretch_mode = 6
 mouse_filter = 2
 
 [node name="HomeWorld" parent="." instance=ExtResource("5_home_world")]

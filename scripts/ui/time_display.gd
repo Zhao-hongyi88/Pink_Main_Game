@@ -9,7 +9,6 @@ signal time_finished
 
 @export var auto_start := true
 
-@onready var time_title: Label = %TimeTitle
 @onready var time_value: Label = %TimeValue
 
 var _remaining_seconds := 282180
@@ -116,5 +115,4 @@ func _finish_countdown() -> void:
 
 
 func _update_display() -> void:
-	time_title.text = "TIME LEFT"
 	time_value.text = get_display_text()

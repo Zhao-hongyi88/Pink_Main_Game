@@ -76,11 +76,27 @@ func _verify_main_menu_input_boundaries() -> void:
 	add_child(menu)
 	await get_tree().process_frame
 	var avatar := menu.get_node("HomeWorld/HomeAvatar") as CharacterBody2D
+	var background := menu.get_node("Background") as TextureRect
 	assert(avatar != null)
+	assert(background != null)
+	assert(background.mouse_filter == Control.MOUSE_FILTER_IGNORE)
 	assert(menu.mouse_filter == Control.MOUSE_FILTER_IGNORE)
 	assert(menu.get_node("%StartButton").mouse_filter == Control.MOUSE_FILTER_STOP)
 	assert(menu.get_node("%RuleButton").mouse_filter == Control.MOUSE_FILTER_STOP)
 	assert(menu.get_node("%ArchivePanel").mouse_filter == Control.MOUSE_FILTER_STOP)
+
+	var lobby_target := Vector2(780.0, 210.0)
+	var lobby_click := InputEventMouseButton.new()
+	lobby_click.button_index = MOUSE_BUTTON_LEFT
+	lobby_click.pressed = true
+	lobby_click.position = lobby_target
+	var previous_movement_target: Vector2 = avatar.get_movement_target()
+	get_viewport().push_input(lobby_click)
+	await get_tree().process_frame
+	assert(avatar.is_moving())
+	assert(not avatar.get_movement_target().is_equal_approx(previous_movement_target))
+	avatar.stop_movement()
+	assert(not avatar.is_moving())
 
 	menu.get_node("%RuleButton").pressed.emit()
 	assert(menu.get_node("%RulePanel").visible)
