@@ -6,12 +6,14 @@ signal movement_stopped(final_position: Vector2)
 
 const IDLE_BREATH_SCALE := Vector2(1.015, 1.015)
 const IDLE_BREATH_DURATION := 0.8
+const IDLE_ANIMATION: StringName = &"idle"
+const WALK_ANIMATION: StringName = &"walk"
 
 @export_range(1.0, 1000.0, 1.0, "or_greater") var move_speed := 180.0
 @export_range(0.0, 100.0, 0.5, "or_greater") var stopping_distance := 6.0
 
 @onready var navigation_agent: NavigationAgent2D = %NavigationAgent2D
-@onready var visual: Sprite2D = %VisualPlaceholder
+@onready var visual: AnimatedSprite2D = %AvatarVisual
 
 var _target_global_position := Vector2.ZERO
 var _is_moving := false
@@ -23,6 +25,7 @@ func _ready() -> void:
 	_target_global_position = global_position
 	navigation_agent.path_desired_distance = maxf(1.0, stopping_distance * 0.5)
 	navigation_agent.target_desired_distance = maxf(1.0, stopping_distance)
+	_play_visual_animation(IDLE_ANIMATION)
 	_start_idle_breath()
 	call_deferred("_enable_navigation_after_sync")
 
@@ -69,6 +72,7 @@ func set_movement_target(target_global_position: Vector2) -> void:
 	_stop_idle_breath()
 	_target_global_position = target_global_position
 	_is_moving = true
+	_play_visual_animation(WALK_ANIMATION)
 	if _navigation_ready:
 		navigation_agent.target_position = _target_global_position
 	movement_started.emit(_target_global_position)
@@ -103,9 +107,15 @@ func _enable_navigation_after_sync() -> void:
 
 func _update_horizontal_facing() -> void:
 	if velocity.x > 0.0:
-		visual.set("flip_h", false)
+		visual.flip_h = false
 	elif velocity.x < 0.0:
-		visual.set("flip_h", true)
+		visual.flip_h = true
+
+
+func _play_visual_animation(animation_name: StringName) -> void:
+	if visual.animation == animation_name and visual.is_playing():
+		return
+	visual.play(animation_name)
 
 
 func _start_idle_breath() -> void:
@@ -140,5 +150,6 @@ func _stop_movement() -> void:
 	_is_moving = false
 	velocity = Vector2.ZERO
 	if was_moving:
+		_play_visual_animation(IDLE_ANIMATION)
 		movement_stopped.emit(global_position)
 		_start_idle_breath()

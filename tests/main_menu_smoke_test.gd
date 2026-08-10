@@ -15,8 +15,10 @@ class StartNavigationProbe:
 
 
 	func _verify_navigation() -> void:
-		await get_tree().process_frame
-		await get_tree().process_frame
+		for _frame in 300:
+			if not SceneRouter.is_transitioning() and get_tree().current_scene is NPCBase:
+				break
+			await get_tree().process_frame
 		var npc_base := get_tree().current_scene
 		assert(npc_base is NPCBase)
 		assert(npc_base.npc_data_path == expected_data_path)
@@ -53,6 +55,7 @@ func _ready() -> void:
 		direct_child_names.append(child.name)
 	assert(direct_child_names == PackedStringArray([
 		"Background",
+		"BackgroundMotion",
 		"HomeWorld",
 		"RuleButton",
 		"TimeDisplay",
@@ -61,24 +64,50 @@ func _ready() -> void:
 		"RulePanel",
 	]))
 	var background := menu.get_node("Background") as TextureRect
+	var background_motion: Variant = menu.get_node("%BackgroundMotion")
 	assert(background != null)
+	assert(background_motion != null)
 	assert(not menu.has_node("BackgroundPlaceholder"))
 	assert(background.get_index() == 0)
+	assert(background_motion.get_index() == 1)
 	assert(background.get_index() < menu.get_node("HomeWorld").get_index())
+	assert(background_motion.get_index() < menu.get_node("HomeWorld").get_index())
 	assert(is_zero_approx(background.anchor_left))
 	assert(is_zero_approx(background.anchor_top))
 	assert(is_equal_approx(background.anchor_right, 1.0))
 	assert(is_equal_approx(background.anchor_bottom, 1.0))
-	assert(is_zero_approx(background.offset_left))
-	assert(is_zero_approx(background.offset_top))
-	assert(is_zero_approx(background.offset_right))
-	assert(is_zero_approx(background.offset_bottom))
 	assert(background.grow_horizontal == Control.GROW_DIRECTION_BOTH)
 	assert(background.grow_vertical == Control.GROW_DIRECTION_BOTH)
 	assert(background.expand_mode == TextureRect.EXPAND_IGNORE_SIZE)
 	assert(background.stretch_mode == TextureRect.STRETCH_KEEP_ASPECT_COVERED)
 	assert(background.mouse_filter == Control.MOUSE_FILTER_IGNORE)
 	assert(background.texture != null)
+	assert(background_motion.mouse_filter == Control.MOUSE_FILTER_IGNORE)
+	assert(background_motion.get_background() == background)
+	assert(background_motion.is_motion_running())
+	assert(background_motion.get_base_position().is_equal_approx(Vector2.ZERO))
+	assert(background_motion.get_base_scale().is_equal_approx(Vector2.ONE))
+	assert(background.pivot_offset.is_equal_approx(background.size / 2.0))
+	var initial_background_position := background.position
+	var initial_background_scale := background.scale
+	await get_tree().create_timer(0.2).timeout
+	assert(background_motion.is_motion_running())
+	assert(
+		not background.position.is_equal_approx(initial_background_position)
+		or not background.scale.is_equal_approx(initial_background_scale)
+	)
+
+	# Both visual layers ignore mouse input, so an uncovered lobby click still reaches HomeAvatar.
+	var home_avatar := menu.get_node("HomeWorld/HomeAvatar") as HomeAvatar
+	assert(home_avatar != null)
+	var lobby_click := InputEventMouseButton.new()
+	lobby_click.button_index = MOUSE_BUTTON_LEFT
+	lobby_click.pressed = true
+	lobby_click.position = Vector2(780.0, 210.0)
+	get_viewport().push_input(lobby_click)
+	await get_tree().process_frame
+	assert(home_avatar.is_moving())
+	home_avatar.stop_movement()
 
 	var countdown: TimeDisplay = menu.get_node("%TimeDisplay")
 	assert(countdown is Control)
@@ -99,6 +128,21 @@ func _ready() -> void:
 	assert(intro_start_button.scale.is_equal_approx(Vector2.ONE))
 	assert(is_equal_approx(intro_start_button.modulate.a, 1.0))
 	assert(is_equal_approx(intro_rule_button.modulate.a, 1.0))
+
+	# The shared hover component animates RuleButton without changing its click contract.
+	assert(intro_rule_button.get_script().resource_path == "res://scripts/ui/button_hover_effect.gd")
+	assert(intro_start_button.get_script().resource_path != "res://scripts/ui/button_hover_effect.gd")
+	var rule_default_modulate := intro_rule_button.modulate
+	intro_rule_button.mouse_entered.emit()
+	assert(intro_rule_button.is_hover_tween_running())
+	await get_tree().create_timer(0.08).timeout
+	assert(intro_rule_button.scale.x > 1.0 and intro_rule_button.scale.x <= 1.051)
+	assert(intro_rule_button.modulate.r > rule_default_modulate.r)
+	intro_rule_button.mouse_exited.emit()
+	await get_tree().create_timer(0.2).timeout
+	assert(intro_rule_button.scale.is_equal_approx(Vector2.ONE))
+	assert(intro_rule_button.modulate.is_equal_approx(rule_default_modulate))
+	assert(intro_rule_button.pivot_offset.is_equal_approx(intro_rule_button.size / 2.0))
 
 	menu._play_intro_animation()
 	var first_intro_tween: Tween = menu._intro_tween
@@ -168,6 +212,45 @@ func _ready() -> void:
 	assert(time_title.text == "TIME LEFT")
 	var time_display_source := FileAccess.get_file_as_string("res://scripts/ui/time_display.gd")
 	assert(time_display_source.find("time_title") == -1)
+
+	# Second-level changes do not animate until the visible hour/minute text changes.
+	countdown.set_running(false)
+	countdown.set_remaining_seconds(125)
+	await get_tree().create_timer(0.22).timeout
+	assert(not countdown.is_value_feedback_running())
+	assert(time_value.scale.is_equal_approx(Vector2.ONE))
+	var unchanged_display_tween: Tween = countdown._value_feedback_tween
+	countdown.set_remaining_seconds(124)
+	assert(countdown.get_display_text() == "0H 02Min")
+	assert(countdown._value_feedback_tween == unchanged_display_tween)
+	assert(not countdown.is_value_feedback_running())
+
+	# Crossing a minute boundary changes the text and plays one feedback Tween.
+	countdown.set_remaining_seconds(120)
+	countdown.set_running(true)
+	countdown._process(1.0)
+	assert(countdown.get_remaining_seconds() == 119)
+	assert(countdown.get_display_text() == "0H 01Min")
+	assert(countdown.is_value_feedback_running())
+	assert(countdown._value_feedback_tween != unchanged_display_tween)
+	await get_tree().create_timer(0.06).timeout
+	assert(time_value.scale.x > 1.0 and time_value.scale.x <= 1.041)
+	await get_tree().create_timer(0.16).timeout
+	assert(time_value.scale.is_equal_approx(Vector2.ONE))
+
+	# Crossing an hour boundary uses the same display-change feedback.
+	countdown.initialize(3600)
+	await get_tree().create_timer(0.22).timeout
+	var before_hour_boundary_tween: Tween = countdown._value_feedback_tween
+	countdown.set_running(true)
+	countdown._process(1.0)
+	assert(countdown.get_remaining_seconds() == 3599)
+	assert(countdown.get_display_text() == "0H 59Min")
+	assert(countdown.is_value_feedback_running())
+	assert(countdown._value_feedback_tween != before_hour_boundary_tween)
+	await get_tree().create_timer(0.22).timeout
+	assert(time_value.scale.is_equal_approx(Vector2.ONE))
+
 	countdown.set_running(false)
 	countdown.remaining_seconds = 62
 	assert(countdown.get_remaining_seconds() == 62)

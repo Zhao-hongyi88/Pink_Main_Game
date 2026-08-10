@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3]
+[gd_scene load_steps=12 format=3]
 
 [ext_resource type="Script" path="res://scripts/main/main_menu.gd" id="1_script"]
 [ext_resource type="PackedScene" path="res://scenes/ui/time_display.tscn" id="2_time"]
@@ -6,6 +6,8 @@
 [ext_resource type="PackedScene" path="res://scenes/ui/archive_panel.tscn" id="4_archive"]
 [ext_resource type="PackedScene" path="res://scenes/home/home_world.tscn" id="5_home_world"]
 [ext_resource type="PackedScene" path="res://scenes/ui/start_button.tscn" id="6_start"]
+[ext_resource type="PackedScene" path="res://scenes/ui/background_motion.tscn" id="7_background_motion"]
+[ext_resource type="Script" path="res://scripts/ui/button_hover_effect.gd" id="8_button_hover"]
 
 [sub_resource type="Gradient" id="Gradient_background_placeholder"]
 offsets = PackedFloat32Array(0, 0.55, 1)
@@ -52,6 +54,10 @@ expand_mode = 1
 stretch_mode = 6
 mouse_filter = 2
 
+[node name="BackgroundMotion" parent="." instance=ExtResource("7_background_motion")]
+unique_name_in_owner = true
+background_path = NodePath("../Background")
+
 [node name="HomeWorld" parent="." instance=ExtResource("5_home_world")]
 unique_name_in_owner = true
 
@@ -66,6 +72,7 @@ offset_bottom = 96.0
 theme_override_colors/font_color = Color(0.941176, 0.843137, 0.901961, 1)
 theme_override_font_sizes/font_size = 17
 theme_override_styles/normal = SubResource("StyleBox_button")
+script = ExtResource("8_button_hover")
 text = "规则说明"
 
 [node name="TimeDisplay" parent="." instance=ExtResource("2_time")]

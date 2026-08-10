@@ -1,6 +1,7 @@
-[gd_scene load_steps=9 format=3]
+[gd_scene load_steps=10 format=3]
 
 [ext_resource type="Script" path="res://scripts/ui/archive_panel.gd" id="1_script"]
+[ext_resource type="Script" path="res://scripts/ui/button_hover_effect.gd" id="2_button_hover"]
 
 [sub_resource type="Gradient" id="Gradient_paper_placeholder"]
 offsets = PackedFloat32Array(0, 0.52, 1)
@@ -92,6 +93,7 @@ offset_right = 142.0
 grow_vertical = 0
 theme_override_font_sizes/font_size = 17
 text = "ARCHIVE"
+script = ExtResource("2_button_hover")
 
 [node name="SelectedNPCLabel" type="Label" parent="."]
 unique_name_in_owner = true

@@ -21,9 +21,13 @@ func _verify_navigation_and_movement() -> void:
 	assert(navigation_region.navigation_polygon != null)
 	assert(navigation_region.navigation_polygon.get_polygon_count() > 1)
 	assert(avatar != null)
-	var visual := avatar.get_node("VisualPlaceholder") as Sprite2D
+	var visual := avatar.get_node("AvatarVisual") as AnimatedSprite2D
 	assert(visual != null)
-	assert(visual.texture != null)
+	assert(visual.sprite_frames != null)
+	assert(visual.sprite_frames.has_animation(&"idle"))
+	assert(visual.sprite_frames.has_animation(&"walk"))
+	assert(visual.sprite_frames.get_frame_count(&"idle") > 0)
+	assert(visual.sprite_frames.get_frame_count(&"walk") > 0)
 	var navigation_agent := avatar.get_node("NavigationAgent2D") as NavigationAgent2D
 	assert(navigation_agent != null)
 	assert(navigation_agent.get_navigation_map().is_valid())
@@ -34,9 +38,11 @@ func _verify_navigation_and_movement() -> void:
 	assert(source.find(".png") == -1)
 	assert(source.find("global_position = Vector2(") == -1)
 	assert(source.find("AnimationPlayer") == -1)
-	assert(source.find("AnimatedSprite2D") == -1)
+	assert(source.find("AnimatedSprite2D") != -1)
 
 	# Idle breathing starts immediately and affects only the visual child.
+	assert(visual.animation == &"idle")
+	assert(visual.is_playing())
 	assert(avatar.is_idle_breathing())
 	assert(avatar.scale.is_equal_approx(Vector2.ONE))
 	var initial_idle_tween: Tween = avatar._idle_breath_tween
@@ -59,6 +65,8 @@ func _verify_navigation_and_movement() -> void:
 	avatar._unhandled_input(click_event)
 	assert(avatar.get_movement_target().is_equal_approx(target_position))
 	assert(avatar.is_moving())
+	assert(visual.animation == &"walk")
+	assert(visual.is_playing())
 	assert(not avatar.is_idle_breathing())
 	assert(visual.scale.is_equal_approx(Vector2.ONE))
 	assert(not initial_idle_tween.is_valid())
@@ -67,6 +75,7 @@ func _verify_navigation_and_movement() -> void:
 	avatar.set_movement_target(Vector2(740.0, 230.0))
 	avatar.set_movement_target(target_position)
 	assert(avatar.get_movement_target().is_equal_approx(target_position))
+	assert(visual.animation == &"walk")
 	assert(not avatar.is_idle_breathing())
 	assert(avatar._idle_breath_tween == null)
 	await get_tree().physics_frame
@@ -89,6 +98,8 @@ func _verify_navigation_and_movement() -> void:
 	assert(not avatar.is_moving())
 	assert(avatar.velocity.is_zero_approx())
 	assert(avatar.global_position.distance_to(target_position) <= avatar.stopping_distance + 2.0)
+	assert(visual.animation == &"idle")
+	assert(visual.is_playing())
 	assert(avatar.is_idle_breathing())
 	var arrived_idle_tween: Tween = avatar._idle_breath_tween
 	await get_tree().create_timer(0.25).timeout
@@ -105,6 +116,7 @@ func _verify_navigation_and_movement() -> void:
 	var left_target := Vector2(300.0, 210.0)
 	avatar.set_movement_target(left_target)
 	assert(not arrived_idle_tween.is_valid())
+	assert(visual.animation == &"walk")
 	assert(not avatar.is_idle_breathing())
 	assert(visual.scale.is_equal_approx(Vector2.ONE))
 	var left_facing_observed := false
@@ -119,6 +131,7 @@ func _verify_navigation_and_movement() -> void:
 	avatar.stop_movement()
 	assert(not avatar.is_moving())
 	assert(avatar.velocity.is_zero_approx())
+	assert(visual.animation == &"idle")
 	assert(avatar.is_idle_breathing())
 	assert(visual.scale.is_equal_approx(Vector2.ONE))
 	var external_stop_tween: Tween = avatar._idle_breath_tween

@@ -54,6 +54,7 @@ func _verify_archive_and_sequence_progression() -> void:
 	var menu := await _create_main_menu()
 	var archive: Variant = menu.get_node("%ArchivePanel")
 	_assert_archive_visual_contract(archive)
+	await _verify_archive_button_hover(archive)
 	assert(GameState.selected_npc_id == ordered_npc_ids[0])
 	assert(GameState.unlocked_npc_ids.size() == 1)
 	assert(GameState.is_npc_unlocked(ordered_npc_ids[0]))
@@ -147,6 +148,37 @@ func _verify_archive_and_sequence_progression() -> void:
 	assert(GameState.selected_npc_id == ordered_npc_ids[0])
 	assert(GameState.unlocked_npc_ids.size() == ordered_npc_ids.size())
 	_dispose_main_menu(menu)
+
+
+func _verify_archive_button_hover(archive: Variant) -> void:
+	var archive_button := archive.get_node("%ArchiveButton") as Button
+	assert(archive_button != null)
+	assert(archive_button.get_script().resource_path == "res://scripts/ui/button_hover_effect.gd")
+	# Let MainMenu's parent-level intro finish before isolating the button effect.
+	await get_tree().create_timer(0.5).timeout
+	var default_modulate := archive_button.modulate
+
+	assert(archive_button.mouse_entered.get_connections().size() == 1)
+	archive_button.mouse_entered.emit()
+	assert(archive_button.is_hover_tween_running())
+	await get_tree().create_timer(0.08).timeout
+	assert(
+		archive_button.scale.x > 1.0 and archive_button.scale.x <= 1.051,
+		"Archive hover scale was %s" % archive_button.scale
+	)
+	assert(archive_button.modulate.r > default_modulate.r)
+
+	# A rapid direction reversal replaces the old Tween and returns to authored values.
+	var enter_tween: Tween = archive_button._hover_tween
+	archive_button.mouse_exited.emit()
+	assert(not enter_tween.is_valid())
+	await get_tree().create_timer(0.2).timeout
+	assert(archive_button.scale.is_equal_approx(Vector2.ONE))
+	assert(archive_button.modulate.is_equal_approx(default_modulate))
+	assert(archive_button.pivot_offset.is_equal_approx(archive_button.size / 2.0))
+
+	# Hover does not replace or consume Archive's existing pressed connection.
+	assert(archive_button.pressed.get_connections().size() == 1)
 
 
 func _verify_archive_animation_interruptions(archive: Variant, selection_panel: PanelContainer) -> void:

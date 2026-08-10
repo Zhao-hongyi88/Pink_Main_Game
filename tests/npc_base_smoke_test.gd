@@ -20,8 +20,7 @@ class MemoryRoundTripProbe:
 
 
 	func _verify_round_trip() -> void:
-		await get_tree().process_frame
-		await get_tree().process_frame
+		await _wait_for_transition()
 		var memory_test := get_tree().current_scene
 		assert(memory_test is Control)
 		assert(memory_test.name == "MemoryTest")
@@ -34,8 +33,7 @@ class MemoryRoundTripProbe:
 		assert(not back_button.disabled)
 		back_button.pressed.emit()
 
-		await get_tree().process_frame
-		await get_tree().process_frame
+		await _wait_for_transition()
 		var returned_npc := get_tree().current_scene
 		assert(returned_npc is NPCBase)
 		assert(returned_npc.npc_data_path == expected_data_path)
@@ -60,8 +58,7 @@ class MemoryRoundTripProbe:
 
 		# Completing Memory marks only the current NPC, then returns home for roster progression.
 		returned_npc.get_node("%MemoryButton").pressed.emit()
-		await get_tree().process_frame
-		await get_tree().process_frame
+		await _wait_for_transition()
 		memory_test = get_tree().current_scene
 		assert(memory_test.name == "MemoryTest")
 		var complete_button: Button = memory_test.get_node("%CompleteMemoryButton")
@@ -69,8 +66,7 @@ class MemoryRoundTripProbe:
 		complete_button.pressed.emit()
 		assert(GameState.get_npc_progress(expected_npc_id).memory_completed)
 
-		await get_tree().process_frame
-		await get_tree().process_frame
+		await _wait_for_transition()
 		var main_menu := get_tree().current_scene
 		assert(main_menu is Control)
 		assert(main_menu.name == "MainMenu")
@@ -86,6 +82,14 @@ class MemoryRoundTripProbe:
 
 		print("NPC_BASE_SMOKE_TEST: PASS")
 		get_tree().quit(0)
+
+
+	func _wait_for_transition() -> void:
+		for _frame in 300:
+			if not SceneRouter.is_transitioning():
+				return
+			await get_tree().process_frame
+		assert(false, "Scene transition did not finish within the smoke-test timeout.")
 
 
 func _ready() -> void:
