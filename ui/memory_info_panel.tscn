@@ -1,0 +1,115 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/memory/memory_info_panel.gd" id="1_memory_info_panel"]
+
+[node name="MemoryInfoPanel" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 0
+script = ExtResource("1_memory_info_panel")
+
+[node name="Dimmer" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 0
+color = Color(0, 0, 0, 0.55)
+
+[node name="Panel" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -310.0
+offset_top = -205.0
+offset_right = 310.0
+offset_bottom = 205.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="TitleLabel" type="Label" parent="Panel"]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_left = 48.0
+offset_top = 26.0
+offset_right = -48.0
+offset_bottom = 68.0
+grow_horizontal = 2
+theme_override_font_sizes/font_size = 28
+text = "学习记录"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="SectionLabel" type="Label" parent="Panel"]
+layout_mode = 0
+offset_left = 48.0
+offset_top = 86.0
+offset_right = 210.0
+offset_bottom = 116.0
+theme_override_colors/font_color = Color(0.52, 0.78, 1, 1)
+theme_override_font_sizes/font_size = 18
+text = "物品信息"
+
+[node name="ContentLabel" type="Label" parent="Panel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 48.0
+offset_top = 126.0
+offset_right = -48.0
+offset_bottom = -92.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 21
+text = ""
+vertical_alignment = 1
+autowrap_mode = 2
+
+[node name="ImagePlaceholders" type="HBoxContainer" parent="Panel"]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 48.0
+offset_top = 126.0
+offset_right = -48.0
+offset_bottom = -92.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 18
+alignment = 1
+
+[node name="CloseButton" type="Button" parent="Panel"]
+layout_mode = 0
+offset_left = 530.0
+offset_top = 20.0
+offset_right = 582.0
+offset_bottom = 56.0
+text = "关闭"
+
+[node name="ContinueButton" type="Button" parent="Panel"]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -104.0
+offset_top = -66.0
+offset_right = 104.0
+offset_bottom = -22.0
+grow_horizontal = 2
+grow_vertical = 0
+text = "继续"
