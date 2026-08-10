@@ -1,0 +1,165 @@
+[gd_scene load_steps=9 format=3]
+
+[ext_resource type="Script" path="res://scripts/memory/npc5_wang_jianguo_memory.gd" id="1_npc_memory"]
+[ext_resource type="Script" path="res://scripts/memory/memory_observation_point.gd" id="2_observation_point"]
+[ext_resource type="Resource" path="res://data/memory/npc5/community_supplies.tres" id="3_community_supplies"]
+[ext_resource type="PackedScene" path="res://ui/memory_info_panel.tscn" id="4_info_panel"]
+[ext_resource type="Resource" path="res://data/memory/npc5/donation_certificates.tres" id="5_donation_certificates"]
+[ext_resource type="Resource" path="res://data/memory/npc5/charity_forum_record.tres" id="6_charity_forum_record"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_community_supplies"]
+size = Vector2(330, 126)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_donation_certificates"]
+size = Vector2(330, 126)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_charity_forum_record"]
+size = Vector2(330, 126)
+
+[node name="NPC5WangJianGuoMemory" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("1_npc_memory")
+
+[node name="Background" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0.07, 0.09, 0.15, 1)
+
+[node name="SceneTitle" type="Label" parent="Background"]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_top = 92.0
+offset_bottom = 144.0
+grow_horizontal = 2
+theme_override_colors/font_color = Color(0.93, 0.95, 1, 1)
+theme_override_font_sizes/font_size = 32
+text = "王建国的回忆"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="SceneHint" type="Label" parent="Background"]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_top = 154.0
+offset_bottom = 184.0
+grow_horizontal = 2
+theme_override_colors/font_color = Color(0.62, 0.7, 0.83, 1)
+theme_override_font_sizes/font_size = 18
+text = "调查王建国留下的公益记录"
+horizontal_alignment = 1
+
+[node name="ProgressLabel" type="Label" parent="."]
+offset_left = 34.0
+offset_top = 26.0
+offset_right = 280.0
+offset_bottom = 56.0
+theme_override_colors/font_color = Color(0.72, 0.82, 0.96, 1)
+theme_override_font_sizes/font_size = 18
+text = "调查进度：0 / 3"
+
+[node name="ObservationPoints" type="Node2D" parent="."]
+
+[node name="CommunitySupplies" type="Area2D" parent="ObservationPoints"]
+position = Vector2(300, 380)
+input_pickable = true
+script = ExtResource("2_observation_point")
+observation_data = ExtResource("3_community_supplies")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="ObservationPoints/CommunitySupplies"]
+shape = SubResource("RectangleShape2D_community_supplies")
+
+[node name="Visual" type="Panel" parent="ObservationPoints/CommunitySupplies"]
+offset_left = -165.0
+offset_top = -63.0
+offset_right = 165.0
+offset_bottom = 63.0
+mouse_filter = 2
+
+[node name="Label" type="Label" parent="ObservationPoints/CommunitySupplies/Visual"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.88, 0.94, 1, 1)
+theme_override_font_sizes/font_size = 22
+text = "[ 社区物资 ]\n点击调查"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="DonationCertificates" type="Area2D" parent="ObservationPoints"]
+position = Vector2(640, 380)
+input_pickable = true
+script = ExtResource("2_observation_point")
+observation_data = ExtResource("5_donation_certificates")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="ObservationPoints/DonationCertificates"]
+shape = SubResource("RectangleShape2D_donation_certificates")
+
+[node name="Visual" type="Panel" parent="ObservationPoints/DonationCertificates"]
+offset_left = -165.0
+offset_top = -63.0
+offset_right = 165.0
+offset_bottom = 63.0
+mouse_filter = 2
+
+[node name="Label" type="Label" parent="ObservationPoints/DonationCertificates/Visual"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.88, 0.94, 1, 1)
+theme_override_font_sizes/font_size = 22
+text = "[ 爱心捐款证书 ]\n点击调查"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="CharityForumRecord" type="Area2D" parent="ObservationPoints"]
+position = Vector2(980, 380)
+input_pickable = true
+script = ExtResource("2_observation_point")
+observation_data = ExtResource("6_charity_forum_record")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="ObservationPoints/CharityForumRecord"]
+shape = SubResource("RectangleShape2D_charity_forum_record")
+
+[node name="Visual" type="Panel" parent="ObservationPoints/CharityForumRecord"]
+offset_left = -165.0
+offset_top = -63.0
+offset_right = 165.0
+offset_bottom = 63.0
+mouse_filter = 2
+
+[node name="Label" type="Label" parent="ObservationPoints/CharityForumRecord/Visual"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.88, 0.94, 1, 1)
+theme_override_font_sizes/font_size = 22
+text = "[ 公益论坛讨论记录 ]\n点击调查"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="MemoryInfoPanel" parent="." instance=ExtResource("4_info_panel")]

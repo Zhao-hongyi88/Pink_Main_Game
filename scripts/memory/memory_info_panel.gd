@@ -67,6 +67,7 @@ func _on_continue_pressed() -> void:
 
 func _show_dialogue_line() -> void:
 	section_label.text = "主角观察"
+	_reset_info_layout()
 	image_placeholders.hide()
 	content_label.show()
 	if _current_data.dialogue.is_empty():
@@ -82,13 +83,17 @@ func _show_dialogue_line() -> void:
 
 func _show_object_info(data) -> void:
 	_clear_image_placeholders()
+	_reset_info_layout()
 	var has_images = not data.images.is_empty() or not data.image_placeholders.is_empty()
-	content_label.visible = not has_images
+	content_label.text = data.info
+	content_label.show()
 	image_placeholders.visible = has_images
 
 	if not has_images:
-		content_label.text = data.info
 		return
+
+	content_label.offset_bottom = -280.0
+	image_placeholders.offset_top = 314.0
 
 	var item_count = max(data.images.size(), data.image_placeholders.size())
 	for index in item_count:
@@ -102,6 +107,11 @@ func _show_object_info(data) -> void:
 		_create_image_card(placeholder_text, texture)
 
 
+func _reset_info_layout() -> void:
+	content_label.offset_bottom = -92.0
+	image_placeholders.offset_top = 126.0
+
+
 func _clear_image_placeholders() -> void:
 	for child in image_placeholders.get_children():
 		child.queue_free()
@@ -109,21 +119,21 @@ func _clear_image_placeholders() -> void:
 
 func _create_image_card(placeholder_text, texture) -> void:
 	var card = PanelContainer.new()
-	card.custom_minimum_size = Vector2(240, 160)
+	card.custom_minimum_size = Vector2(160, 140)
 	var layout = VBoxContainer.new()
 	card.add_child(layout)
 
 	if texture != null:
 		var image = TextureRect.new()
 		image.texture = texture
-		image.custom_minimum_size = Vector2(220, 112)
+		image.custom_minimum_size = Vector2(140, 96)
 		image.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 		image.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 		layout.add_child(image)
 
 	var caption = Label.new()
 	caption.text = placeholder_text
-	caption.custom_minimum_size = Vector2(220, 0)
+	caption.custom_minimum_size = Vector2(140, 0)
 	caption.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	caption.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	caption.size_flags_vertical = Control.SIZE_EXPAND_FILL

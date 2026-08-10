@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="MemoryObservationData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/memory/memory_observation_data.gd" id="1_observation_data"]
+
+[resource]
+script = ExtResource("1_observation_data")
+observation_id = &"work_documents"
+title = "工作文件"
+info = "销售季度报告\n部门人员考核表\n项目进度文件\n客户资料"
+images = []
+image_placeholders = PackedStringArray("女儿的画\n妈妈和女儿牵着手，旁边画了一个房子。")
+dialogue = PackedStringArray("这些文件都是她最近在处理的工作。", "不少地方反复修改过，看来她花了很多时间在上面。", "嗯？这是什么？", "应该是她女儿画的。")
