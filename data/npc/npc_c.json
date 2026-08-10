@@ -1,23 +1,23 @@
 {
-	"npc_id": "npc_c",
-	"display_name": "NPC_C",
+	"npc_id": "npc_liu_guilan",
+	"display_name": "刘桂兰",
 	"portrait": "",
 	"name_unlock_key": "basic_info",
 	"dialogues": [
 		{
-			"text": "NPC_C: Placeholder dialogue 01.",
+			"text": "刘桂兰：Placeholder dialogue 01.",
 			"unlock_key": ""
 		},
 		{
-			"text": "NPC_C: Placeholder dialogue 02.",
+			"text": "刘桂兰：Placeholder dialogue 02.",
 			"unlock_key": "basic_info"
 		},
 		{
-			"text": "NPC_C: Placeholder dialogue 03.",
+			"text": "刘桂兰：Placeholder dialogue 03.",
 			"unlock_key": "c_status_info"
 		},
 		{
-			"text": "NPC_C: Placeholder dialogue 04.",
+			"text": "刘桂兰：Placeholder dialogue 04.",
 			"unlock_key": "c_extra_info"
 		}
 	],
@@ -25,17 +25,17 @@
 		{
 			"key": "basic_info",
 			"header": "Basic Information",
-			"content": "NPC_C placeholder basic information."
+			"content": "姓名：刘桂兰"
 		},
 		{
 			"key": "c_status_info",
 			"header": "Status Information",
-			"content": "NPC_C placeholder status information."
+			"content": "刘桂兰 placeholder status information."
 		},
 		{
 			"key": "c_extra_info",
 			"header": "Additional Information",
-			"content": "NPC_C placeholder additional information."
+			"content": "刘桂兰 placeholder additional information."
 		}
 	],
 	"memory_scene": "res://scenes/memory/memory_test.tscn"

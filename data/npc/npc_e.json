@@ -1,23 +1,23 @@
 {
-	"npc_id": "npc_e",
-	"display_name": "NPC_E",
+	"npc_id": "npc_wang_jianguo",
+	"display_name": "王建国",
 	"portrait": "",
 	"name_unlock_key": "basic_info",
 	"dialogues": [
 		{
-			"text": "NPC_E: Placeholder dialogue 01.",
+			"text": "王建国：Placeholder dialogue 01.",
 			"unlock_key": ""
 		},
 		{
-			"text": "NPC_E: Placeholder dialogue 02.",
+			"text": "王建国：Placeholder dialogue 02.",
 			"unlock_key": "basic_info"
 		},
 		{
-			"text": "NPC_E: Placeholder dialogue 03.",
+			"text": "王建国：Placeholder dialogue 03.",
 			"unlock_key": "e_extra_info"
 		},
 		{
-			"text": "NPC_E: Placeholder dialogue 04.",
+			"text": "王建国：Placeholder dialogue 04.",
 			"unlock_key": "e_final_info"
 		}
 	],
@@ -25,17 +25,17 @@
 		{
 			"key": "basic_info",
 			"header": "Basic Information",
-			"content": "NPC_E placeholder basic information."
+			"content": "姓名：王建国"
 		},
 		{
 			"key": "e_extra_info",
 			"header": "Additional Information",
-			"content": "NPC_E placeholder additional information."
+			"content": "王建国 placeholder additional information."
 		},
 		{
 			"key": "e_final_info",
 			"header": "Final Placeholder Information",
-			"content": "NPC_E placeholder final information."
+			"content": "王建国 placeholder final information."
 		}
 	],
 	"memory_scene": "res://scenes/memory/memory_test.tscn"

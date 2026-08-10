@@ -7,36 +7,36 @@ const NPC_BASE_SCENE: PackedScene = preload(NPC_BASE_SCENE_PATH)
 const NPC_CASES: Array[Dictionary] = [
 	{
 		"path": "res://data/npc/npc_a.json",
-		"npc_id": "npc_a",
-		"display_name": "NPC_A",
+		"npc_id": "npc_zhang_yuan",
+		"display_name": "张远",
 		"dialogue_count": 5,
 		"note_count": 5,
 	},
 	{
 		"path": "res://data/npc/npc_b.json",
-		"npc_id": "npc_b",
-		"display_name": "NPC_B",
+		"npc_id": "npc_li_lei",
+		"display_name": "李磊",
 		"dialogue_count": 3,
 		"note_count": 2,
 	},
 	{
 		"path": "res://data/npc/npc_c.json",
-		"npc_id": "npc_c",
-		"display_name": "NPC_C",
+		"npc_id": "npc_liu_guilan",
+		"display_name": "刘桂兰",
 		"dialogue_count": 4,
 		"note_count": 3,
 	},
 	{
 		"path": "res://data/npc/npc_d.json",
-		"npc_id": "npc_d",
-		"display_name": "NPC_D",
+		"npc_id": "npc_su_qing",
+		"display_name": "苏晴",
 		"dialogue_count": 5,
 		"note_count": 2,
 	},
 	{
 		"path": "res://data/npc/npc_e.json",
-		"npc_id": "npc_e",
-		"display_name": "NPC_E",
+		"npc_id": "npc_wang_jianguo",
+		"display_name": "王建国",
 		"dialogue_count": 4,
 		"note_count": 3,
 	},
@@ -146,7 +146,7 @@ func _verify_npc_progress_isolation() -> void:
 	assert(npc_b_data.is_valid())
 	assert(npc_c_data.is_valid())
 
-	# NPC_B advances far enough to unlock basic_info, but remains incomplete.
+	# 李磊 advances far enough to unlock basic_info, but remains incomplete.
 	var npc_b := await _instantiate_npc(npc_b_data.source_path)
 	var npc_b_continue: Button = npc_b.get_node("%ContinueButton")
 	npc_b_continue.pressed.emit()
@@ -164,7 +164,7 @@ func _verify_npc_progress_isolation() -> void:
 	assert(npc_b.get_node("%NotePanel").visible)
 	_dispose_npc(npc_b)
 
-	# NPC_C starts from its own untouched progress.
+	# 刘桂兰 starts from its own untouched progress.
 	var npc_c := await _instantiate_npc(npc_c_data.source_path)
 	var npc_c_progress: NPCProgress = npc_c.npc_progress
 	assert(npc_c_progress != npc_b_progress)
@@ -183,7 +183,7 @@ func _verify_npc_progress_isolation() -> void:
 	assert(npc_c.current_dialogue_index == 1)
 	_dispose_npc(npc_c)
 
-	# Reloading NPC_B restores exactly the state it had before NPC_C was opened.
+	# Reloading 李磊 restores exactly the state it had before 刘桂兰 was opened.
 	var npc_b_reloaded := await _instantiate_npc(npc_b_data.source_path)
 	assert(npc_b_reloaded.npc_progress == npc_b_progress)
 	assert(npc_b_reloaded.current_dialogue_index == npc_b_index)
@@ -197,13 +197,13 @@ func _verify_npc_progress_isolation() -> void:
 	assert(npc_b_reloaded.get_node("%NotePanel").visible)
 	assert(npc_b_reloaded._note_items_by_key["basic_info"].visible)
 
-	# Completing NPC_B and its memory flag must not mutate any NPC_C field.
+	# Completing 李磊 and its memory flag must not mutate any 刘桂兰 field.
 	var npc_b_reloaded_continue: Button = npc_b_reloaded.get_node("%ContinueButton")
 	npc_b_reloaded_continue.pressed.emit()
 	assert(npc_b_reloaded.dialogue_completed)
 	assert(npc_b_reloaded.memory_ready)
 	assert(npc_b_reloaded.get_node("%MemoryButton").visible)
-	assert(GameState.mark_memory_completed(&"npc_b"))
+	assert(GameState.mark_memory_completed(&"npc_li_lei"))
 	assert(npc_b_reloaded.memory_completed)
 	assert(npc_c_progress.current_dialogue_index == 1)
 	assert(not npc_c_progress.dialogue_completed)
@@ -213,7 +213,7 @@ func _verify_npc_progress_isolation() -> void:
 	assert(not npc_c_progress.memory_completed)
 	_dispose_npc(npc_b_reloaded)
 
-	# Reloading NPC_C restores its own state, not NPC_B's completed state.
+	# Reloading 刘桂兰 restores its own state, not 李磊's completed state.
 	var npc_c_reloaded := await _instantiate_npc(npc_c_data.source_path)
 	assert(npc_c_reloaded.npc_progress == npc_c_progress)
 	assert(npc_c_reloaded.current_dialogue_index == 1)

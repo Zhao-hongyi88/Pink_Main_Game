@@ -1,27 +1,27 @@
 {
-	"npc_id": "npc_d",
-	"display_name": "NPC_D",
+	"npc_id": "npc_su_qing",
+	"display_name": "苏晴",
 	"portrait": "",
 	"name_unlock_key": "basic_info",
 	"dialogues": [
 		{
-			"text": "NPC_D: Placeholder dialogue 01.",
+			"text": "苏晴：Placeholder dialogue 01.",
 			"unlock_key": ""
 		},
 		{
-			"text": "NPC_D: Placeholder dialogue 02.",
+			"text": "苏晴：Placeholder dialogue 02.",
 			"unlock_key": "basic_info"
 		},
 		{
-			"text": "NPC_D: Placeholder dialogue 03.",
+			"text": "苏晴：Placeholder dialogue 03.",
 			"unlock_key": ""
 		},
 		{
-			"text": "NPC_D: Placeholder dialogue 04.",
+			"text": "苏晴：Placeholder dialogue 04.",
 			"unlock_key": "d_extra_info"
 		},
 		{
-			"text": "NPC_D: Placeholder dialogue 05.",
+			"text": "苏晴：Placeholder dialogue 05.",
 			"unlock_key": ""
 		}
 	],
@@ -29,12 +29,12 @@
 		{
 			"key": "basic_info",
 			"header": "Basic Information",
-			"content": "NPC_D placeholder basic information."
+			"content": "姓名：苏晴"
 		},
 		{
 			"key": "d_extra_info",
 			"header": "Additional Information",
-			"content": "NPC_D placeholder additional information."
+			"content": "苏晴 placeholder additional information."
 		}
 	],
 	"memory_scene": "res://scenes/memory/memory_test.tscn"

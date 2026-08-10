@@ -21,7 +21,13 @@ func _load_and_verify_roster() -> void:
 	assert(roster.load_from_json(ROSTER_PATH), roster.get_error_message())
 	assert(roster.is_valid())
 	ordered_npc_ids = roster.get_ordered_npc_ids()
-	assert(ordered_npc_ids == [&"npc_a", &"npc_b", &"npc_c", &"npc_d", &"npc_e"])
+	assert(ordered_npc_ids == [
+		&"npc_zhang_yuan",
+		&"npc_li_lei",
+		&"npc_liu_guilan",
+		&"npc_su_qing",
+		&"npc_wang_jianguo",
+	])
 	assert(roster.get_first_npc_id() == ordered_npc_ids[0])
 	assert(roster.get_next_npc_id(ordered_npc_ids[0]) == ordered_npc_ids[1])
 	assert(roster.get_next_npc_id(ordered_npc_ids[-1]).is_empty())
@@ -43,8 +49,8 @@ func _load_and_verify_roster() -> void:
 	var archive_scene_source := FileAccess.get_file_as_string("res://scenes/ui/archive_panel.tscn")
 	assert(project_settings.find("npc_roster.gd") == -1)
 	assert(main_menu_source.find("npc_a.json") == -1)
-	assert(main_menu_source.find("\"npc_a\"") == -1)
-	assert(main_menu_source.find("&\"npc_a\"") == -1)
+	assert(main_menu_source.find("\"npc_zhang_yuan\"") == -1)
+	assert(main_menu_source.find("&\"npc_zhang_yuan\"") == -1)
 	for npc_id: StringName in ordered_npc_ids:
 		assert(archive_scene_source.find(roster.get_display_name(npc_id)) == -1)
 

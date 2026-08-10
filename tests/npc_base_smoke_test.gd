@@ -97,7 +97,7 @@ func _ready() -> void:
 	var original_json := FileAccess.get_file_as_string(NPC_DATA_PATH)
 	var expected_data := _read_json(NPC_DATA_PATH)
 	assert(not expected_data.is_empty())
-	assert(expected_data["npc_id"] == "npc_a")
+	assert(expected_data["npc_id"] == "npc_zhang_yuan")
 	assert(expected_data["portrait"] == "")
 	assert(expected_data["name_unlock_key"] == "basic_info")
 	assert(expected_data["memory_scene"] == MEMORY_SCENE_PATH)
@@ -134,7 +134,7 @@ func _ready() -> void:
 	var expected_notes: Array = expected_data["notes"]
 
 	# 首次进入创建默认进度，索引 0 表示当前显示第 1 条 Dialogue。
-	assert(GameState.has_npc_progress(&"npc_a"))
+	assert(GameState.has_npc_progress(&"npc_zhang_yuan"))
 	assert(npc_base.dialogue_manager is DialogueManager)
 	assert(npc_base.unlock_system is UnlockSystem)
 	assert(npc_base.current_dialogue_index == 0)
@@ -315,14 +315,14 @@ func _ready() -> void:
 	assert(memory_button.visible)
 	assert(not memory_button.disabled)
 
-	# NPC_A 与 NPC_B 使用不同 NPCProgress，互不影响。
-	var npc_a_progress := GameState.get_npc_progress(&"npc_a")
-	var npc_b_progress := GameState.get_or_create_npc_progress(&"npc_b")
+	# 张远与李磊使用不同 NPCProgress，互不影响。
+	var npc_a_progress := GameState.get_npc_progress(&"npc_zhang_yuan")
+	var npc_b_progress := GameState.get_or_create_npc_progress(&"npc_li_lei")
 	npc_b_progress.current_dialogue_index = 3
-	npc_b_progress.unlocked_keys["npc_b_test"] = true
-	npc_b_progress.revealed_note_keys.append("npc_b_test")
+	npc_b_progress.unlocked_keys["li_lei_test"] = true
+	npc_b_progress.revealed_note_keys.append("li_lei_test")
 	assert(npc_a_progress.current_dialogue_index == 4)
-	assert(not npc_a_progress.unlocked_keys.has("npc_b_test"))
+	assert(not npc_a_progress.unlocked_keys.has("li_lei_test"))
 	assert(npc_a_progress.revealed_note_keys == ["basic_info", "work_info"])
 	assert(not npc_b_progress.memory_ready)
 

@@ -1,19 +1,19 @@
 {
-	"npc_id": "npc_b",
-	"display_name": "NPC_B",
+	"npc_id": "npc_li_lei",
+	"display_name": "李磊",
 	"portrait": "",
 	"name_unlock_key": "basic_info",
 	"dialogues": [
 		{
-			"text": "NPC_B: Placeholder dialogue 01.",
+			"text": "李磊：Placeholder dialogue 01.",
 			"unlock_key": ""
 		},
 		{
-			"text": "NPC_B: Placeholder dialogue 02.",
+			"text": "李磊：Placeholder dialogue 02.",
 			"unlock_key": "basic_info"
 		},
 		{
-			"text": "NPC_B: Placeholder dialogue 03.",
+			"text": "李磊：Placeholder dialogue 03.",
 			"unlock_key": "b_extra_info"
 		}
 	],
@@ -21,12 +21,12 @@
 		{
 			"key": "basic_info",
 			"header": "Basic Information",
-			"content": "NPC_B placeholder basic information."
+			"content": "姓名：李磊"
 		},
 		{
 			"key": "b_extra_info",
 			"header": "Additional Information",
-			"content": "NPC_B placeholder additional information."
+			"content": "李磊 placeholder additional information."
 		}
 	],
 	"memory_scene": "res://scenes/memory/memory_test.tscn"

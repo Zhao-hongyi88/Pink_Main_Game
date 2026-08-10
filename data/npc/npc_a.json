@@ -1,27 +1,27 @@
 {
-	"npc_id": "npc_a",
-	"display_name": "NPC_A",
+	"npc_id": "npc_zhang_yuan",
+	"display_name": "张远",
 	"portrait": "",
 	"name_unlock_key": "basic_info",
 	"dialogues": [
 		{
-			"text": "NPC_A：这里是测试对话01。",
+			"text": "张远：这里是测试对话01。",
 			"unlock_key": ""
 		},
 		{
-			"text": "NPC_A：这里是测试对话02。",
+			"text": "张远：这里是测试对话02。",
 			"unlock_key": "basic_info"
 		},
 		{
-			"text": "NPC_A：这里是测试对话03。",
+			"text": "张远：这里是测试对话03。",
 			"unlock_key": ""
 		},
 		{
-			"text": "NPC_A：这里是测试对话04。",
+			"text": "张远：这里是测试对话04。",
 			"unlock_key": "work_info"
 		},
 		{
-			"text": "NPC_A：这里是测试对话05。",
+			"text": "张远：这里是测试对话05。",
 			"unlock_key": ""
 		}
 	],
@@ -29,7 +29,7 @@
 		{
 			"key": "basic_info",
 			"header": "基本信息",
-			"content": "姓名：NPC_A"
+			"content": "姓名：张远"
 		},
 		{
 			"key": "additional_info",

@@ -7,7 +7,7 @@ func _ready() -> void:
 		{"text": "Dialogue 02", "unlock_key": "basic_info"},
 		{"text": "Dialogue 03", "unlock_key": "final_info"},
 	]
-	var npc_a_progress := NPCProgress.new(&"npc_a")
+	var npc_a_progress := NPCProgress.new(&"npc_zhang_yuan")
 	var manager := DialogueManager.new()
 	assert(manager.setup(dialogues, npc_a_progress))
 
@@ -58,7 +58,7 @@ func _ready() -> void:
 	assert(not restored_manager.has_next())
 
 	# 不同 NPCProgress 互不影响。
-	var npc_b_progress := NPCProgress.new(&"npc_b")
+	var npc_b_progress := NPCProgress.new(&"npc_li_lei")
 	var npc_b_manager := DialogueManager.new()
 	assert(npc_b_manager.setup(dialogues, npc_b_progress))
 	assert(npc_b_manager.get_current_text() == "Dialogue 01")
