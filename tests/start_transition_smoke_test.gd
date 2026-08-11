@@ -17,8 +17,24 @@ class StartTransitionProbe:
 		assert(start_layer != null)
 		assert(start_layer.name == "StartTransitionLayer")
 		assert(start_layer.layer > normal_layer.layer)
+		assert(is_equal_approx(start_layer.move_duration, 0.6))
+		assert(is_equal_approx(start_layer.fade_duration, 0.6))
+		assert(is_equal_approx(start_layer.loading_fade_delay, 0.2))
+		assert(is_equal_approx(start_layer.loading_fade_duration, 0.28))
+		assert(is_equal_approx(start_layer.grow_duration, 0.48))
+		assert(is_equal_approx(start_layer.center_hold_duration, 0.52))
+		assert(is_equal_approx(start_layer.reveal_duration, 0.9))
+		assert(is_equal_approx(
+			start_layer.move_duration
+			+ start_layer.grow_duration
+			+ start_layer.center_hold_duration
+			+ start_layer.reveal_duration,
+			2.5
+		))
 		normal_layer.fade_duration = 0.05
 		start_layer.move_duration = 0.12
+		start_layer.fade_duration = 0.12
+		start_layer.loading_fade_delay = 0.02
 		start_layer.loading_fade_duration = 0.05
 		start_layer.grow_duration = 0.1
 		start_layer.center_hold_duration = 0.08
@@ -66,8 +82,18 @@ class StartTransitionProbe:
 		var screen_center: Vector2 = start_layer.get_screen_center()
 		var back_center: Vector2 = start_layer.gear_back.position + start_layer.gear_back.size * 0.5
 		var front_center: Vector2 = start_layer.gear_front.position + start_layer.gear_front.size * 0.5
-		assert(back_center.distance_to(screen_center) < 64.0)
-		assert(front_center.distance_to(screen_center) < 64.0)
+		assert(back_center.is_equal_approx(
+			screen_center + start_layer.BACK_GEAR_CENTER_OFFSET
+		))
+		assert(front_center.is_equal_approx(
+			screen_center + start_layer.FRONT_GEAR_CENTER_OFFSET
+		))
+		assert(start_layer.gear_back.pivot_offset.is_equal_approx(
+			start_layer.gear_back.size * 0.5
+		))
+		assert(start_layer.gear_front.pivot_offset.is_equal_approx(
+			start_layer.gear_front.size * 0.5
+		))
 		var back_rotation: float = start_layer.gear_back.rotation
 		var front_rotation: float = start_layer.gear_front.rotation
 		await get_tree().create_timer(0.04).timeout

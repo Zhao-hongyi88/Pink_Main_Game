@@ -1,24 +1,13 @@
-[gd_scene load_steps=12 format=3]
+[gd_scene format=3 uid="uid://c5ygs1a6tr1fm"]
 
-[ext_resource type="Script" path="res://scripts/main/main_menu.gd" id="1_script"]
+[ext_resource type="Script" uid="uid://0ium3bbfggr2" path="res://scripts/main/main_menu.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://ft2jhddtnno6" path="res://TextureAsset/Level1/主页背景1-export.png" id="2_75pso"]
 [ext_resource type="PackedScene" path="res://scenes/ui/time_display.tscn" id="2_time"]
 [ext_resource type="PackedScene" path="res://scenes/ui/rule_panel.tscn" id="3_rules"]
 [ext_resource type="PackedScene" path="res://scenes/ui/archive_panel.tscn" id="4_archive"]
 [ext_resource type="PackedScene" path="res://scenes/home/home_world.tscn" id="5_home_world"]
 [ext_resource type="PackedScene" path="res://scenes/ui/start_button.tscn" id="6_start"]
-[ext_resource type="PackedScene" path="res://scenes/ui/background_motion.tscn" id="7_background_motion"]
-[ext_resource type="Script" path="res://scripts/ui/button_hover_effect.gd" id="8_button_hover"]
-
-[sub_resource type="Gradient" id="Gradient_background_placeholder"]
-offsets = PackedFloat32Array(0, 0.55, 1)
-colors = PackedColorArray(0.0588235, 0.0352941, 0.0705882, 1, 0.0941176, 0.054902, 0.109804, 1, 0.0352941, 0.0235294, 0.0470588, 1)
-
-[sub_resource type="GradientTexture2D" id="Texture_background_placeholder"]
-gradient = SubResource("Gradient_background_placeholder")
-width = 1152
-height = 648
-fill_from = Vector2(0.15, 0)
-fill_to = Vector2(0.85, 1)
+[ext_resource type="Script" uid="uid://d2ghfiodtl6ru" path="res://scripts/ui/button_hover_effect.gd" id="8_button_hover"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBox_button"]
 bg_color = Color(0.203922, 0.12549, 0.231373, 1)
@@ -32,7 +21,7 @@ corner_radius_top_right = 9
 corner_radius_bottom_right = 9
 corner_radius_bottom_left = 9
 
-[node name="MainMenu" type="Control"]
+[node name="MainMenu" type="Control" unique_id=1969814622]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -42,29 +31,24 @@ grow_vertical = 2
 mouse_filter = 2
 script = ExtResource("1_script")
 
-[node name="Background" type="TextureRect" parent="."]
+[node name="Background" type="TextureRect" parent="." unique_id=965041633]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-texture = SubResource("Texture_background_placeholder")
+mouse_filter = 2
+texture = ExtResource("2_75pso")
 expand_mode = 1
 stretch_mode = 6
-mouse_filter = 2
 
-[node name="BackgroundMotion" parent="." instance=ExtResource("7_background_motion")]
-unique_name_in_owner = true
-background_path = NodePath("../Background")
-
-[node name="HomeWorld" parent="." instance=ExtResource("5_home_world")]
+[node name="HomeWorld" parent="." unique_id=633021012 instance=ExtResource("5_home_world")]
 unique_name_in_owner = true
 
-[node name="RuleButton" type="Button" parent="."]
+[node name="RuleButton" type="Button" parent="." unique_id=590130274]
 unique_name_in_owner = true
 layout_mode = 1
-anchors_preset = 0
 offset_left = 42.0
 offset_top = 38.0
 offset_right = 192.0
@@ -72,48 +56,41 @@ offset_bottom = 96.0
 theme_override_colors/font_color = Color(0.941176, 0.843137, 0.901961, 1)
 theme_override_font_sizes/font_size = 17
 theme_override_styles/normal = SubResource("StyleBox_button")
-script = ExtResource("8_button_hover")
 text = "规则说明"
+script = ExtResource("8_button_hover")
 
-[node name="TimeDisplay" parent="." instance=ExtResource("2_time")]
+[node name="TimeDisplay" parent="." unique_id=208062679 instance=ExtResource("2_time")]
 unique_name_in_owner = true
 layout_mode = 1
 anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
-offset_left = -268.0
-offset_top = 38.0
-offset_right = -42.0
-offset_bottom = 112.0
+offset_left = -317.0
+offset_top = 21.0
+offset_right = -23.0
+offset_bottom = 141.0
 grow_horizontal = 0
 
-[node name="ArchivePanel" parent="." instance=ExtResource("4_archive")]
+[node name="ArchivePanel" parent="." unique_id=2049237815 instance=ExtResource("4_archive")]
 unique_name_in_owner = true
 layout_mode = 1
-anchors_preset = 2
-anchor_top = 1.0
-anchor_bottom = 1.0
-offset_left = 42.0
-offset_top = -318.0
-offset_right = 362.0
-offset_bottom = -38.0
-grow_vertical = 0
+anchors_preset = 0
+offset_left = 48.0
+offset_top = 330.0
+offset_right = 368.0
+offset_bottom = 623.0
 
-[node name="StartButton" parent="." instance=ExtResource("6_start")]
-unique_name_in_owner = true
+[node name="StartButton" parent="." unique_id=109762390 instance=ExtResource("6_start")]
 layout_mode = 1
-anchors_preset = 3
+anchors_preset = 1
 anchor_left = 1.0
-anchor_top = 1.0
 anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = -290.0
-offset_top = -140.0
-offset_right = -42.0
-offset_bottom = -38.0
+offset_left = -218.0
+offset_top = 400.0
+offset_right = -4.0
+offset_bottom = 631.0
 grow_horizontal = 0
-grow_vertical = 0
 
-[node name="RulePanel" parent="." instance=ExtResource("3_rules")]
+[node name="RulePanel" parent="." unique_id=1310916042 instance=ExtResource("3_rules")]
 unique_name_in_owner = true
 layout_mode = 1

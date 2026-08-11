@@ -55,7 +55,6 @@ func _ready() -> void:
 		direct_child_names.append(child.name)
 	assert(direct_child_names == PackedStringArray([
 		"Background",
-		"BackgroundMotion",
 		"HomeWorld",
 		"RuleButton",
 		"TimeDisplay",
@@ -64,14 +63,11 @@ func _ready() -> void:
 		"RulePanel",
 	]))
 	var background := menu.get_node("Background") as TextureRect
-	var background_motion: Variant = menu.get_node("%BackgroundMotion")
 	assert(background != null)
-	assert(background_motion != null)
+	assert(not menu.has_node("BackgroundMotion"))
 	assert(not menu.has_node("BackgroundPlaceholder"))
 	assert(background.get_index() == 0)
-	assert(background_motion.get_index() == 1)
 	assert(background.get_index() < menu.get_node("HomeWorld").get_index())
-	assert(background_motion.get_index() < menu.get_node("HomeWorld").get_index())
 	assert(is_zero_approx(background.anchor_left))
 	assert(is_zero_approx(background.anchor_top))
 	assert(is_equal_approx(background.anchor_right, 1.0))
@@ -82,20 +78,13 @@ func _ready() -> void:
 	assert(background.stretch_mode == TextureRect.STRETCH_KEEP_ASPECT_COVERED)
 	assert(background.mouse_filter == Control.MOUSE_FILTER_IGNORE)
 	assert(background.texture != null)
-	assert(background_motion.mouse_filter == Control.MOUSE_FILTER_IGNORE)
-	assert(background_motion.get_background() == background)
-	assert(background_motion.is_motion_running())
-	assert(background_motion.get_base_position().is_equal_approx(Vector2.ZERO))
-	assert(background_motion.get_base_scale().is_equal_approx(Vector2.ONE))
-	assert(background.pivot_offset.is_equal_approx(background.size / 2.0))
+	assert(not FileAccess.file_exists("res://scenes/ui/background_motion.tscn"))
+	assert(not FileAccess.file_exists("res://scripts/ui/background_motion.gd"))
 	var initial_background_position := background.position
 	var initial_background_scale := background.scale
 	await get_tree().create_timer(0.2).timeout
-	assert(background_motion.is_motion_running())
-	assert(
-		not background.position.is_equal_approx(initial_background_position)
-		or not background.scale.is_equal_approx(initial_background_scale)
-	)
+	assert(background.position.is_equal_approx(initial_background_position))
+	assert(background.scale.is_equal_approx(initial_background_scale))
 
 	# Both visual layers ignore mouse input, so an uncovered lobby click still reaches HomeAvatar.
 	var home_avatar := menu.get_node("HomeWorld/HomeAvatar") as HomeAvatar
@@ -103,7 +92,7 @@ func _ready() -> void:
 	var lobby_click := InputEventMouseButton.new()
 	lobby_click.button_index = MOUSE_BUTTON_LEFT
 	lobby_click.pressed = true
-	lobby_click.position = Vector2(780.0, 210.0)
+	lobby_click.position = Vector2(350.0, 500.0)
 	get_viewport().push_input(lobby_click)
 	await get_tree().process_frame
 	assert(home_avatar.is_moving())
@@ -128,6 +117,44 @@ func _ready() -> void:
 	assert(intro_start_button.scale.is_equal_approx(Vector2.ONE))
 	assert(is_equal_approx(intro_start_button.modulate.a, 1.0))
 	assert(is_equal_approx(intro_rule_button.modulate.a, 1.0))
+
+	# The three authored UI groups match the 1152x648 reference layout exactly.
+	var archive_texture := intro_archive_panel.get_node("%ArchiveButton/ArchiveTexture") as TextureRect
+	var magnifier_texture := intro_archive_panel.get_node("%ArchiveButton/MagnifierTexture") as TextureRect
+	var clock_texture := countdown.get_node("ClockTexture") as TextureRect
+	var time_frame_texture := countdown.get_node("TimeFrameTexture") as TextureRect
+	var gear_back := intro_start_button.get_node("Gear_Back") as TextureRect
+	var gear_front := intro_start_button.get_node("Gear_Front") as TextureRect
+	var start_image := intro_start_button.get_node("StartImage") as TextureRect
+	assert(archive_texture.get_global_rect().position.is_equal_approx(Vector2(48.0, 408.0)))
+	assert(archive_texture.size.is_equal_approx(Vector2(178.0, 215.0)))
+	assert(magnifier_texture.get_global_rect().position.is_equal_approx(Vector2(168.0, 516.0)))
+	assert(magnifier_texture.size.is_equal_approx(Vector2(82.0, 105.0)))
+	assert(clock_texture.get_global_rect().position.is_equal_approx(Vector2(835.0, 21.0)))
+	assert(clock_texture.size.is_equal_approx(Vector2(132.0, 120.0)))
+	assert(time_frame_texture.get_global_rect().position.is_equal_approx(Vector2(925.0, 40.0)))
+	assert(time_frame_texture.size.is_equal_approx(Vector2(188.0, 78.0)))
+	assert(gear_back.get_global_rect().position.is_equal_approx(Vector2(934.0, 400.0)))
+	assert(gear_back.size.is_equal_approx(Vector2(98.0, 98.0)))
+	assert(gear_front.get_global_rect().position.is_equal_approx(Vector2(951.0, 434.0)))
+	assert(gear_front.size.is_equal_approx(Vector2(197.0, 197.0)))
+	assert(start_image.get_global_rect().position.is_equal_approx(Vector2(1000.0, 509.0)))
+	assert(start_image.size.is_equal_approx(Vector2(100.0, 48.0)))
+	for texture_rect: TextureRect in [
+		archive_texture,
+		magnifier_texture,
+		clock_texture,
+		time_frame_texture,
+		gear_back,
+		gear_front,
+		start_image,
+	]:
+		assert(texture_rect.expand_mode == TextureRect.EXPAND_IGNORE_SIZE)
+		assert(texture_rect.stretch_mode == TextureRect.STRETCH_KEEP_ASPECT_CENTERED)
+		assert(texture_rect.mouse_filter == Control.MOUSE_FILTER_IGNORE)
+		assert(texture_rect.texture != null)
+	assert(gear_back.pivot_offset.is_equal_approx(gear_back.size / 2.0))
+	assert(gear_front.pivot_offset.is_equal_approx(gear_front.size / 2.0))
 
 	# The shared hover component animates RuleButton without changing its click contract.
 	assert(intro_rule_button.get_script().resource_path == "res://scripts/ui/button_hover_effect.gd")
@@ -187,28 +214,20 @@ func _ready() -> void:
 	for child in countdown.get_children():
 		time_child_names.append(child.name)
 	assert(time_child_names == PackedStringArray([
-		"Background",
-		"ClockIcon",
+		"ClockTexture",
+		"TimeFrameTexture",
 		"TimeTitle",
-		"TimeValueFrame",
 		"TimeValue",
 	]))
-	var time_background := countdown.get_node("Background") as TextureRect
-	var clock_icon := countdown.get_node("ClockIcon") as TextureRect
 	var time_title := countdown.get_node("TimeTitle") as Label
-	var time_value_frame := countdown.get_node("TimeValueFrame") as TextureRect
 	var time_value := countdown.get_node("%TimeValue") as Label
-	assert(time_background != null)
-	assert(clock_icon != null)
+	assert(clock_texture != null)
+	assert(time_frame_texture != null)
 	assert(time_title != null)
-	assert(time_value_frame != null)
 	assert(time_value != null)
-	assert(time_background.mouse_filter == Control.MOUSE_FILTER_IGNORE)
-	assert(clock_icon.mouse_filter == Control.MOUSE_FILTER_IGNORE)
-	assert(time_value_frame.mouse_filter == Control.MOUSE_FILTER_IGNORE)
-	assert(time_background.texture != null)
-	assert(clock_icon.texture != null)
-	assert(time_value_frame.texture != null)
+	assert(time_title.mouse_filter == Control.MOUSE_FILTER_IGNORE)
+	assert(time_value.mouse_filter == Control.MOUSE_FILTER_IGNORE)
+	assert(clock_texture.z_index > time_frame_texture.z_index)
 	assert(time_title.text == "TIME LEFT")
 	var time_display_source := FileAccess.get_file_as_string("res://scripts/ui/time_display.gd")
 	assert(time_display_source.find("time_title") == -1)
@@ -297,7 +316,7 @@ func _ready() -> void:
 	assert(not archive.get_npc_button(ordered_npc_ids[0]).disabled)
 	assert(archive.get_npc_button(ordered_npc_ids[1]).disabled)
 	assert(archive.get_npc_button(ordered_npc_ids[1]).text.contains("Locked"))
-	assert(archive.get_node("%SelectedNPCLabel").text == "SELECTED: %s" % roster.get_display_name(ordered_npc_ids[0]))
+	assert(archive.get_node("%SelectedNPCLabel").text == "???")
 	archive.get_node("%ArchiveButton").pressed.emit()
 	assert(archive.get_node("%SelectionPanel").visible)
 	archive.get_node("%CloseButton").pressed.emit()
@@ -311,7 +330,7 @@ func _ready() -> void:
 	archive.refresh()
 	archive.get_npc_button(ordered_npc_ids[1]).pressed.emit()
 	assert(GameState.selected_npc_id == ordered_npc_ids[1])
-	assert(archive.get_node("%SelectedNPCLabel").text == "SELECTED: %s" % roster.get_display_name(ordered_npc_ids[1]))
+	assert(archive.get_node("%SelectedNPCLabel").text == "???")
 
 	var main_menu_source := FileAccess.get_file_as_string("res://scripts/main/main_menu.gd")
 	assert(main_menu_source.find("INITIAL_NPC_DATA_PATH") == -1)

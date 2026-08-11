@@ -16,6 +16,9 @@ var _selection_animation_id := 0
 const SELECTION_OPEN_SCALE := Vector2(0.96, 0.96)
 const SELECTION_OPEN_DURATION := 0.3
 const SELECTION_CLOSE_DURATION := 0.25
+const UNKNOWN_NPC_NAME := "???"
+
+var _name_unlock_keys_by_id: Dictionary = {}
 
 
 func _ready() -> void:
@@ -28,6 +31,8 @@ func setup(roster_data: RefCounted) -> bool:
 	if roster_data == null or not roster_data.is_valid():
 		return false
 	roster = roster_data
+	if not _cache_name_unlock_keys():
+		return false
 	_build_npc_buttons()
 	refresh()
 	return true
@@ -35,17 +40,46 @@ func setup(roster_data: RefCounted) -> bool:
 
 func refresh() -> void:
 	if roster == null:
-		selected_npc_label.text = "SELECTED: NONE"
+		selected_npc_label.text = UNKNOWN_NPC_NAME
 		return
 
-	var selected_name: String = roster.get_display_name(GameState.selected_npc_id)
-	selected_npc_label.text = "SELECTED: %s" % (selected_name if not selected_name.is_empty() else "NONE")
+	selected_npc_label.text = _get_visible_npc_name(GameState.selected_npc_id)
 	for entry: Dictionary in roster.get_entries():
 		var npc_id: StringName = entry["npc_id"]
 		var button: Button = _buttons_by_id[npc_id]
 		var unlocked := GameState.is_npc_unlocked(npc_id)
 		button.disabled = not unlocked
-		button.text = str(entry["display_name"]) if unlocked else "%s - Locked" % entry["display_name"]
+		button.text = (
+			_get_visible_npc_name(npc_id)
+			if unlocked
+			else "%s - Locked" % UNKNOWN_NPC_NAME
+		)
+
+
+func _cache_name_unlock_keys() -> bool:
+	_name_unlock_keys_by_id.clear()
+	for entry: Dictionary in roster.get_entries():
+		var npc_id: StringName = entry["npc_id"]
+		var npc_data := NPCData.load_from_json(str(entry["data_path"]))
+		if not npc_data.is_valid() or npc_data.npc_id != npc_id:
+			push_error("ArchivePanel: invalid NPCData for %s." % npc_id)
+			_name_unlock_keys_by_id.clear()
+			return false
+		_name_unlock_keys_by_id[npc_id] = npc_data.name_unlock_key
+	return true
+
+
+func _get_visible_npc_name(npc_id: StringName) -> String:
+	if roster == null or npc_id.is_empty():
+		return UNKNOWN_NPC_NAME
+	var name_unlock_key := StringName(_name_unlock_keys_by_id.get(npc_id, &""))
+	if name_unlock_key.is_empty():
+		return UNKNOWN_NPC_NAME
+	var progress := GameState.get_npc_progress(npc_id)
+	if progress == null or not bool(progress.unlocked_keys.get(String(name_unlock_key), false)):
+		return UNKNOWN_NPC_NAME
+	var display_name: String = roster.get_display_name(npc_id)
+	return display_name if not display_name.is_empty() else UNKNOWN_NPC_NAME
 
 
 func get_npc_button(npc_id: StringName) -> Button:

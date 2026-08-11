@@ -88,7 +88,7 @@ class MemoryRoundTripProbe:
 		assert(GameState.is_npc_unlocked(expected_npc_id))
 		assert(GameState.is_npc_unlocked(next_npc_id))
 		assert(GameState.selected_npc_id == next_npc_id)
-		assert(main_menu.get_node("%ArchivePanel").get_node("%SelectedNPCLabel").text == "SELECTED: %s" % roster.get_display_name(next_npc_id))
+		assert(main_menu.get_node("%ArchivePanel").get_node("%SelectedNPCLabel").text == "???")
 		assert(FileAccess.get_file_as_string(expected_data_path) == original_json)
 
 		print("NPC_BASE_SMOKE_TEST: PASS")

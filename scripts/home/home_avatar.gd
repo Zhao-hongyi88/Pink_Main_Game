@@ -4,8 +4,6 @@ extends CharacterBody2D
 signal movement_started(target_position: Vector2)
 signal movement_stopped(final_position: Vector2)
 
-const IDLE_BREATH_SCALE := Vector2(1.015, 1.015)
-const IDLE_BREATH_DURATION := 0.8
 const IDLE_ANIMATION: StringName = &"idle"
 const WALK_ANIMATION: StringName = &"walk"
 
@@ -18,7 +16,6 @@ const WALK_ANIMATION: StringName = &"walk"
 var _target_global_position := Vector2.ZERO
 var _is_moving := false
 var _navigation_ready := false
-var _idle_breath_tween: Tween
 
 
 func _ready() -> void:
@@ -26,7 +23,6 @@ func _ready() -> void:
 	navigation_agent.path_desired_distance = maxf(1.0, stopping_distance * 0.5)
 	navigation_agent.target_desired_distance = maxf(1.0, stopping_distance)
 	_play_visual_animation(IDLE_ANIMATION)
-	_start_idle_breath()
 	call_deferred("_enable_navigation_after_sync")
 
 
@@ -69,7 +65,6 @@ func _physics_process(_delta: float) -> void:
 
 
 func set_movement_target(target_global_position: Vector2) -> void:
-	_stop_idle_breath()
 	_target_global_position = target_global_position
 	_is_moving = true
 	_play_visual_animation(WALK_ANIMATION)
@@ -84,14 +79,6 @@ func get_movement_target() -> Vector2:
 
 func is_moving() -> bool:
 	return _is_moving
-
-
-func is_idle_breathing() -> bool:
-	return (
-		_idle_breath_tween != null
-		and _idle_breath_tween.is_valid()
-		and _idle_breath_tween.is_running()
-	)
 
 
 func stop_movement() -> void:
@@ -118,33 +105,6 @@ func _play_visual_animation(animation_name: StringName) -> void:
 	visual.play(animation_name)
 
 
-func _start_idle_breath() -> void:
-	if _is_moving:
-		return
-	_stop_idle_breath()
-	_idle_breath_tween = create_tween()
-	_idle_breath_tween.set_loops()
-	_idle_breath_tween.tween_property(
-		visual,
-		"scale",
-		IDLE_BREATH_SCALE,
-		IDLE_BREATH_DURATION
-	).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
-	_idle_breath_tween.tween_property(
-		visual,
-		"scale",
-		Vector2.ONE,
-		IDLE_BREATH_DURATION
-	).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
-
-
-func _stop_idle_breath() -> void:
-	if _idle_breath_tween != null and _idle_breath_tween.is_valid():
-		_idle_breath_tween.kill()
-	_idle_breath_tween = null
-	visual.scale = Vector2.ONE
-
-
 func _stop_movement() -> void:
 	var was_moving := _is_moving
 	_is_moving = false
@@ -152,4 +112,3 @@ func _stop_movement() -> void:
 	if was_moving:
 		_play_visual_animation(IDLE_ANIMATION)
 		movement_stopped.emit(global_position)
-		_start_idle_breath()

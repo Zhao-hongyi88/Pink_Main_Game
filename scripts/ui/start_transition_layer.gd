@@ -3,11 +3,16 @@ extends CanvasLayer
 
 ## START 专属转场表现层。导航和 payload 仍由 SceneRouter 负责。
 
-@export_range(0.01, 2.0, 0.01) var move_duration := 0.45
-@export_range(0.01, 1.0, 0.01) var loading_fade_duration := 0.2
-@export_range(0.01, 1.0, 0.01) var center_hold_duration := 0.25
-@export_range(0.01, 1.0, 0.01) var grow_duration := 0.35
-@export_range(0.01, 2.0, 0.01) var reveal_duration := 0.55
+const BACK_GEAR_CENTER_OFFSET := Vector2(-106.0, -114.0)
+const FRONT_GEAR_CENTER_OFFSET := Vector2(0.0, -24.0)
+
+@export_range(0.01, 2.0, 0.01) var move_duration := 0.6
+@export_range(0.01, 2.0, 0.01) var fade_duration := 0.6
+@export_range(0.0, 1.0, 0.01) var loading_fade_delay := 0.2
+@export_range(0.01, 1.0, 0.01) var loading_fade_duration := 0.28
+@export_range(0.01, 1.0, 0.01) var center_hold_duration := 0.52
+@export_range(0.01, 1.0, 0.01) var grow_duration := 0.48
+@export_range(0.01, 2.0, 0.01) var reveal_duration := 0.9
 @export_range(0.1, 10.0, 0.1) var gear_rotation_speed := 3.2
 @export_range(1.0, 2.0, 0.01) var center_gear_scale := 1.18
 @export_range(0.1, 2.0, 0.01) var reveal_max_radius := 1.2
@@ -63,21 +68,21 @@ func play_out(source_scene: Node) -> bool:
 	gear_front.show()
 
 	var viewport_center := get_viewport().get_visible_rect().size * 0.5
-	var back_target := viewport_center - gear_back.size * 0.5 + Vector2(-26.0, -4.0)
-	var front_target := viewport_center - gear_front.size * 0.5 + Vector2(30.0, 18.0)
+	var back_target := viewport_center + BACK_GEAR_CENTER_OFFSET - gear_back.pivot_offset
+	var front_target := viewport_center + FRONT_GEAR_CENTER_OFFSET - gear_front.pivot_offset
 	_stage_tween = create_tween()
 	_stage_tween.set_parallel(true)
 	_stage_tween.set_trans(Tween.TRANS_SINE)
 	_stage_tween.set_ease(Tween.EASE_IN_OUT)
 	_stage_tween.tween_property(gear_back, "position", back_target, move_duration)
 	_stage_tween.tween_property(gear_front, "position", front_target, move_duration)
-	_stage_tween.tween_property(dim_overlay, "modulate:a", 1.0, move_duration)
+	_stage_tween.tween_property(dim_overlay, "modulate:a", 1.0, fade_duration)
 	_stage_tween.tween_property(
 		loading_label,
 		"modulate:a",
 		1.0,
 		loading_fade_duration
-	)
+	).set_delay(loading_fade_delay)
 	await _stage_tween.finished
 
 	last_center_reached = true
