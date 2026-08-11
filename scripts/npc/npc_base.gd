@@ -6,6 +6,11 @@ extends Control
 const NOTE_ITEM_SCENE: PackedScene = preload("res://scenes/ui/npc/note_card.tscn")
 
 @export_file("*.json") var npc_data_path := ""
+@export_group("Note Entry Animation")
+@export_range(0.1, 1.0, 0.01) var note_entry_duration := 0.36
+@export var note_entry_offset := Vector2(18.0, -14.0)
+@export var note_entry_start_scale := Vector2(0.88, 0.88)
+@export_range(0.0, 20.0, 0.5) var note_entry_rotation_degrees := 4.0
 
 @onready var character_area: TextureRect = %CharacterArea
 @onready var npc_name: Label = %NPCName
@@ -15,8 +20,17 @@ const NOTE_ITEM_SCENE: PackedScene = preload("res://scenes/ui/npc/note_card.tscn
 @onready var dialogue_text: Label = %DialogueText
 @onready var continue_button: Button = %ContinueButton
 @onready var note_panel: Control = %NotePanel
-@onready var note_container: VBoxContainer = %NoteContainer
+@onready var note_board_area: Control = %NoteBoardArea
+@onready var note_detail_popup: Control = %NoteDetailPopup
 @onready var memory_button: Button = %MemoryButton
+@onready var _note_anchors: Array[Control] = [
+	%NoteAnchor_01,
+	%NoteAnchor_02,
+	%NoteAnchor_03,
+	%NoteAnchor_04,
+	%NoteAnchor_05,
+	%NoteAnchor_06,
+]
 
 var npc_data: NPCData
 var npc_progress: NPCProgress
@@ -55,6 +69,7 @@ var _note_data: Array[Dictionary] = []
 var _valid_unlock_keys: Array[String] = []
 var _note_items: Array[NoteItem] = []
 var _note_items_by_key: Dictionary = {}
+var _note_entry_tweens: Dictionary = {}
 
 
 func _ready() -> void:
@@ -167,9 +182,14 @@ func _build_note_items() -> void:
 			push_warning("NPCBase: 忽略重复的 Note key：%s" % note_key)
 			continue
 		var note_item: NoteItem = NOTE_ITEM_SCENE.instantiate()
-		note_item.setup(str(note.get("header", "")), str(note.get("content", "")))
+		note_item.setup(
+			str(note.get("header", "")),
+			str(note.get("content", "")),
+			note_key
+		)
+		note_item.note_selected.connect(_on_note_selected)
 		note_item.hide()
-		note_container.add_child(note_item)
+		note_board_area.add_child(note_item)
 		_note_items.append(note_item)
 		_note_items_by_key[note_key] = note_item
 
@@ -181,7 +201,10 @@ func _restore_page_state() -> void:
 	identity_label.hide()
 	speaker_name.text = "UNKNOWN"
 	note_panel.hide()
+	note_detail_popup.hide()
 	for note_item in _note_items:
+		_cancel_note_entry_tween(note_item.note_key)
+		_set_note_final_visual(note_item)
 		note_item.hide()
 
 	_restore_revealed_notes()
@@ -223,10 +246,81 @@ func _show_identity_info() -> void:
 	speaker_name.text = npc_data.display_name
 
 
-func _show_note_item(note_key: String, order_index: int) -> void:
+func _show_note_item(note_key: String, order_index: int, animate_entry := false) -> void:
 	var note_item: NoteItem = _note_items_by_key[note_key]
-	note_container.move_child(note_item, order_index)
+	if order_index < 0 or order_index >= _note_anchors.size():
+		_cancel_note_entry_tween(note_key)
+		note_item.hide()
+		push_warning("NPCBase: 资料板锚点不足，暂不显示资料：%s" % note_key)
+		return
+	var target_anchor := _note_anchors[order_index]
+	if note_item.get_parent() != target_anchor:
+		note_item.reparent(target_anchor, false)
+	note_item.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	note_item.show()
+	note_item.pivot_offset = note_item.size * 0.5
+	if animate_entry:
+		_play_note_entry_animation(note_key, note_item)
+	else:
+		_cancel_note_entry_tween(note_key)
+		_set_note_final_visual(note_item)
+
+
+func _play_note_entry_animation(note_key: String, note_item: NoteItem) -> void:
+	_cancel_note_entry_tween(note_key)
+	var final_position := Vector2.ZERO
+	var final_rotation := 0.0
+	note_item.position = final_position + note_entry_offset
+	note_item.scale = note_entry_start_scale
+	note_item.rotation = final_rotation - deg_to_rad(note_entry_rotation_degrees)
+	note_item.modulate.a = 0.0
+	note_item.disabled = true
+
+	var entry_tween := create_tween()
+	entry_tween.set_parallel(true)
+	entry_tween.set_trans(Tween.TRANS_SINE)
+	entry_tween.set_ease(Tween.EASE_OUT)
+	entry_tween.tween_property(note_item, "position", final_position, note_entry_duration)
+	entry_tween.tween_property(note_item, "scale", Vector2.ONE, note_entry_duration)
+	entry_tween.tween_property(note_item, "rotation", final_rotation, note_entry_duration)
+	entry_tween.tween_property(note_item, "modulate:a", 1.0, note_entry_duration)
+	_note_entry_tweens[note_key] = entry_tween
+	entry_tween.finished.connect(
+		_on_note_entry_animation_finished.bind(note_key, note_item, entry_tween)
+	)
+
+
+func _on_note_entry_animation_finished(
+	note_key: String,
+	note_item: NoteItem,
+	entry_tween: Tween
+) -> void:
+	if _note_entry_tweens.get(note_key) != entry_tween:
+		return
+	_note_entry_tweens.erase(note_key)
+	if is_instance_valid(note_item):
+		_set_note_final_visual(note_item)
+
+
+func _cancel_note_entry_tween(note_key: String) -> void:
+	var entry_tween: Tween = _note_entry_tweens.get(note_key)
+	if entry_tween != null and entry_tween.is_valid():
+		entry_tween.kill()
+	_note_entry_tweens.erase(note_key)
+
+
+func _set_note_final_visual(note_item: NoteItem) -> void:
+	note_item.position = Vector2.ZERO
+	note_item.scale = Vector2.ONE
+	note_item.rotation = 0.0
+	note_item.modulate.a = 1.0
+	note_item.disabled = false
+
+
+func _on_note_selected(note_key: String, header: String, content: String) -> void:
+	if npc_progress == null or not bool(npc_progress.unlocked_keys.get(note_key, false)):
+		return
+	note_detail_popup.call("open_note", note_key, header, content)
 
 
 func _on_continue_pressed() -> void:
@@ -247,7 +341,7 @@ func unlock_info(unlock_key: String) -> bool:
 
 	var unlocked_key := str(result.get("key", ""))
 	if _note_items_by_key.has(unlocked_key):
-		_show_note_item(unlocked_key, _get_note_ui_order_index(unlocked_key))
+		_show_note_item(unlocked_key, _get_note_ui_order_index(unlocked_key), true)
 		note_panel.show()
 	else:
 		push_warning("NPCBase: 合法 key 没有对应 NoteItem，跳过 UI：%s" % unlocked_key)
@@ -297,5 +391,6 @@ func _show_load_error() -> void:
 	dialogue_text.text = "无法读取 NPC 数据。"
 	continue_button.disabled = true
 	note_panel.hide()
+	note_detail_popup.hide()
 	memory_button.hide()
 	memory_button.disabled = true

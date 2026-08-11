@@ -118,9 +118,12 @@ func _start_game() -> void:
 	if selected_data_path.is_empty():
 		push_error("MainMenu: selected NPC has no NPCData path.")
 		return
-	SceneRouter.go_to(&"npc_base", {
+	if not SceneRouter.set_next_transition_mode(SceneRouter.START_TRANSITION_MODE):
+		return
+	if not SceneRouter.go_to(&"npc_base", {
 		"npc_data_path": selected_data_path,
-	})
+	}):
+		SceneRouter.clear_next_transition_mode()
 
 
 func _setup_archive() -> void:

@@ -2,7 +2,7 @@ extends Node
 
 const NPC_DATA_PATH := "res://data/npc/npc_a.json"
 const NPC_SCENE_PATH := "res://scenes/npc/npc_base.tscn"
-const MEMORY_SCENE_PATH := "res://scenes/memory/memory_test.tscn"
+const MEMORY_SCENE_PATH := "res://scenes/memory/npc1_zhang_yuan_memory.tscn"
 
 
 class MemoryRoundTripProbe:
@@ -21,15 +21,15 @@ class MemoryRoundTripProbe:
 
 	func _verify_round_trip() -> void:
 		await _wait_for_transition()
-		var memory_test := get_tree().current_scene
-		assert(memory_test is Control)
-		assert(memory_test.name == "MemoryTest")
-		assert(memory_test.return_npc_data_path == expected_data_path)
-		assert(memory_test.current_npc_id == expected_npc_id)
-		assert(memory_test.get_node("Label").text == "Memory Test")
+		var memory_scene := get_tree().current_scene
+		assert(memory_scene is Control)
+		assert(memory_scene.name == "ZhangYuanMemory")
+		assert(memory_scene.return_npc_data_path == expected_data_path)
+		assert(memory_scene.npc_id == expected_npc_id)
+		assert(memory_scene.observed_points.size() == 3)
 
 		# An incomplete Memory Back returns to the same NPCData and preserves all page state.
-		var back_button: Button = memory_test.get_node("%BackButton")
+		var back_button: Button = memory_scene.get_node("%BackButton")
 		assert(not back_button.disabled)
 		back_button.pressed.emit()
 
@@ -51,17 +51,28 @@ class MemoryRoundTripProbe:
 		assert(returned_npc.get_node("%SpeakerName").text == returned_npc.npc_data.display_name)
 		assert(returned_npc.get_node("%NotePanel").visible)
 		assert(returned_npc.npc_progress.revealed_note_keys == ["basic_info", "work_info"])
-		var note_container: VBoxContainer = returned_npc.get_node("%NoteContainer")
-		assert(note_container.get_child(0) == returned_npc._note_items_by_key["basic_info"])
-		assert(note_container.get_child(1) == returned_npc._note_items_by_key["work_info"])
+		var restored_basic_note: NoteItem = returned_npc._note_items_by_key["basic_info"]
+		var restored_work_note: NoteItem = returned_npc._note_items_by_key["work_info"]
+		assert(restored_basic_note.get_parent() == returned_npc.get_node("%NoteAnchor_01"))
+		assert(restored_work_note.get_parent() == returned_npc.get_node("%NoteAnchor_02"))
+		assert(returned_npc._note_entry_tweens.is_empty())
+		for restored_note: NoteItem in [restored_basic_note, restored_work_note]:
+			assert(restored_note.position == Vector2.ZERO)
+			assert(restored_note.scale == Vector2.ONE)
+			assert(is_equal_approx(restored_note.rotation, 0.0))
+			assert(is_equal_approx(restored_note.modulate.a, 1.0))
+			assert(not restored_note.disabled)
 		assert(FileAccess.get_file_as_string(expected_data_path) == original_json)
 
 		# Completing Memory marks only the current NPC, then returns home for roster progression.
 		returned_npc.get_node("%MemoryButton").pressed.emit()
 		await _wait_for_transition()
-		memory_test = get_tree().current_scene
-		assert(memory_test.name == "MemoryTest")
-		var complete_button: Button = memory_test.get_node("%CompleteMemoryButton")
+		memory_scene = get_tree().current_scene
+		assert(memory_scene.name == "ZhangYuanMemory")
+		for observation_id in memory_scene.observed_points.keys():
+			memory_scene.set_observed(observation_id)
+		var complete_button: Button = memory_scene.get_node("%CompleteButton")
+		assert(complete_button.visible)
 		assert(not complete_button.disabled)
 		complete_button.pressed.emit()
 		assert(GameState.get_npc_progress(expected_npc_id).memory_completed)
@@ -128,7 +139,8 @@ func _ready() -> void:
 	var dialogue_text: Label = npc_base.get_node("%DialogueText")
 	var continue_button: Button = npc_base.get_node("%ContinueButton")
 	var note_panel: Control = npc_base.get_node("%NotePanel")
-	var note_container: VBoxContainer = npc_base.get_node("%NoteContainer")
+	var note_board_area: Control = npc_base.get_node("%NoteBoardArea")
+	var note_detail_popup: Control = npc_base.get_node("%NoteDetailPopup")
 	var memory_button: Button = npc_base.get_node("%MemoryButton")
 	var expected_dialogues: Array = expected_data["dialogues"]
 	var expected_notes: Array = expected_data["notes"]
@@ -151,7 +163,8 @@ func _ready() -> void:
 	assert(not continue_button.disabled)
 	assert(not memory_button.visible)
 	assert(memory_button.disabled)
-	assert(note_container.get_child_count() == expected_notes.size())
+	assert(npc_base._note_items.size() == expected_notes.size())
+	assert(not note_detail_popup.visible)
 	assert(npc_base.get_node("%CharacterArea").texture != null)
 	var portrait_frame := npc_base.get_node("CharacterDisplay/PortraitFrame") as TextureRect
 	assert(portrait_frame != null)
@@ -160,7 +173,11 @@ func _ready() -> void:
 	assert(npc_base.get_node("%CharacterArea").get_parent().name == "CharacterDisplay")
 	assert(npc_base.get_node("%DialogueText").get_parent().name == "DialogueBox")
 	assert(npc_base.get_node("%SpeakerName").get_parent().name == "DialogueBox")
-	assert(npc_base.get_node("%NoteContainer").get_parent() is ScrollContainer)
+	assert(npc_base.get_node_or_null("%NoteContainer") == null)
+	assert(npc_base.get_node_or_null("NotePanel/NoteScroll") == null)
+	assert(note_board_area.get_child_count() == 6 + expected_notes.size())
+	for anchor_index in 6:
+		assert(npc_base.get_node_or_null("%%NoteAnchor_0%d" % (anchor_index + 1)) != null)
 	var expected_identity_note: Dictionary = expected_notes.filter(
 		func(note: Dictionary) -> bool: return note["key"] == expected_data["name_unlock_key"]
 	)[0]
@@ -174,9 +191,14 @@ func _ready() -> void:
 		expected_note_keys.append(note_data["key"])
 		var note_item: NoteItem = npc_base._note_items_by_key[note_data["key"]]
 		assert(not note_item.visible)
+		assert(note_item is Button)
 		assert(note_item.get_node("NoteBackground") is TextureRect)
 		assert(note_item.get_node("%NoteHeader").text == note_data["header"])
-		assert(note_item.get_node("%NoteContent").text == note_data["content"])
+		assert(note_item.full_content == note_data["content"])
+		assert(note_item.note_key == note_data["key"])
+		assert(note_item.position == Vector2.ZERO)
+		assert(note_item.scale == Vector2.ONE)
+		assert(is_equal_approx(note_item.modulate.a, 1.0))
 	assert(npc_base._valid_unlock_keys == expected_note_keys)
 
 	# NPCBase 集成：最后一条自身带 key 时，完成对话的同时仍正常解锁。
@@ -202,15 +224,19 @@ func _ready() -> void:
 	assert(final_unlock_progress.unlocked_keys.get("basic_info", false))
 	assert(final_unlock_progress.revealed_note_keys == ["basic_info"])
 	assert(final_unlock_npc._note_items_by_key["basic_info"].visible)
+	assert(final_unlock_npc._note_entry_tweens.has("basic_info"))
 	assert(final_unlock_npc.get_node("%NPCName").visible)
 	assert(final_unlock_npc.get_node("%IdentityLabel").visible)
 	assert(final_unlock_npc.get_node("%SpeakerName").text == formal_data.display_name)
 	assert(final_unlock_npc.get_node("%NotePanel").visible)
 	assert(final_unlock_npc.memory_ready)
 	assert(final_continue_button.disabled)
+	var original_entry_tween: Tween = final_unlock_npc._note_entry_tweens["basic_info"]
 	final_unlock_npc._on_continue_pressed()
 	assert(final_unlock_progress.revealed_note_keys == ["basic_info"])
 	assert(final_unlock_progress.current_dialogue_index == 0)
+	assert(final_unlock_npc._note_entry_tweens.size() == 1)
+	assert(final_unlock_npc._note_entry_tweens["basic_info"] == original_entry_tween)
 	final_unlock_npc.queue_free()
 
 	# 空 key、未知 key 和第 1 条无 key 对话都不产生资料。
@@ -232,6 +258,7 @@ func _ready() -> void:
 	await get_tree().process_frame
 	dialogue_text = npc_base.get_node("%DialogueText")
 	continue_button = npc_base.get_node("%ContinueButton")
+	note_detail_popup = npc_base.get_node("%NoteDetailPopup")
 	assert(npc_base.current_dialogue_index == 1)
 	assert(dialogue_text.text == displayed_before_rebuild)
 	assert(dialogue_text.text == expected_dialogues[1]["text"])
@@ -247,6 +274,27 @@ func _ready() -> void:
 	assert(npc_base.get_node("%IdentityLabel").visible)
 	assert(npc_base.get_node("%SpeakerName").text == formal_data.display_name)
 	assert(npc_base.get_node("%NotePanel").visible)
+	var basic_note_item: NoteItem = npc_base._note_items_by_key["basic_info"]
+	assert(basic_note_item.get_parent() == npc_base.get_node("%NoteAnchor_01"))
+	assert(npc_base._note_entry_tweens.has("basic_info"))
+	assert(basic_note_item.disabled)
+	assert(basic_note_item.position == npc_base.note_entry_offset)
+	assert(basic_note_item.scale == npc_base.note_entry_start_scale)
+	assert(is_equal_approx(basic_note_item.rotation, -deg_to_rad(npc_base.note_entry_rotation_degrees)))
+	assert(is_zero_approx(basic_note_item.modulate.a))
+	await get_tree().create_timer(npc_base.note_entry_duration + 0.08).timeout
+	assert(not npc_base._note_entry_tweens.has("basic_info"))
+	assert(basic_note_item.position == Vector2.ZERO)
+	assert(basic_note_item.scale == Vector2.ONE)
+	assert(is_equal_approx(basic_note_item.rotation, 0.0))
+	assert(is_equal_approx(basic_note_item.modulate.a, 1.0))
+	assert(not basic_note_item.disabled)
+	basic_note_item.pressed.emit()
+	assert(note_detail_popup.visible)
+	assert(note_detail_popup.get_node("%TitleLabel").text == expected_identity_note["header"])
+	assert(note_detail_popup.get_node("%ContentLabel").text == expected_identity_note["content"])
+	note_detail_popup.get_node("%CloseButton").pressed.emit()
+	assert(not note_detail_popup.visible)
 	assert(not npc_base.unlock_info("basic_info"))
 	continue_button.pressed.emit()
 	assert(npc_base.current_dialogue_index == 3)
@@ -269,7 +317,7 @@ func _ready() -> void:
 	await get_tree().process_frame
 	dialogue_text = npc_base.get_node("%DialogueText")
 	continue_button = npc_base.get_node("%ContinueButton")
-	note_container = npc_base.get_node("%NoteContainer")
+	note_board_area = npc_base.get_node("%NoteBoardArea")
 	assert(npc_base.current_dialogue_index == 4)
 	assert(dialogue_text.text == displayed_before_rebuild)
 	assert(not npc_base.dialogue_completed)
@@ -281,8 +329,17 @@ func _ready() -> void:
 	assert(not npc_base.get_node("%MemoryButton").visible)
 	assert(npc_base.npc_progress.unlocked_keys == unlocked_before_restore)
 	assert(npc_base.npc_progress.revealed_note_keys == order_before_restore)
-	assert(note_container.get_child(0) == npc_base._note_items_by_key["basic_info"])
-	assert(note_container.get_child(1) == npc_base._note_items_by_key["work_info"])
+	var restored_basic_note: NoteItem = npc_base._note_items_by_key["basic_info"]
+	var restored_work_note: NoteItem = npc_base._note_items_by_key["work_info"]
+	assert(restored_basic_note.get_parent() == npc_base.get_node("%NoteAnchor_01"))
+	assert(restored_work_note.get_parent() == npc_base.get_node("%NoteAnchor_02"))
+	assert(npc_base._note_entry_tweens.is_empty())
+	for restored_note: NoteItem in [restored_basic_note, restored_work_note]:
+		assert(restored_note.position == Vector2.ZERO)
+		assert(restored_note.scale == Vector2.ONE)
+		assert(is_equal_approx(restored_note.rotation, 0.0))
+		assert(is_equal_approx(restored_note.modulate.a, 1.0))
+		assert(not restored_note.disabled)
 
 	# 第 5 条完成后索引仍指向正在显示的最后一条，而不是数组长度。
 	continue_button.pressed.emit()

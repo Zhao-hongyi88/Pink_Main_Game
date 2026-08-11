@@ -13,12 +13,17 @@ height = 112
 fill_from = Vector2(0, 0)
 fill_to = Vector2(1, 1)
 
-[node name="NoteItem" type="Control"]
-custom_minimum_size = Vector2(0, 92)
+[node name="NoteItem" type="Button"]
+custom_minimum_size = Vector2(150, 100)
 layout_mode = 3
-anchors_preset = 10
+anchors_preset = 15
 anchor_right = 1.0
+anchor_bottom = 1.0
 grow_horizontal = 2
+grow_vertical = 2
+focus_mode = 1
+mouse_default_cursor_shape = 2
+flat = true
 script = ExtResource("1_script")
 
 [node name="NoteBackground" type="TextureRect" parent="."]
@@ -55,6 +60,8 @@ grow_horizontal = 2
 theme_override_colors/font_color = Color(0.25098, 0.101961, 0.172549, 1)
 theme_override_font_sizes/font_size = 17
 text = "Note Header"
+text_overrun_behavior = 3
+mouse_filter = 2
 
 [node name="Divider" type="ColorRect" parent="."]
 layout_mode = 1
@@ -84,3 +91,5 @@ theme_override_colors/font_color = Color(0.321569, 0.141176, 0.211765, 1)
 theme_override_font_sizes/font_size = 14
 text = "Note content"
 autowrap_mode = 2
+text_overrun_behavior = 3
+mouse_filter = 2

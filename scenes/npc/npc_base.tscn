@@ -1,6 +1,7 @@
-[gd_scene load_steps=18 format=3]
+[gd_scene load_steps=19 format=3]
 
 [ext_resource type="Script" path="res://scripts/npc/npc_base.gd" id="1_script"]
+[ext_resource type="PackedScene" path="res://scenes/ui/npc/note_detail_popup.tscn" id="2_note_detail_popup"]
 
 [sub_resource type="Gradient" id="Gradient_background"]
 offsets = PackedFloat32Array(0, 1)
@@ -320,7 +321,7 @@ anchor_bottom = 0.86
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="NotePanelBackground" type="TextureRect" parent="NotePanel"]
+[node name="BoardBackground" type="TextureRect" parent="NotePanel"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -332,7 +333,7 @@ expand_mode = 1
 stretch_mode = 6
 mouse_filter = 2
 
-[node name="NoteTitleLabel" type="Label" parent="NotePanel"]
+[node name="BoardTitleLabel" type="Label" parent="NotePanel"]
 layout_mode = 1
 anchors_preset = 10
 anchor_right = 1.0
@@ -343,26 +344,87 @@ offset_bottom = 50.0
 grow_horizontal = 2
 theme_override_colors/font_color = Color(0.937255, 0.792157, 0.890196, 1)
 theme_override_font_sizes/font_size = 21
-text = "PROFILE NOTES"
+text = "PROFILE BOARD"
 
-[node name="NoteScroll" type="ScrollContainer" parent="NotePanel"]
+[node name="NoteBoardArea" type="Control" parent="NotePanel"]
+unique_name_in_owner = true
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 16.0
+offset_left = 12.0
 offset_top = 58.0
-offset_right = -16.0
-offset_bottom = -14.0
+offset_right = -12.0
+offset_bottom = -12.0
 grow_horizontal = 2
 grow_vertical = 2
-horizontal_scroll_mode = 0
+mouse_filter = 2
 
-[node name="NoteContainer" type="VBoxContainer" parent="NotePanel/NoteScroll"]
+[node name="NoteAnchor_01" type="Control" parent="NotePanel/NoteBoardArea"]
 unique_name_in_owner = true
-layout_mode = 2
-size_flags_horizontal = 3
-theme_override_constants/separation = 6
+layout_mode = 0
+offset_left = 8.0
+offset_top = 8.0
+offset_right = 184.0
+offset_bottom = 122.0
+rotation = -0.0523599
+pivot_offset = Vector2(88, 57)
+mouse_filter = 2
+
+[node name="NoteAnchor_02" type="Control" parent="NotePanel/NoteBoardArea"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 204.0
+offset_top = 2.0
+offset_right = 357.0
+offset_bottom = 128.0
+rotation = 0.0436332
+pivot_offset = Vector2(76.5, 63)
+mouse_filter = 2
+
+[node name="NoteAnchor_03" type="Control" parent="NotePanel/NoteBoardArea"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 18.0
+offset_top = 154.0
+offset_right = 207.0
+offset_bottom = 260.0
+rotation = 0.0349066
+pivot_offset = Vector2(94.5, 53)
+mouse_filter = 2
+
+[node name="NoteAnchor_04" type="Control" parent="NotePanel/NoteBoardArea"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 218.0
+offset_top = 144.0
+offset_right = 365.0
+offset_bottom = 268.0
+rotation = -0.0610865
+pivot_offset = Vector2(73.5, 62)
+mouse_filter = 2
+
+[node name="NoteAnchor_05" type="Control" parent="NotePanel/NoteBoardArea"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 6.0
+offset_top = 296.0
+offset_right = 181.0
+offset_bottom = 410.0
+rotation = 0.0523599
+pivot_offset = Vector2(87.5, 57)
+mouse_filter = 2
+
+[node name="NoteAnchor_06" type="Control" parent="NotePanel/NoteBoardArea"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 202.0
+offset_top = 292.0
+offset_right = 365.0
+offset_bottom = 408.0
+rotation = -0.0349066
+pivot_offset = Vector2(81.5, 58)
+mouse_filter = 2
 
 [node name="MemoryButton" type="Button" parent="."]
 unique_name_in_owner = true
@@ -384,3 +446,6 @@ theme_override_styles/hover = SubResource("StyleBox_memory_hover")
 theme_override_styles/pressed = SubResource("StyleBox_memory_pressed")
 theme_override_styles/disabled = SubResource("StyleBox_memory_disabled")
 text = "进入回忆"
+
+[node name="NoteDetailPopup" parent="." instance=ExtResource("2_note_detail_popup")]
+unique_name_in_owner = true
