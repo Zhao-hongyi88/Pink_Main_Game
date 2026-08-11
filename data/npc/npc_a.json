@@ -52,5 +52,5 @@
 			"content": "这里是测试资料文本05。"
 		}
 	],
-	"memory_scene": "res://scenes/memory/memory_test.tscn"
+	"memory_scene": "res://scenes/memory/npc1_zhang_yuan_memory.tscn"
 }

@@ -29,5 +29,5 @@
 			"content": "李磊 placeholder additional information."
 		}
 	],
-	"memory_scene": "res://scenes/memory/memory_test.tscn"
+	"memory_scene": "res://scenes/memory/npc2_li_lei_memory.tscn"
 }

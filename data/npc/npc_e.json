@@ -38,5 +38,5 @@
 			"content": "王建国 placeholder final information."
 		}
 	],
-	"memory_scene": "res://scenes/memory/memory_test.tscn"
+	"memory_scene": "res://scenes/memory/npc5_wang_jianguo_memory.tscn"
 }

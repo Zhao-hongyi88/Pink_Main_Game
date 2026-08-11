@@ -38,5 +38,5 @@
 			"content": "刘桂兰 placeholder additional information."
 		}
 	],
-	"memory_scene": "res://scenes/memory/memory_test.tscn"
+	"memory_scene": "res://scenes/memory/npc3_liu_guilan_memory.tscn"
 }

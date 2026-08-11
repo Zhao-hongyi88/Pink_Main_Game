@@ -37,5 +37,5 @@
 			"content": "苏晴 placeholder additional information."
 		}
 	],
-	"memory_scene": "res://scenes/memory/memory_test.tscn"
+	"memory_scene": "res://scenes/memory/npc4_su_qing_memory.tscn"
 }

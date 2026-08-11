@@ -1,0 +1,164 @@
+[gd_scene load_steps=3 format=3 uid="uid://memory_base_001"]
+
+[ext_resource type="Script" path="res://scripts/memory/memory_base.gd" id="1_memory_base"]
+[ext_resource type="Script" path="res://scripts/memory/memory_info_panel.gd" id="2_info_panel"]
+
+[node name="MemoryBase" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("1_memory_base")
+
+[node name="MemoryUI" type="CanvasLayer" parent="."]
+layer = 10
+
+[node name="ProgressLabel" type="Label" parent="MemoryUI"]
+unique_name_in_owner = true
+offset_left = 32.0
+offset_top = 24.0
+offset_right = 300.0
+offset_bottom = 54.0
+theme_override_colors/font_color = Color(0.84, 0.9, 1, 1)
+theme_override_font_sizes/font_size = 18
+text = "调查进度：0 / 0"
+
+[node name="BackButton" type="Button" parent="MemoryUI"]
+unique_name_in_owner = true
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -168.0
+offset_top = 20.0
+offset_right = -28.0
+offset_bottom = 62.0
+grow_horizontal = 0
+text = "退出回忆"
+
+[node name="CompleteButton" type="Button" parent="MemoryUI"]
+unique_name_in_owner = true
+visible = false
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -112.0
+offset_top = -78.0
+offset_right = 112.0
+offset_bottom = -26.0
+grow_horizontal = 2
+grow_vertical = 0
+text = "完成回忆"
+
+[node name="MemoryInfoPanel" type="Control" parent="MemoryUI"]
+unique_name_in_owner = true
+visible = false
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 1
+script = ExtResource("2_info_panel")
+
+[node name="Panel" type="Panel" parent="MemoryUI/MemoryInfoPanel"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -320.0
+offset_top = -250.0
+offset_right = 320.0
+offset_bottom = 250.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="TitleLabel" type="Label" parent="MemoryUI/MemoryInfoPanel/Panel"]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_left = 28.0
+offset_top = 20.0
+offset_right = -28.0
+offset_bottom = 54.0
+grow_horizontal = 2
+theme_override_font_sizes/font_size = 24
+text = "调查资料"
+horizontal_alignment = 1
+
+[node name="SectionLabel" type="Label" parent="MemoryUI/MemoryInfoPanel/Panel"]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_left = 38.0
+offset_top = 64.0
+offset_right = -38.0
+offset_bottom = 92.0
+grow_horizontal = 2
+theme_override_font_sizes/font_size = 18
+text = "物品信息"
+
+[node name="ContentLabel" type="Label" parent="MemoryUI/MemoryInfoPanel/Panel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 38.0
+offset_top = 102.0
+offset_right = -38.0
+offset_bottom = -92.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 18
+text = "资料内容"
+vertical_alignment = 1
+autowrap_mode = 2
+
+[node name="ImagePlaceholders" type="HBoxContainer" parent="MemoryUI/MemoryInfoPanel/Panel"]
+layout_mode = 1
+anchors_preset = 12
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 38.0
+offset_top = -186.0
+offset_right = -38.0
+offset_bottom = -82.0
+grow_horizontal = 2
+grow_vertical = 0
+alignment = 1
+
+[node name="ContinueButton" type="Button" parent="MemoryUI/MemoryInfoPanel/Panel"]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -146.0
+offset_top = -62.0
+offset_right = -10.0
+offset_bottom = -20.0
+grow_horizontal = 2
+grow_vertical = 0
+text = "继续"
+
+[node name="CloseButton" type="Button" parent="MemoryUI/MemoryInfoPanel/Panel"]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = 10.0
+offset_top = -62.0
+offset_right = 146.0
+offset_bottom = -20.0
+grow_horizontal = 2
+grow_vertical = 0
+text = "关闭"

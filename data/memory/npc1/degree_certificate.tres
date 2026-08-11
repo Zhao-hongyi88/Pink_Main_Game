@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="MemoryObservationData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/memory/memory_observation_data.gd" id="1_observation_data"]
+
+[resource]
+script = ExtResource("1_observation_data")
+observation_id = &"degree_certificate"
+title = "毕业学位证书"
+info = "毕业照片与毕业学位证书。"
+images = []
+image_placeholders = PackedStringArray("[毕业照片]", "[毕业学位证书]")
+dialogue = PackedStringArray("保存得还挺好的。", "照片上笑得这么开心……应该是毕业那天拍的吧。")
