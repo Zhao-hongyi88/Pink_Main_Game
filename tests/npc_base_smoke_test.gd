@@ -49,12 +49,12 @@ class MemoryRoundTripProbe:
 		assert(returned_npc.get_node("%NPCName").visible)
 		assert(returned_npc.get_node("%IdentityLabel").visible)
 		assert(returned_npc.get_node("%SpeakerName").text == returned_npc.npc_data.display_name)
-		assert(returned_npc.get_node("%NotePanel").visible)
+		assert(returned_npc.get_node("%DossierPanel").visible)
 		assert(returned_npc.npc_progress.revealed_note_keys == ["basic_info", "work_info"])
 		var restored_basic_note: NoteItem = returned_npc._note_items_by_key["basic_info"]
 		var restored_work_note: NoteItem = returned_npc._note_items_by_key["work_info"]
-		assert(restored_basic_note.get_parent() == returned_npc.get_node("%NoteAnchor_01"))
-		assert(restored_work_note.get_parent() == returned_npc.get_node("%NoteAnchor_02"))
+		assert(restored_basic_note.get_parent() == returned_npc.get_node("%RelatedSlot01"))
+		assert(restored_work_note.get_parent() == returned_npc.get_node("%RelatedSlot02"))
 		assert(returned_npc._note_entry_tweens.is_empty())
 		for restored_note: NoteItem in [restored_basic_note, restored_work_note]:
 			assert(restored_note.position == Vector2.ZERO)
@@ -138,10 +138,12 @@ func _ready() -> void:
 	var speaker_name: Label = npc_base.get_node("%SpeakerName")
 	var dialogue_text: Label = npc_base.get_node("%DialogueText")
 	var continue_button: Button = npc_base.get_node("%ContinueButton")
-	var note_panel: Control = npc_base.get_node("%NotePanel")
-	var note_board_area: Control = npc_base.get_node("%NoteBoardArea")
+	var note_panel: Control = npc_base.get_node("%DossierPanel")
+	var note_board_area: Control = npc_base.get_node("%RelatedDataArea")
 	var note_detail_popup: Control = npc_base.get_node("%NoteDetailPopup")
 	var memory_button: Button = npc_base.get_node("%MemoryButton")
+	var profile_hover: Node = npc_base.get_node("%DossierPanel/ProfileBoard/HoverEffect")
+	var memory_hover: Node = memory_button.get_node("HoverEffect")
 	var expected_dialogues: Array = expected_data["dialogues"]
 	var expected_notes: Array = expected_data["notes"]
 
@@ -160,24 +162,78 @@ func _ready() -> void:
 	assert(not identity_label.visible)
 	assert(speaker_name.text == "UNKNOWN")
 	assert(not note_panel.visible)
+	assert(not npc_base.get_node("%CharacterLayer").visible)
+	assert(not npc_base.get_node("%DialoguePanel").visible)
+	assert(not npc_base.get_node("%NamePlate").visible)
 	assert(not continue_button.disabled)
 	assert(not memory_button.visible)
 	assert(memory_button.disabled)
+	assert(profile_hover != null)
+	assert(profile_hover.get("hover_scale") == 1.05)
+	assert(profile_hover.get("hover_offset") == Vector2(0.0, -4.0))
+	assert(memory_hover != null)
+	assert(memory_hover.get("hover_scale") == 1.08)
+	assert(memory_hover.get("hover_brightness") == 1.15)
 	assert(npc_base._note_items.size() == expected_notes.size())
 	assert(not note_detail_popup.visible)
-	assert(npc_base.get_node("%CharacterArea").texture != null)
-	var portrait_frame := npc_base.get_node("CharacterDisplay/PortraitFrame") as TextureRect
-	assert(portrait_frame != null)
-	assert(portrait_frame.texture != null)
-	assert(portrait_frame.mouse_filter == Control.MOUSE_FILTER_IGNORE)
-	assert(npc_base.get_node("%CharacterArea").get_parent().name == "CharacterDisplay")
-	assert(npc_base.get_node("%DialogueText").get_parent().name == "DialogueBox")
-	assert(npc_base.get_node("%SpeakerName").get_parent().name == "DialogueBox")
+	assert(note_detail_popup.get_node("%DimBackground") is ColorRect)
+	assert(note_detail_popup.get_node("%DocumentRoot") is Control)
+	assert(note_detail_popup.get_node("%PaperPlaceholder") is ColorRect)
+	assert(note_detail_popup.get_node("%PaperBackground") is TextureRect)
+	assert(note_detail_popup.get_node("%PreviewImage") is TextureRect)
+	assert(note_detail_popup.get_node("%DimBackground").position == Vector2.ZERO)
+	assert(is_equal_approx(note_detail_popup.get_node("%DimBackground").anchor_right, 1.0))
+	assert(is_equal_approx(note_detail_popup.get_node("%DimBackground").anchor_bottom, 1.0))
+	assert(note_detail_popup.get_node("%DimBackground").color == Color(0, 0, 0, 0.75))
+	assert(note_detail_popup.get_node("%DocumentRoot").position == Vector2(120.0, 120.0))
+	assert(note_detail_popup.get_node("%DocumentRoot").size.is_equal_approx(Vector2(920.0, 480.0)))
+	assert(note_detail_popup.get_node("%DocumentRoot").pivot_offset == Vector2(460.0, 240.0))
+	assert(note_detail_popup.get_node("%PaperPlaceholder").position == Vector2.ZERO)
+	assert(note_detail_popup.get_node("%PaperPlaceholder").size.is_equal_approx(Vector2(920.0, 480.0)))
+	assert(note_detail_popup.get_node("%PaperBackground").position == Vector2.ZERO)
+	assert(note_detail_popup.get_node("%PaperBackground").size.is_equal_approx(Vector2(920.0, 480.0)))
+	assert(note_detail_popup.get_node("%PaperBackground").texture == null)
+	assert(note_detail_popup.get_node("%PaperBackground").stretch_mode == TextureRect.STRETCH_SCALE)
+	assert(note_detail_popup.get_node("%PreviewImage").position == Vector2(-100.0, -80.0))
+	assert(note_detail_popup.get_node("%PreviewImage").size.is_equal_approx(Vector2(190.0, 190.0)))
+	assert(note_detail_popup.get_node("%TitleLabel").position == Vector2(120.0, 70.0))
+	assert(note_detail_popup.get_node("%TitleLabel").size.is_equal_approx(Vector2(650.0, 50.0)))
+	assert(note_detail_popup.get_node("%TitleLabel").get_theme_font_size(&"font_size") == 30)
+	assert(note_detail_popup.get_node("%ContentLabel").position == Vector2(190.0, 150.0))
+	assert(note_detail_popup.get_node("%ContentLabel").size.is_equal_approx(Vector2(650.0, 260.0)))
+	assert(note_detail_popup.get_node("%ContentLabel").get_theme_font_size(&"font_size") == 22)
+	assert(note_detail_popup.get_node_or_null("%ContentScroll") == null)
+	assert(note_detail_popup.get_node("%CloseHitArea") is TextureButton)
+	assert(note_detail_popup.get_node("%CloseHitArea").position == Vector2(850.0, 20.0))
+	assert(note_detail_popup.get_node("%CloseHitArea").size.is_equal_approx(Vector2(50.0, 50.0)))
+	assert(note_detail_popup.get_node("%CloseHitArea").texture_normal == null)
+	assert(npc_base.get_node("%CharacterPortrait").texture != null)
+	assert(npc_base.get_node("%ProfilePhoto").texture != null)
+	assert(npc_base.get_node("%CharacterPortrait").get_parent().name == "CharacterSlot")
+	assert(npc_base.get_node("%DialogueText").get_parent().name == "DialoguePanel")
+	assert(npc_base.get_node("%SpeakerName").get_parent().name == "DialoguePanel")
 	assert(npc_base.get_node_or_null("%NoteContainer") == null)
-	assert(npc_base.get_node_or_null("NotePanel/NoteScroll") == null)
+	assert(npc_base.get_node_or_null("DossierPanel/NoteScroll") == null)
 	assert(note_board_area.get_child_count() == 6 + expected_notes.size())
 	for anchor_index in 6:
-		assert(npc_base.get_node_or_null("%%NoteAnchor_0%d" % (anchor_index + 1)) != null)
+		assert(npc_base.get_node_or_null("%%RelatedSlot0%d" % (anchor_index + 1)) != null)
+	var first_dialogue_index: int = npc_base.current_dialogue_index
+	var first_dialogue_text: String = dialogue_text.text
+	var reveal_click := InputEventMouseButton.new()
+	reveal_click.button_index = MOUSE_BUTTON_LEFT
+	reveal_click.pressed = true
+	npc_base._unhandled_input(reveal_click)
+	assert(npc_base.get_node("%CharacterLayer").visible)
+	assert(npc_base.get_node("%DialoguePanel").visible)
+	assert(npc_base.current_dialogue_index == first_dialogue_index)
+	assert(dialogue_text.text == first_dialogue_text)
+	await get_tree().create_timer(npc_base.character_reveal_duration + 0.08).timeout
+	assert(npc_base.get_node("%CharacterLayer").position == npc_base._character_final_position)
+	assert(npc_base.get_node("%DialoguePanel").position == npc_base._dialogue_final_position)
+	assert(npc_base.get_node("%DialoguePanel").mouse_filter == Control.MOUSE_FILTER_PASS)
+	assert(npc_base.get_node("%SpeakerName").mouse_filter == Control.MOUSE_FILTER_IGNORE)
+	assert(npc_base.get_node("%DialogueText").mouse_filter == Control.MOUSE_FILTER_IGNORE)
+	assert(npc_base.get_node("%DossierPanel").mouse_filter == Control.MOUSE_FILTER_STOP)
 	var expected_identity_note: Dictionary = expected_notes.filter(
 		func(note: Dictionary) -> bool: return note["key"] == expected_data["name_unlock_key"]
 	)[0]
@@ -190,7 +246,11 @@ func _ready() -> void:
 	for note_data: Dictionary in expected_notes:
 		expected_note_keys.append(note_data["key"])
 		var note_item: NoteItem = npc_base._note_items_by_key[note_data["key"]]
+		var note_hover: Node = note_item.get_node("HoverEffect")
 		assert(not note_item.visible)
+		assert(note_hover != null)
+		assert(note_hover.get("hover_scale") == 1.05)
+		assert(note_hover.get("hover_offset") == Vector2(0.0, -3.0))
 		assert(note_item is Button)
 		assert(note_item.get_node("NoteBackground") is TextureRect)
 		assert(note_item.get_node("%NoteHeader").text == note_data["header"])
@@ -217,6 +277,8 @@ func _ready() -> void:
 	))
 	assert(final_unlock_npc.dialogue_manager.setup(final_unlock_dialogues, final_unlock_progress))
 	final_unlock_npc._restore_page_state()
+	final_unlock_npc._reveal_first_conversation()
+	await get_tree().create_timer(final_unlock_npc.character_reveal_duration + 0.08).timeout
 	var final_continue_button: Button = final_unlock_npc.get_node("%ContinueButton")
 	final_continue_button.pressed.emit()
 	assert(final_unlock_progress.dialogue_completed)
@@ -228,7 +290,8 @@ func _ready() -> void:
 	assert(final_unlock_npc.get_node("%NPCName").visible)
 	assert(final_unlock_npc.get_node("%IdentityLabel").visible)
 	assert(final_unlock_npc.get_node("%SpeakerName").text == formal_data.display_name)
-	assert(final_unlock_npc.get_node("%NotePanel").visible)
+	assert(final_unlock_npc.get_node("%NamePlate").visible)
+	assert(final_unlock_npc.get_node("%DossierPanel").visible)
 	assert(final_unlock_npc.memory_ready)
 	assert(final_continue_button.disabled)
 	var original_entry_tween: Tween = final_unlock_npc._note_entry_tweens["basic_info"]
@@ -238,6 +301,46 @@ func _ready() -> void:
 	assert(final_unlock_npc._note_entry_tweens.size() == 1)
 	assert(final_unlock_npc._note_entry_tweens["basic_info"] == original_entry_tween)
 	final_unlock_npc.queue_free()
+
+	# ContinueButton 与 DialoguePanel 共用同一推进函数；文字、左侧和空白位置均由整个 Panel 接收。
+	var interaction_npc := npc_scene.instantiate() as NPCBase
+	interaction_npc.npc_data_path = NPC_DATA_PATH
+	add_child(interaction_npc)
+	await get_tree().process_frame
+	var interaction_progress := NPCProgress.new(&"dialogue_panel_interaction_test")
+	var interaction_dialogues: Array[Dictionary] = [
+		{"text": "Panel 01", "unlock_key": ""},
+		{"text": "Panel 02", "unlock_key": ""},
+		{"text": "Panel 03", "unlock_key": ""},
+		{"text": "Panel 04", "unlock_key": ""},
+	]
+	interaction_npc.npc_progress = interaction_progress
+	assert(interaction_npc.unlock_system.setup(interaction_npc._valid_unlock_keys, interaction_progress))
+	assert(interaction_npc.dialogue_manager.setup(interaction_dialogues, interaction_progress))
+	interaction_npc._restore_page_state()
+	interaction_npc._reveal_first_conversation()
+	var panel_click := InputEventMouseButton.new()
+	panel_click.button_index = MOUSE_BUTTON_LEFT
+	panel_click.pressed = true
+	interaction_npc.get_node("%DialoguePanel").gui_input.emit(panel_click)
+	assert(interaction_progress.current_dialogue_index == 0)
+	await get_tree().create_timer(interaction_npc.character_reveal_duration + 0.08).timeout
+	interaction_npc.get_node("%ContinueButton").pressed.emit()
+	assert(interaction_progress.current_dialogue_index == 1)
+	for click_position: Vector2 in [Vector2(12, 80), Vector2(120, 70), Vector2(730, 30)]:
+		panel_click.position = click_position
+		interaction_npc.get_node("%DialoguePanel").gui_input.emit(panel_click)
+	assert(interaction_progress.dialogue_completed)
+	assert(interaction_progress.current_dialogue_index == 3)
+	var completed_index := interaction_progress.current_dialogue_index
+	interaction_npc.get_node("%DialoguePanel").gui_input.emit(panel_click)
+	assert(interaction_progress.current_dialogue_index == completed_index)
+	interaction_npc.note_detail_popup.show()
+	interaction_progress.dialogue_completed = false
+	interaction_npc.get_node("%DialoguePanel").gui_input.emit(panel_click)
+	assert(interaction_progress.current_dialogue_index == completed_index)
+	interaction_npc.note_detail_popup.hide()
+	interaction_npc.queue_free()
 
 	# 空 key、未知 key 和第 1 条无 key 对话都不产生资料。
 	assert(not npc_base.unlock_info(""))
@@ -273,9 +376,10 @@ func _ready() -> void:
 	assert(npc_base.get_node("%NPCName").visible)
 	assert(npc_base.get_node("%IdentityLabel").visible)
 	assert(npc_base.get_node("%SpeakerName").text == formal_data.display_name)
-	assert(npc_base.get_node("%NotePanel").visible)
+	assert(npc_base.get_node("%NamePlate").visible)
+	assert(npc_base.get_node("%DossierPanel").visible)
 	var basic_note_item: NoteItem = npc_base._note_items_by_key["basic_info"]
-	assert(basic_note_item.get_parent() == npc_base.get_node("%NoteAnchor_01"))
+	assert(basic_note_item.get_parent() == npc_base.get_node("%RelatedSlot01"))
 	assert(npc_base._note_entry_tweens.has("basic_info"))
 	assert(basic_note_item.disabled)
 	assert(basic_note_item.position == npc_base.note_entry_offset)
@@ -291,9 +395,21 @@ func _ready() -> void:
 	assert(not basic_note_item.disabled)
 	basic_note_item.pressed.emit()
 	assert(note_detail_popup.visible)
-	assert(note_detail_popup.get_node("%TitleLabel").text == expected_identity_note["header"])
+	assert(
+		note_detail_popup.get_node("%TitleLabel").text == expected_identity_note["header"],
+		"Unexpected detail title: %s" % note_detail_popup.get_node("%TitleLabel").text
+	)
 	assert(note_detail_popup.get_node("%ContentLabel").text == expected_identity_note["content"])
-	note_detail_popup.get_node("%CloseButton").pressed.emit()
+	assert(note_detail_popup.get_node("%PreviewImage").texture != null)
+	assert(note_detail_popup.get_node("%PreviewImage").texture is not GradientTexture1D)
+	assert(note_detail_popup.get_node("%PreviewImage").texture is not GradientTexture2D)
+	assert(note_detail_popup.get_node("%DocumentRoot").scale == Vector2(0.96, 0.96))
+	await get_tree().create_timer(0.35).timeout
+	assert(note_detail_popup.get_node("%DocumentRoot").scale.is_equal_approx(Vector2.ONE))
+	assert(is_equal_approx(note_detail_popup.get_node("%DimBackground").modulate.a, 1.0))
+	note_detail_popup.get_node("%CloseHitArea").pressed.emit()
+	assert(note_detail_popup.visible)
+	await get_tree().create_timer(0.35).timeout
 	assert(not note_detail_popup.visible)
 	assert(not npc_base.unlock_info("basic_info"))
 	continue_button.pressed.emit()
@@ -304,6 +420,18 @@ func _ready() -> void:
 	assert(npc_base.unlocked_keys.get("work_info", false))
 	assert(npc_base.npc_progress.revealed_note_keys == ["basic_info", "work_info"])
 	assert(npc_base.revealed_note_count == 2)
+	await get_tree().create_timer(npc_base.note_entry_duration + 0.08).timeout
+	var work_note_data: Dictionary = expected_notes.filter(
+		func(note: Dictionary) -> bool: return note["key"] == "work_info"
+	)[0]
+	var work_note_item: NoteItem = npc_base._note_items_by_key["work_info"]
+	work_note_item.pressed.emit()
+	assert(note_detail_popup.get_node("%TitleLabel").text == work_note_data["header"])
+	assert(note_detail_popup.get_node("%ContentLabel").text == work_note_data["content"])
+	assert(note_detail_popup.get_node("%TitleLabel").text != expected_identity_note["header"])
+	note_detail_popup.get_node("%CloseHitArea").pressed.emit()
+	await get_tree().create_timer(0.35).timeout
+	assert(not note_detail_popup.visible)
 
 	# 未完成状态再次重建：完整恢复文本、便利贴顺序、姓名与资料区。
 	displayed_before_rebuild = dialogue_text.text
@@ -317,7 +445,7 @@ func _ready() -> void:
 	await get_tree().process_frame
 	dialogue_text = npc_base.get_node("%DialogueText")
 	continue_button = npc_base.get_node("%ContinueButton")
-	note_board_area = npc_base.get_node("%NoteBoardArea")
+	note_board_area = npc_base.get_node("%RelatedDataArea")
 	assert(npc_base.current_dialogue_index == 4)
 	assert(dialogue_text.text == displayed_before_rebuild)
 	assert(not npc_base.dialogue_completed)
@@ -325,14 +453,15 @@ func _ready() -> void:
 	assert(npc_base.get_node("%NPCName").visible)
 	assert(npc_base.get_node("%IdentityLabel").visible)
 	assert(npc_base.get_node("%SpeakerName").text == formal_data.display_name)
-	assert(npc_base.get_node("%NotePanel").visible)
+	assert(npc_base.get_node("%NamePlate").visible)
+	assert(npc_base.get_node("%DossierPanel").visible)
 	assert(not npc_base.get_node("%MemoryButton").visible)
 	assert(npc_base.npc_progress.unlocked_keys == unlocked_before_restore)
 	assert(npc_base.npc_progress.revealed_note_keys == order_before_restore)
 	var restored_basic_note: NoteItem = npc_base._note_items_by_key["basic_info"]
 	var restored_work_note: NoteItem = npc_base._note_items_by_key["work_info"]
-	assert(restored_basic_note.get_parent() == npc_base.get_node("%NoteAnchor_01"))
-	assert(restored_work_note.get_parent() == npc_base.get_node("%NoteAnchor_02"))
+	assert(restored_basic_note.get_parent() == npc_base.get_node("%RelatedSlot01"))
+	assert(restored_work_note.get_parent() == npc_base.get_node("%RelatedSlot02"))
 	assert(npc_base._note_entry_tweens.is_empty())
 	for restored_note: NoteItem in [restored_basic_note, restored_work_note]:
 		assert(restored_note.position == Vector2.ZERO)

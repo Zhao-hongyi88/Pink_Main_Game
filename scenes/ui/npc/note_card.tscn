@@ -1,6 +1,7 @@
-[gd_scene load_steps=4 format=3]
+[gd_scene load_steps=5 format=3]
 
 [ext_resource type="Script" path="res://scripts/npc/note_item.gd" id="1_script"]
+[ext_resource type="Script" path="res://scripts/ui/hover_effect.gd" id="2_hover"]
 
 [sub_resource type="Gradient" id="Gradient_note_card_placeholder"]
 offsets = PackedFloat32Array(0, 0.72, 1)
@@ -39,6 +40,7 @@ stretch_mode = 6
 mouse_filter = 2
 
 [node name="AccentStrip" type="ColorRect" parent="."]
+visible = false
 layout_mode = 1
 anchors_preset = 9
 anchor_bottom = 1.0
@@ -52,13 +54,13 @@ unique_name_in_owner = true
 layout_mode = 1
 anchors_preset = 10
 anchor_right = 1.0
-offset_left = 20.0
-offset_top = 9.0
+offset_left = 10.0
+offset_top = 4.0
 offset_right = -16.0
-offset_bottom = 36.0
+offset_bottom = 31.0
 grow_horizontal = 2
-theme_override_colors/font_color = Color(0.25098, 0.101961, 0.172549, 1)
-theme_override_font_sizes/font_size = 17
+theme_override_colors/font_color = Color(0.352941, 0.188235, 0.188235, 1)
+theme_override_font_sizes/font_size = 14
 text = "Note Header"
 text_overrun_behavior = 3
 mouse_filter = 2
@@ -67,10 +69,10 @@ mouse_filter = 2
 layout_mode = 1
 anchors_preset = 10
 anchor_right = 1.0
-offset_left = 20.0
-offset_top = 38.0
+offset_left = 10.0
+offset_top = 33.0
 offset_right = -16.0
-offset_bottom = 40.0
+offset_bottom = 35.0
 grow_horizontal = 2
 mouse_filter = 2
 color = Color(0.431373, 0.192157, 0.321569, 0.45)
@@ -81,15 +83,18 @@ layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 20.0
-offset_top = 44.0
+offset_left = 8.0
+offset_top = 36.0
 offset_right = -16.0
 offset_bottom = -8.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_colors/font_color = Color(0.321569, 0.141176, 0.211765, 1)
-theme_override_font_sizes/font_size = 14
+theme_override_colors/font_color = Color(0.352941, 0.188235, 0.188235, 1)
+theme_override_font_sizes/font_size = 11
 text = "Note content"
 autowrap_mode = 2
 text_overrun_behavior = 3
 mouse_filter = 2
+
+[node name="HoverEffect" type="Node" parent="."]
+script = ExtResource("2_hover")

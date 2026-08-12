@@ -95,19 +95,29 @@ func _verify_all_npcs_use_shared_ui() -> void:
 		assert(String(npc_base.npc_id) == test_case["npc_id"])
 		assert(npc_base.get_node("%NPCName").text == test_case["display_name"])
 		assert(not npc_base.get_node("%NPCName").visible)
-		assert(npc_base.get_node("%CharacterArea").texture != null)
+		assert(npc_base.get_node("%CharacterPortrait").texture != null)
+		assert(npc_base.get_node("%ProfilePhoto").texture != null)
 		assert(npc_base.get_node("%DialogueText").text == npc_data.dialogues[0]["text"])
 		assert(npc_base.dialogue_manager._dialogues.size() == npc_data.dialogues.size())
-		var note_board_area := npc_base.get_node("%NoteBoardArea") as Control
+		var note_board_area := npc_base.get_node("%RelatedDataArea") as Control
 		assert(note_board_area != null)
 		assert(npc_base.get_node_or_null("%NoteContainer") == null)
-		assert(npc_base.get_node_or_null("NotePanel/NoteScroll") == null)
+		assert(npc_base.get_node_or_null("DossierPanel/NoteScroll") == null)
 		assert(note_board_area.get_child_count() == 6 + npc_data.notes.size())
 		assert(npc_base._note_items_by_key.size() == npc_data.notes.size())
-		assert(not npc_base.get_node("%NotePanel").visible)
+		assert(not npc_base.get_node("%CharacterLayer").visible)
+		assert(not npc_base.get_node("%DialoguePanel").visible)
+		assert(not npc_base.get_node("%NamePlate").visible)
+		assert(not npc_base.get_node("%DossierPanel").visible)
 		assert(not npc_base.get_node("%MemoryButton").visible)
 		assert(npc_base.npc_progress.npc_id == npc_data.npc_id)
 		progress_by_id[npc_data.npc_id] = npc_base.npc_progress
+		var intro_index := npc_base.current_dialogue_index
+		npc_base._reveal_first_conversation()
+		assert(npc_base.get_node("%CharacterLayer").visible)
+		assert(npc_base.get_node("%DialoguePanel").visible)
+		assert(npc_base.current_dialogue_index == intro_index)
+		await get_tree().create_timer(npc_base.character_reveal_duration + 0.08).timeout
 
 		var expected_revealed_keys: Array[String] = []
 		var continue_button: Button = npc_base.get_node("%ContinueButton")
@@ -121,7 +131,7 @@ func _verify_all_npcs_use_shared_ui() -> void:
 				assert(bool(npc_base.npc_progress.unlocked_keys.get(unlock_key, false)))
 				var note_item: NoteItem = npc_base._note_items_by_key[unlock_key]
 				assert(note_item.visible)
-				var anchor_name := "%%NoteAnchor_0%d" % expected_revealed_keys.size()
+				var anchor_name := "%%RelatedSlot0%d" % expected_revealed_keys.size()
 				assert(note_item.get_parent() == npc_base.get_node(anchor_name))
 				assert(npc_base._note_entry_tweens.has(unlock_key))
 				assert(note_item.disabled)
@@ -140,10 +150,14 @@ func _verify_all_npcs_use_shared_ui() -> void:
 				assert(detail_popup.visible)
 				assert(detail_popup.get_node("%TitleLabel").text == note_data["header"])
 				assert(detail_popup.get_node("%ContentLabel").text == note_data["content"])
-				detail_popup.get_node("%CloseButton").pressed.emit()
+				detail_popup.get_node("%CloseHitArea").pressed.emit()
+				assert(detail_popup.visible)
+				await get_tree().create_timer(0.35).timeout
 				assert(not detail_popup.visible)
 			if StringName(unlock_key) == npc_data.name_unlock_key:
 				assert(npc_base.get_node("%NPCName").visible)
+				assert(npc_base.get_node("%NamePlate").visible)
+				assert(npc_base.get_node("%DossierPanel").visible)
 
 		assert(npc_base.dialogue_completed)
 		assert(npc_base.current_dialogue_index == npc_data.dialogues.size() - 1)
@@ -154,7 +168,7 @@ func _verify_all_npcs_use_shared_ui() -> void:
 				visible_note_count += 1
 		assert(visible_note_count == expected_revealed_keys.size())
 		assert(npc_base.get_node("%NPCName").visible)
-		assert(npc_base.get_node("%NotePanel").visible)
+		assert(npc_base.get_node("%DossierPanel").visible)
 		assert(npc_base.memory_ready)
 		assert(npc_base.get_node("%MemoryButton").visible)
 		assert(not npc_base.get_node("%MemoryButton").disabled)
@@ -179,6 +193,8 @@ func _verify_npc_progress_isolation() -> void:
 
 	# 李磊 advances far enough to unlock basic_info, but remains incomplete.
 	var npc_b := await _instantiate_npc(npc_b_data.source_path)
+	npc_b._reveal_first_conversation()
+	await get_tree().create_timer(npc_b.character_reveal_duration + 0.08).timeout
 	var npc_b_continue: Button = npc_b.get_node("%ContinueButton")
 	npc_b_continue.pressed.emit()
 	npc_b_continue.pressed.emit()
@@ -192,7 +208,7 @@ func _verify_npc_progress_isolation() -> void:
 	assert(npc_b_unlocked.get("basic_info", false))
 	assert(npc_b_revealed == ["basic_info"])
 	assert(npc_b.get_node("%NPCName").visible)
-	assert(npc_b.get_node("%NotePanel").visible)
+	assert(npc_b.get_node("%DossierPanel").visible)
 	_dispose_npc(npc_b)
 
 	# 刘桂兰 starts from its own untouched progress.
@@ -207,8 +223,10 @@ func _verify_npc_progress_isolation() -> void:
 	assert(not npc_c.memory_ready)
 	assert(not npc_c.memory_completed)
 	assert(not npc_c.get_node("%NPCName").visible)
-	assert(not npc_c.get_node("%NotePanel").visible)
+	assert(not npc_c.get_node("%DossierPanel").visible)
 	assert(not npc_c.get_node("%MemoryButton").visible)
+	npc_c._reveal_first_conversation()
+	await get_tree().create_timer(npc_c.character_reveal_duration + 0.08).timeout
 	var npc_c_continue: Button = npc_c.get_node("%ContinueButton")
 	npc_c_continue.pressed.emit()
 	assert(npc_c.current_dialogue_index == 1)
@@ -225,9 +243,12 @@ func _verify_npc_progress_isolation() -> void:
 	assert(not npc_b_reloaded.memory_ready)
 	assert(not npc_b_reloaded.memory_completed)
 	assert(npc_b_reloaded.get_node("%NPCName").visible)
-	assert(npc_b_reloaded.get_node("%NotePanel").visible)
+	assert(npc_b_reloaded.get_node("%CharacterLayer").visible)
+	assert(npc_b_reloaded.get_node("%DialoguePanel").visible)
+	assert(npc_b_reloaded.get_node("%NamePlate").visible)
+	assert(npc_b_reloaded.get_node("%DossierPanel").visible)
 	assert(npc_b_reloaded._note_items_by_key["basic_info"].visible)
-	assert(npc_b_reloaded._note_items_by_key["basic_info"].get_parent() == npc_b_reloaded.get_node("%NoteAnchor_01"))
+	assert(npc_b_reloaded._note_items_by_key["basic_info"].get_parent() == npc_b_reloaded.get_node("%RelatedSlot01"))
 	assert(npc_b_reloaded._note_entry_tweens.is_empty())
 	assert(npc_b_reloaded._note_items_by_key["basic_info"].position == Vector2.ZERO)
 	assert(npc_b_reloaded._note_items_by_key["basic_info"].scale == Vector2.ONE)
@@ -261,7 +282,9 @@ func _verify_npc_progress_isolation() -> void:
 	assert(not npc_c_reloaded.memory_ready)
 	assert(not npc_c_reloaded.memory_completed)
 	assert(not npc_c_reloaded.get_node("%NPCName").visible)
-	assert(not npc_c_reloaded.get_node("%NotePanel").visible)
+	assert(npc_c_reloaded.get_node("%CharacterLayer").visible)
+	assert(npc_c_reloaded.get_node("%DialoguePanel").visible)
+	assert(not npc_c_reloaded.get_node("%DossierPanel").visible)
 	assert(not npc_c_reloaded.get_node("%MemoryButton").visible)
 	_dispose_npc(npc_c_reloaded)
 
