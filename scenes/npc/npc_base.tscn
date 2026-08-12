@@ -1,29 +1,73 @@
-[gd_scene load_steps=19 format=3]
+[gd_scene format=3 uid="uid://tjo84x4epeh"]
 
-[ext_resource type="Script" path="res://scripts/npc/npc_base.gd" id="1_script"]
+[ext_resource type="Script" uid="uid://0mtv0vflgfg" path="res://scripts/npc/npc_base.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://bvbrhiftcmcfo" path="res://TextureAsset/Levevl2/对话背景.png" id="2_bianu"]
 [ext_resource type="PackedScene" path="res://scenes/ui/npc/note_detail_popup.tscn" id="2_note_detail_popup"]
+[ext_resource type="Texture2D" uid="uid://d24sthu3gtpyp" path="res://tests/Q主角.png" id="3_hahxb"]
+[ext_resource type="Texture2D" uid="uid://ujewq46wi6vc" path="res://TextureAsset/Levevl2/截屏2026-08-07 08.09.56 1.png" id="3_lnc5x"]
+[ext_resource type="Texture2D" uid="uid://4o4oher8lnsw" path="res://TextureAsset/Levevl2/Rectangle 2990.png" id="4_hahxb"]
+[ext_resource type="Texture2D" uid="uid://b7rmw8wqb3mwf" path="res://TextureAsset/Levevl2/名字框.png" id="5_pimgl"]
+[ext_resource type="Texture2D" uid="uid://cdmnnnct5bgsa" path="res://TextureAsset/Levevl2/便利贴1.png" id="6_kdpw7"]
+[ext_resource type="Texture2D" uid="uid://cdo38kug00vr4" path="res://TextureAsset/Levevl2/回忆按钮.png" id="7_qhhuu"]
+[ext_resource type="Texture2D" uid="uid://cwthv8regohyn" path="res://TextureAsset/Levevl2/便利贴2.png" id="8_note_02"]
+[ext_resource type="Texture2D" uid="uid://dgmu3m83x227w" path="res://TextureAsset/Levevl2/便利贴3.png" id="9_note_03"]
 
-[sub_resource type="Gradient" id="Gradient_background"]
-offsets = PackedFloat32Array(0, 1)
-colors = PackedColorArray(0.0352941, 0.0196078, 0.0470588, 1, 0.137255, 0.0705882, 0.129412, 1)
+[ext_resource type="Script" path="res://scripts/ui/hover_effect.gd" id="10_hover"]
 
-[sub_resource type="GradientTexture2D" id="Texture_background"]
-gradient = SubResource("Gradient_background")
-width = 1152
-height = 648
-fill_from = Vector2(0, 0)
-fill_to = Vector2(1, 1)
+[sub_resource type="SystemFont" id="SystemFont_dialogue_bold"]
+font_names = PackedStringArray("Microsoft YaHei", "Noto Sans CJK SC", "SimHei")
+font_weight = 700
+subpixel_positioning = 0
 
-[sub_resource type="Gradient" id="Gradient_character"]
-offsets = PackedFloat32Array(0, 0.55, 1)
-colors = PackedColorArray(0.121569, 0.0745098, 0.14902, 1, 0.27451, 0.145098, 0.25098, 1, 0.101961, 0.0588235, 0.129412, 1)
+[sub_resource type="StyleBoxFlat" id="StyleBox_memory_normal"]
+bg_color = Color(0.42, 0.31, 0.2, 0.96)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.9, 0.79, 0.58, 0.9)
+corner_radius_top_left = 22
+corner_radius_top_right = 22
+corner_radius_bottom_right = 22
+corner_radius_bottom_left = 22
 
-[sub_resource type="GradientTexture2D" id="Texture_character"]
-gradient = SubResource("Gradient_character")
-width = 600
-height = 600
-fill_from = Vector2(0.5, 0)
-fill_to = Vector2(0.5, 1)
+[sub_resource type="StyleBoxFlat" id="StyleBox_memory_pressed"]
+bg_color = Color(0.27, 0.18, 0.12, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.84, 0.7, 0.5, 1)
+corner_radius_top_left = 22
+corner_radius_top_right = 22
+corner_radius_bottom_right = 22
+corner_radius_bottom_left = 22
+
+[sub_resource type="StyleBoxFlat" id="StyleBox_memory_hover"]
+bg_color = Color(0.58, 0.43, 0.27, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(1, 0.91, 0.72, 1)
+corner_radius_top_left = 22
+corner_radius_top_right = 22
+corner_radius_bottom_right = 22
+corner_radius_bottom_left = 22
+
+[sub_resource type="StyleBoxFlat" id="StyleBox_memory_disabled"]
+bg_color = Color(0.16, 0.14, 0.13, 0.75)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.4, 0.36, 0.31, 0.65)
+corner_radius_top_left = 22
+corner_radius_top_right = 22
+corner_radius_bottom_right = 22
+corner_radius_bottom_left = 22
+
+[sub_resource type="StyleBoxEmpty" id="StyleBox_memory_focus"]
 
 [sub_resource type="Gradient" id="Gradient_portrait_frame"]
 offsets = PackedFloat32Array(0, 0.5, 1)
@@ -33,419 +77,367 @@ colors = PackedColorArray(0.776471, 0.443137, 0.639216, 1, 0.329412, 0.160784, 0
 gradient = SubResource("Gradient_portrait_frame")
 width = 640
 height = 360
-fill_from = Vector2(0, 0)
 fill_to = Vector2(1, 1)
 
-[sub_resource type="Gradient" id="Gradient_identity"]
-offsets = PackedFloat32Array(0, 1)
-colors = PackedColorArray(0.101961, 0.0470588, 0.113725, 0.94, 0.286275, 0.133333, 0.25098, 0.94)
-
-[sub_resource type="GradientTexture2D" id="Texture_identity"]
-gradient = SubResource("Gradient_identity")
-width = 560
-height = 100
-fill_from = Vector2(0, 0.5)
-fill_to = Vector2(1, 0.5)
-
-[sub_resource type="Gradient" id="Gradient_dialogue"]
-offsets = PackedFloat32Array(0, 1)
-colors = PackedColorArray(0.105882, 0.0627451, 0.129412, 0.98, 0.184314, 0.101961, 0.180392, 0.98)
-
-[sub_resource type="GradientTexture2D" id="Texture_dialogue"]
-gradient = SubResource("Gradient_dialogue")
-width = 640
-height = 220
-fill_from = Vector2(0, 0.5)
-fill_to = Vector2(1, 0.5)
-
-[sub_resource type="Gradient" id="Gradient_notes"]
-offsets = PackedFloat32Array(0, 1)
-colors = PackedColorArray(0.160784, 0.101961, 0.168627, 0.98, 0.105882, 0.0588235, 0.117647, 0.98)
-
-[sub_resource type="GradientTexture2D" id="Texture_notes"]
-gradient = SubResource("Gradient_notes")
-width = 480
-height = 600
-fill_from = Vector2(0, 0)
-fill_to = Vector2(1, 1)
-
-[sub_resource type="StyleBoxFlat" id="StyleBox_memory_normal"]
-bg_color = Color(0.329412, 0.145098, 0.286275, 0.96)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(0.815686, 0.478431, 0.694118, 0.9)
-corner_radius_top_left = 12
-corner_radius_top_right = 12
-corner_radius_bottom_right = 12
-corner_radius_bottom_left = 12
-
-[sub_resource type="StyleBoxFlat" id="StyleBox_memory_hover"]
-bg_color = Color(0.517647, 0.235294, 0.427451, 1)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(1, 0.701961, 0.85098, 1)
-corner_radius_top_left = 12
-corner_radius_top_right = 12
-corner_radius_bottom_right = 12
-corner_radius_bottom_left = 12
-
-[sub_resource type="StyleBoxFlat" id="StyleBox_memory_pressed"]
-bg_color = Color(0.223529, 0.0862745, 0.188235, 1)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(0.901961, 0.505882, 0.733333, 1)
-corner_radius_top_left = 12
-corner_radius_top_right = 12
-corner_radius_bottom_right = 12
-corner_radius_bottom_left = 12
-
-[sub_resource type="StyleBoxFlat" id="StyleBox_memory_disabled"]
-bg_color = Color(0.160784, 0.12549, 0.160784, 0.75)
-border_width_left = 1
-border_width_top = 1
-border_width_right = 1
-border_width_bottom = 1
-border_color = Color(0.4, 0.337255, 0.396078, 0.65)
-corner_radius_top_left = 12
-corner_radius_top_right = 12
-corner_radius_bottom_right = 12
-corner_radius_bottom_left = 12
-
-[node name="NPCBase" type="Control"]
+[node name="NPCBase" type="Control" unique_id=1302377562]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 2
 script = ExtResource("1_script")
+note_slot_textures = Array[Texture2D]([ExtResource("8_note_02"), ExtResource("9_note_03")])
 
-[node name="Background" type="TextureRect" parent="."]
+[node name="Background" type="TextureRect" parent="." unique_id=2048506359]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-texture = SubResource("Texture_background")
+mouse_filter = 2
+texture = ExtResource("2_bianu")
 expand_mode = 1
 stretch_mode = 6
-mouse_filter = 2
 
-[node name="CharacterDisplay" type="Control" parent="."]
-layout_mode = 1
-anchor_left = 0.03
-anchor_top = 0.035
-anchor_right = 0.59
-anchor_bottom = 0.565
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="PortraitFrame" type="TextureRect" parent="CharacterDisplay"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-texture = SubResource("Texture_portrait_frame")
-expand_mode = 1
-stretch_mode = 6
-mouse_filter = 2
-
-[node name="CharacterArea" type="TextureRect" parent="CharacterDisplay"]
-unique_name_in_owner = true
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = 10.0
-offset_top = 10.0
-offset_right = -10.0
-offset_bottom = -10.0
-grow_horizontal = 2
-grow_vertical = 2
-texture = SubResource("Texture_character")
-expand_mode = 1
-stretch_mode = 6
-mouse_filter = 2
-
-[node name="InfoPanel" type="Control" parent="CharacterDisplay"]
-layout_mode = 1
-anchors_preset = 12
-anchor_top = 1.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = 20.0
-offset_top = -102.0
-offset_right = -20.0
-offset_bottom = -18.0
-grow_horizontal = 2
-grow_vertical = 0
-
-[node name="InfoBackground" type="TextureRect" parent="CharacterDisplay/InfoPanel"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-texture = SubResource("Texture_identity")
-expand_mode = 1
-stretch_mode = 6
-mouse_filter = 2
-
-[node name="NPCName" type="Label" parent="CharacterDisplay/InfoPanel"]
+[node name="CharacterLayer" type="Control" parent="." unique_id=1493502529]
 unique_name_in_owner = true
 visible = false
+anchors_preset = 0
+offset_left = 390.0
+offset_top = 95.0
+offset_right = 760.0
+offset_bottom = 470.0
+pivot_offset = Vector2(185, 187.5)
+mouse_filter = 2
+
+[node name="CharacterSlot" type="Control" parent="CharacterLayer" unique_id=1467155370]
 layout_mode = 1
-anchors_preset = 10
+anchors_preset = 15
 anchor_right = 1.0
-offset_left = 18.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="CharacterPortrait" type="TextureRect" parent="CharacterLayer/CharacterSlot" unique_id=2046888891]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("3_hahxb")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="DialoguePanel" type="Control" parent="." unique_id=542820583]
+unique_name_in_owner = true
+visible = false
+anchors_preset = 0
+offset_left = 70.0
+offset_top = 500.0
+offset_right = 790.0
+offset_bottom = 630.0
+mouse_filter = 1
+
+[node name="DialogueShade" type="TextureRect" parent="DialoguePanel" unique_id=2049532797]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("4_hahxb")
+expand_mode = 1
+stretch_mode = 6
+
+[node name="SpeakerName" type="Label" parent="DialoguePanel" unique_id=1690889738]
+unique_name_in_owner = true
+visible = false
+layout_mode = 0
+offset_left = 25.0
 offset_top = 8.0
-offset_right = -18.0
-offset_bottom = 44.0
-grow_horizontal = 2
-theme_override_colors/font_color = Color(0.980392, 0.917647, 0.956863, 1)
-theme_override_font_sizes/font_size = 26
-text = "NPC"
-
-[node name="IdentityLabel" type="Label" parent="CharacterDisplay/InfoPanel"]
-unique_name_in_owner = true
-visible = false
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = 18.0
-offset_top = 45.0
-offset_right = -18.0
-offset_bottom = -8.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_colors/font_color = Color(0.819608, 0.686275, 0.780392, 1)
-theme_override_font_sizes/font_size = 14
-text = "IDENTITY LOCKED"
-autowrap_mode = 2
-
-[node name="DialoguePanel" type="Control" parent="."]
-unique_name_in_owner = true
-layout_mode = 1
-anchor_left = 0.045
-anchor_top = 0.59
-anchor_right = 0.59
-anchor_bottom = 0.95
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="DialogueBackground" type="TextureRect" parent="DialoguePanel"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-texture = SubResource("Texture_dialogue")
-expand_mode = 1
-stretch_mode = 6
-mouse_filter = 2
-
-[node name="DialogueBox" type="Control" parent="DialoguePanel"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = 26.0
-offset_top = 16.0
-offset_right = -26.0
-offset_bottom = -76.0
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="SpeakerName" type="Label" parent="DialoguePanel/DialogueBox"]
-unique_name_in_owner = true
-layout_mode = 1
-anchors_preset = 10
-anchor_right = 1.0
-offset_bottom = 30.0
-grow_horizontal = 2
-theme_override_colors/font_color = Color(0.917647, 0.654902, 0.815686, 1)
+offset_right = 675.0
+offset_bottom = 36.0
+theme_override_colors/font_color = Color(0.917647, 0.792157, 0.627451, 1)
 theme_override_font_sizes/font_size = 17
 text = "UNKNOWN"
 
-[node name="DialogueText" type="Label" parent="DialoguePanel/DialogueBox"]
+[node name="DialogueText" type="Label" parent="DialoguePanel" unique_id=589041556]
 unique_name_in_owner = true
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_top = 34.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_colors/font_color = Color(0.956863, 0.878431, 0.929412, 1)
-theme_override_font_sizes/font_size = 19
-text = "测试对话"
+layout_mode = 0
+offset_left = 25.0
+offset_top = 20.0
+offset_right = 675.0
+offset_bottom = 100.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(0.05, 0.05, 0.05, 0.65)
+theme_override_constants/outline_size = 1
+theme_override_fonts/font = SubResource("SystemFont_dialogue_bold")
+theme_override_font_sizes/font_size = 30
+text = "DIALOGUE"
+vertical_alignment = 1
 autowrap_mode = 2
 
-[node name="ContinueButton" type="Button" parent="DialoguePanel"]
+[node name="ContinueButton" type="Button" parent="DialoguePanel" unique_id=1246235409]
 unique_name_in_owner = true
-layout_mode = 1
-anchors_preset = 3
-anchor_left = 1.0
-anchor_top = 1.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = -194.0
-offset_top = -66.0
-offset_right = -24.0
-offset_bottom = -18.0
-grow_horizontal = 0
-grow_vertical = 0
-theme_override_font_sizes/font_size = 16
+visible = false
+layout_mode = 0
+offset_left = 578.0
+offset_top = 82.0
+offset_right = 702.0
+offset_bottom = 127.0
+theme_override_font_sizes/font_size = 15
 text = "CONTINUE"
 
-[node name="NotePanel" type="Control" parent="."]
+[node name="NamePlate" type="Control" parent="." unique_id=1238339086]
 unique_name_in_owner = true
 visible = false
-layout_mode = 1
-anchor_left = 0.62
-anchor_top = 0.035
-anchor_right = 0.975
-anchor_bottom = 0.86
-grow_horizontal = 2
-grow_vertical = 2
+anchors_preset = 0
+offset_left = 540.0
+offset_top = 455.0
+offset_right = 760.0
+offset_bottom = 510.0
+pivot_offset = Vector2(110, 27.5)
+mouse_filter = 2
 
-[node name="BoardBackground" type="TextureRect" parent="NotePanel"]
+[node name="NamePlateTexture" type="TextureRect" parent="NamePlate" unique_id=1554145399]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-texture = SubResource("Texture_notes")
+mouse_filter = 2
+texture = ExtResource("5_pimgl")
 expand_mode = 1
 stretch_mode = 6
-mouse_filter = 2
 
-[node name="BoardTitleLabel" type="Label" parent="NotePanel"]
-layout_mode = 1
-anchors_preset = 10
-anchor_right = 1.0
-offset_left = 18.0
-offset_top = 14.0
-offset_right = -18.0
-offset_bottom = 50.0
-grow_horizontal = 2
-theme_override_colors/font_color = Color(0.937255, 0.792157, 0.890196, 1)
-theme_override_font_sizes/font_size = 21
-text = "PROFILE BOARD"
-
-[node name="NoteBoardArea" type="Control" parent="NotePanel"]
+[node name="NPCName" type="Label" parent="NamePlate" unique_id=2053522445]
 unique_name_in_owner = true
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 12.0
-offset_top = 58.0
-offset_right = -12.0
-offset_bottom = -12.0
 grow_horizontal = 2
 grow_vertical = 2
-mouse_filter = 2
+theme_override_colors/font_color = Color(0.101961, 0.101961, 0.101961, 1)
+theme_override_font_sizes/font_size = 26
+text = "NPC"
+horizontal_alignment = 1
+vertical_alignment = 1
 
-[node name="NoteAnchor_01" type="Control" parent="NotePanel/NoteBoardArea"]
-unique_name_in_owner = true
-layout_mode = 0
-offset_left = 8.0
-offset_top = 8.0
-offset_right = 184.0
-offset_bottom = 122.0
-rotation = -0.0523599
-pivot_offset = Vector2(88, 57)
-mouse_filter = 2
-
-[node name="NoteAnchor_02" type="Control" parent="NotePanel/NoteBoardArea"]
-unique_name_in_owner = true
-layout_mode = 0
-offset_left = 204.0
-offset_top = 2.0
-offset_right = 357.0
-offset_bottom = 128.0
-rotation = 0.0436332
-pivot_offset = Vector2(76.5, 63)
-mouse_filter = 2
-
-[node name="NoteAnchor_03" type="Control" parent="NotePanel/NoteBoardArea"]
-unique_name_in_owner = true
-layout_mode = 0
-offset_left = 18.0
-offset_top = 154.0
-offset_right = 207.0
-offset_bottom = 260.0
-rotation = 0.0349066
-pivot_offset = Vector2(94.5, 53)
-mouse_filter = 2
-
-[node name="NoteAnchor_04" type="Control" parent="NotePanel/NoteBoardArea"]
-unique_name_in_owner = true
-layout_mode = 0
-offset_left = 218.0
-offset_top = 144.0
-offset_right = 365.0
-offset_bottom = 268.0
-rotation = -0.0610865
-pivot_offset = Vector2(73.5, 62)
-mouse_filter = 2
-
-[node name="NoteAnchor_05" type="Control" parent="NotePanel/NoteBoardArea"]
-unique_name_in_owner = true
-layout_mode = 0
-offset_left = 6.0
-offset_top = 296.0
-offset_right = 181.0
-offset_bottom = 410.0
-rotation = 0.0523599
-pivot_offset = Vector2(87.5, 57)
-mouse_filter = 2
-
-[node name="NoteAnchor_06" type="Control" parent="NotePanel/NoteBoardArea"]
-unique_name_in_owner = true
-layout_mode = 0
-offset_left = 202.0
-offset_top = 292.0
-offset_right = 365.0
-offset_bottom = 408.0
-rotation = -0.0349066
-pivot_offset = Vector2(81.5, 58)
-mouse_filter = 2
-
-[node name="MemoryButton" type="Button" parent="."]
+[node name="DossierPanel" type="Control" parent="." unique_id=1899789036]
 unique_name_in_owner = true
 visible = false
+anchors_preset = 0
+offset_left = 785.0
+offset_right = 1152.0
+offset_bottom = 648.0
+
+[node name="DossierShade" type="ColorRect" parent="DossierPanel" unique_id=1386036224]
 layout_mode = 1
-anchor_left = 0.65
-anchor_top = 0.875
-anchor_right = 0.95
-anchor_bottom = 0.96
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-disabled = true
-theme_override_colors/font_color = Color(1, 0.894118, 0.952941, 1)
-theme_override_colors/font_disabled_color = Color(0.552941, 0.505882, 0.552941, 1)
-theme_override_colors/font_hover_color = Color(1, 0.960784, 0.984314, 1)
-theme_override_font_sizes/font_size = 18
-theme_override_styles/normal = SubResource("StyleBox_memory_normal")
-theme_override_styles/hover = SubResource("StyleBox_memory_hover")
-theme_override_styles/pressed = SubResource("StyleBox_memory_pressed")
-theme_override_styles/disabled = SubResource("StyleBox_memory_disabled")
-text = "进入回忆"
+mouse_filter = 2
+color = Color(0.025, 0.022, 0.022, 0.72)
 
-[node name="NoteDetailPopup" parent="." instance=ExtResource("2_note_detail_popup")]
+[node name="ProfileBoard" type="Control" parent="DossierPanel" unique_id=287414472]
+anchors_preset = 0
+offset_left = 25.0
+offset_top = 15.0
+offset_right = 350.0
+offset_bottom = 250.0
+mouse_filter = 0
+
+[node name="ProfileBoardTexture" type="TextureRect" parent="DossierPanel/ProfileBoard" unique_id=1732597270]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("6_kdpw7")
+expand_mode = 1
+stretch_mode = 6
+
+[node name="ProfilePhoto" type="TextureRect" parent="DossierPanel/ProfileBoard" unique_id=183647424]
 unique_name_in_owner = true
+layout_mode = 0
+offset_left = 28.0
+offset_top = 32.0
+offset_right = 137.0
+offset_bottom = 164.0
+mouse_filter = 2
+texture = ExtResource("3_lnc5x")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="IdentityLabel" type="Label" parent="DossierPanel/ProfileBoard" unique_id=406506531]
+unique_name_in_owner = true
+self_modulate = Color(1, 1, 1, 0)
+layout_mode = 0
+offset_left = 24.0
+offset_top = 178.0
+offset_right = 300.0
+offset_bottom = 224.0
+theme_override_colors/font_color = Color(0.25, 0.19, 0.14, 0.9)
+theme_override_font_sizes/font_size = 13
+text = "IDENTITY LOCKED"
+autowrap_mode = 2
+
+[node name="HoverEffect" type="Node" parent="DossierPanel/ProfileBoard"]
+script = ExtResource("10_hover")
+hover_offset = Vector2(0, -4)
+
+[node name="RelatedTitle" type="Label" parent="DossierPanel" unique_id=907226177]
+layout_mode = 0
+offset_left = 20.0
+offset_top = 265.0
+offset_right = 245.0
+offset_bottom = 305.0
+theme_override_colors/font_color = Color(0.96, 0.92, 0.84, 1)
+theme_override_font_sizes/font_size = 24
+text = "相关资料"
+
+[node name="RelatedDataArea" type="Control" parent="DossierPanel" unique_id=1783266462]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="RelatedSlot01" type="Control" parent="DossierPanel/RelatedDataArea" unique_id=96068912]
+unique_name_in_owner = true
+anchors_preset = 0
+offset_left = 10.0
+offset_top = 315.0
+offset_right = 175.0
+offset_bottom = 475.0
+rotation = -0.0349066
+pivot_offset = Vector2(82.5, 80)
+mouse_filter = 2
+
+[node name="RelatedSlot02" type="Control" parent="DossierPanel/RelatedDataArea" unique_id=1874999615]
+unique_name_in_owner = true
+anchors_preset = 0
+offset_left = 210.0
+offset_top = 295.0
+offset_right = 345.0
+offset_bottom = 390.0
+rotation = 0.0523599
+pivot_offset = Vector2(67.5, 47.5)
+mouse_filter = 2
+
+[node name="RelatedSlot03" type="Control" parent="DossierPanel/RelatedDataArea" unique_id=1260963525]
+unique_name_in_owner = true
+anchors_preset = 0
+offset_left = 175.0
+offset_top = 395.0
+offset_right = 335.0
+offset_bottom = 460.0
+rotation = -0.0261799
+pivot_offset = Vector2(80, 32.5)
+mouse_filter = 2
+
+[node name="RelatedSlot04" type="Control" parent="DossierPanel/RelatedDataArea" unique_id=147944094]
+unique_name_in_owner = true
+anchors_preset = 0
+offset_left = 12.0
+offset_top = 485.0
+offset_right = 165.0
+offset_bottom = 555.0
+rotation = 0.0349066
+pivot_offset = Vector2(76.5, 35)
+mouse_filter = 2
+
+[node name="RelatedSlot05" type="Control" parent="DossierPanel/RelatedDataArea" unique_id=1737580976]
+unique_name_in_owner = true
+anchors_preset = 0
+offset_left = 182.0
+offset_top = 468.0
+offset_right = 345.0
+offset_bottom = 520.0
+rotation = -0.0523599
+pivot_offset = Vector2(81.5, 26)
+mouse_filter = 2
+
+[node name="RelatedSlot06" type="Control" parent="DossierPanel/RelatedDataArea" unique_id=1147471641]
+unique_name_in_owner = true
+anchors_preset = 0
+offset_left = 185.0
+offset_top = 526.0
+offset_right = 342.0
+offset_bottom = 578.0
+rotation = 0.0261799
+pivot_offset = Vector2(78.5, 26)
+mouse_filter = 2
+
+[node name="MemoryButton" type="Button" parent="DossierPanel" unique_id=580509558]
+unique_name_in_owner = true
+visible = false
+layout_mode = 0
+offset_left = 25.0
+offset_top = 515.0
+offset_right = 270.0
+offset_bottom = 610.0
+theme_override_colors/font_color = Color(1, 0.94, 0.82, 1)
+theme_override_colors/font_hover_color = Color(1, 1, 0.95, 1)
+theme_override_colors/font_disabled_color = Color(0.55, 0.52, 0.48, 1)
+theme_override_font_sizes/font_size = 22
+theme_override_styles/normal = SubResource("StyleBox_memory_normal")
+theme_override_styles/pressed = SubResource("StyleBox_memory_pressed")
+theme_override_styles/hover = SubResource("StyleBox_memory_hover")
+theme_override_styles/disabled = SubResource("StyleBox_memory_disabled")
+theme_override_styles/focus = SubResource("StyleBox_memory_focus")
+disabled = true
+flat = true
+
+[node name="MemoryButtonVisual" type="TextureRect" parent="DossierPanel/MemoryButton" unique_id=946038811]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("7_qhhuu")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="HoverEffect" type="Node" parent="DossierPanel/MemoryButton"]
+script = ExtResource("10_hover")
+hover_scale = 1.08
+hover_brightness = 1.15
+hover_offset = Vector2(0, 0)
+pressed_scale = 0.95
+pressed_rebound_scale = 1.0
+
+[node name="MemoryCameraTexture" type="TextureRect" parent="DossierPanel" unique_id=1911508275]
+visible = false
+modulate = Color(0.9, 0.85, 0.75, 0.75)
+layout_mode = 0
+offset_left = 190.0
+offset_top = 465.0
+offset_right = 355.0
+offset_bottom = 615.0
+mouse_filter = 2
+texture = SubResource("Texture_portrait_frame")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="NoteDetailPopup" parent="." unique_id=1245895994 instance=ExtResource("2_note_detail_popup")]
+layout_mode = 1

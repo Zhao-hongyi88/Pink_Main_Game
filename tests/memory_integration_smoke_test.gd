@@ -139,12 +139,24 @@ class MemoryIntegrationProbe:
 
 	func _complete_npc_dialogue(npc_base: Node) -> void:
 		var continue_button := npc_base.get_node("%ContinueButton") as Button
+		if bool(npc_base.get("_awaiting_intro_reveal")):
+			npc_base.call("_reveal_first_conversation")
+			await _wait_for_dialogue_input(npc_base)
 		var safety_count := 0
 		while not continue_button.disabled:
+			await _wait_for_dialogue_input(npc_base)
 			continue_button.pressed.emit()
 			await get_tree().process_frame
 			safety_count += 1
 			assert(safety_count < 100)
+
+
+	func _wait_for_dialogue_input(npc_base: Node) -> void:
+		for _frame in 180:
+			if not bool(npc_base.call("_is_dialogue_advance_blocked")):
+				return
+			await get_tree().process_frame
+		assert(false, "NPCBase dialogue input did not unblock in time.")
 
 
 	func _complete_observation(memory_scene: Node, point_name: StringName) -> void:
@@ -182,4 +194,3 @@ func _start_probe() -> void:
 	var probe := MemoryIntegrationProbe.new()
 	get_tree().root.add_child(probe)
 	probe.run()
-
