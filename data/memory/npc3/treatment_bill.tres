@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="MemoryObservationData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/memory/memory_observation_data.gd" id="1_observation_data"]
+
+[resource]
+script = ExtResource("1_observation_data")
+observation_id = &"treatment_bill"
+title = "治病账单"
+info = "已产生费用：持续累积\n账单项目：检查 / 治疗 / 药品 / 住院\n当前状态：仍在继续增加\n结算情况：本次治疗尚未结束"
+images = []
+image_placeholders = []
+dialogue = PackedStringArray("治疗费用已经累积到这个数了吗……", "而且账单上的项目还在不断增加。", "按照病历里的治疗周期，这显然不会是最后一张。")

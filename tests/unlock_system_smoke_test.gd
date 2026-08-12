@@ -3,7 +3,7 @@ extends Node
 
 func _ready() -> void:
 	var valid_keys: Array[String] = ["basic_info", "work_info"]
-	var npc_a_progress := NPCProgress.new(&"npc_a")
+	var npc_a_progress := NPCProgress.new(&"npc_zhang_yuan")
 	npc_a_progress.current_dialogue_index = 2
 	var system := UnlockSystem.new()
 	assert(system.setup(valid_keys, npc_a_progress))
@@ -60,7 +60,7 @@ func _ready() -> void:
 	assert(npc_a_progress.revealed_note_keys == order_before)
 
 	# NPC_A 与 NPC_B 使用不同 NPCProgress，互不影响。
-	var npc_b_progress := NPCProgress.new(&"npc_b")
+	var npc_b_progress := NPCProgress.new(&"npc_li_lei")
 	var npc_b_system := UnlockSystem.new()
 	assert(npc_b_system.setup(valid_keys, npc_b_progress))
 	result = npc_b_system.request_unlock("basic_info")

@@ -7,36 +7,36 @@ const NPC_BASE_SCENE: PackedScene = preload(NPC_BASE_SCENE_PATH)
 const NPC_CASES: Array[Dictionary] = [
 	{
 		"path": "res://data/npc/npc_a.json",
-		"npc_id": "npc_a",
-		"display_name": "NPC_A",
+		"npc_id": "npc_zhang_yuan",
+		"display_name": "张远",
 		"dialogue_count": 5,
 		"note_count": 5,
 	},
 	{
 		"path": "res://data/npc/npc_b.json",
-		"npc_id": "npc_b",
-		"display_name": "NPC_B",
+		"npc_id": "npc_li_lei",
+		"display_name": "李磊",
 		"dialogue_count": 3,
 		"note_count": 2,
 	},
 	{
 		"path": "res://data/npc/npc_c.json",
-		"npc_id": "npc_c",
-		"display_name": "NPC_C",
+		"npc_id": "npc_liu_guilan",
+		"display_name": "刘桂兰",
 		"dialogue_count": 4,
 		"note_count": 3,
 	},
 	{
 		"path": "res://data/npc/npc_d.json",
-		"npc_id": "npc_d",
-		"display_name": "NPC_D",
+		"npc_id": "npc_su_qing",
+		"display_name": "苏晴",
 		"dialogue_count": 5,
 		"note_count": 2,
 	},
 	{
 		"path": "res://data/npc/npc_e.json",
-		"npc_id": "npc_e",
-		"display_name": "NPC_E",
+		"npc_id": "npc_wang_jianguo",
+		"display_name": "王建国",
 		"dialogue_count": 4,
 		"note_count": 3,
 	},
@@ -98,7 +98,11 @@ func _verify_all_npcs_use_shared_ui() -> void:
 		assert(npc_base.get_node("%CharacterArea").texture != null)
 		assert(npc_base.get_node("%DialogueText").text == npc_data.dialogues[0]["text"])
 		assert(npc_base.dialogue_manager._dialogues.size() == npc_data.dialogues.size())
-		assert(npc_base.get_node("%NoteContainer").get_child_count() == npc_data.notes.size())
+		var note_board_area := npc_base.get_node("%NoteBoardArea") as Control
+		assert(note_board_area != null)
+		assert(npc_base.get_node_or_null("%NoteContainer") == null)
+		assert(npc_base.get_node_or_null("NotePanel/NoteScroll") == null)
+		assert(note_board_area.get_child_count() == 6 + npc_data.notes.size())
 		assert(npc_base._note_items_by_key.size() == npc_data.notes.size())
 		assert(not npc_base.get_node("%NotePanel").visible)
 		assert(not npc_base.get_node("%MemoryButton").visible)
@@ -115,13 +119,40 @@ func _verify_all_npcs_use_shared_ui() -> void:
 			if not unlock_key.is_empty() and not expected_revealed_keys.has(unlock_key):
 				expected_revealed_keys.append(unlock_key)
 				assert(bool(npc_base.npc_progress.unlocked_keys.get(unlock_key, false)))
-				assert(npc_base._note_items_by_key[unlock_key].visible)
+				var note_item: NoteItem = npc_base._note_items_by_key[unlock_key]
+				assert(note_item.visible)
+				var anchor_name := "%%NoteAnchor_0%d" % expected_revealed_keys.size()
+				assert(note_item.get_parent() == npc_base.get_node(anchor_name))
+				assert(npc_base._note_entry_tweens.has(unlock_key))
+				assert(note_item.disabled)
+				await get_tree().create_timer(npc_base.note_entry_duration + 0.08).timeout
+				assert(not npc_base._note_entry_tweens.has(unlock_key))
+				assert(note_item.position == Vector2.ZERO)
+				assert(note_item.scale == Vector2.ONE)
+				assert(is_equal_approx(note_item.rotation, 0.0))
+				assert(is_equal_approx(note_item.modulate.a, 1.0))
+				assert(not note_item.disabled)
+				var note_data: Dictionary = npc_data.notes.filter(
+					func(note: Dictionary) -> bool: return note["key"] == unlock_key
+				)[0]
+				note_item.pressed.emit()
+				var detail_popup := npc_base.get_node("%NoteDetailPopup") as Control
+				assert(detail_popup.visible)
+				assert(detail_popup.get_node("%TitleLabel").text == note_data["header"])
+				assert(detail_popup.get_node("%ContentLabel").text == note_data["content"])
+				detail_popup.get_node("%CloseButton").pressed.emit()
+				assert(not detail_popup.visible)
 			if StringName(unlock_key) == npc_data.name_unlock_key:
 				assert(npc_base.get_node("%NPCName").visible)
 
 		assert(npc_base.dialogue_completed)
 		assert(npc_base.current_dialogue_index == npc_data.dialogues.size() - 1)
 		assert(npc_base.npc_progress.revealed_note_keys == expected_revealed_keys)
+		var visible_note_count := 0
+		for note_item: NoteItem in npc_base._note_items:
+			if note_item.visible:
+				visible_note_count += 1
+		assert(visible_note_count == expected_revealed_keys.size())
 		assert(npc_base.get_node("%NPCName").visible)
 		assert(npc_base.get_node("%NotePanel").visible)
 		assert(npc_base.memory_ready)
@@ -146,7 +177,7 @@ func _verify_npc_progress_isolation() -> void:
 	assert(npc_b_data.is_valid())
 	assert(npc_c_data.is_valid())
 
-	# NPC_B advances far enough to unlock basic_info, but remains incomplete.
+	# 李磊 advances far enough to unlock basic_info, but remains incomplete.
 	var npc_b := await _instantiate_npc(npc_b_data.source_path)
 	var npc_b_continue: Button = npc_b.get_node("%ContinueButton")
 	npc_b_continue.pressed.emit()
@@ -164,7 +195,7 @@ func _verify_npc_progress_isolation() -> void:
 	assert(npc_b.get_node("%NotePanel").visible)
 	_dispose_npc(npc_b)
 
-	# NPC_C starts from its own untouched progress.
+	# 刘桂兰 starts from its own untouched progress.
 	var npc_c := await _instantiate_npc(npc_c_data.source_path)
 	var npc_c_progress: NPCProgress = npc_c.npc_progress
 	assert(npc_c_progress != npc_b_progress)
@@ -183,7 +214,7 @@ func _verify_npc_progress_isolation() -> void:
 	assert(npc_c.current_dialogue_index == 1)
 	_dispose_npc(npc_c)
 
-	# Reloading NPC_B restores exactly the state it had before NPC_C was opened.
+	# Reloading 李磊 restores exactly the state it had before 刘桂兰 was opened.
 	var npc_b_reloaded := await _instantiate_npc(npc_b_data.source_path)
 	assert(npc_b_reloaded.npc_progress == npc_b_progress)
 	assert(npc_b_reloaded.current_dialogue_index == npc_b_index)
@@ -196,14 +227,20 @@ func _verify_npc_progress_isolation() -> void:
 	assert(npc_b_reloaded.get_node("%NPCName").visible)
 	assert(npc_b_reloaded.get_node("%NotePanel").visible)
 	assert(npc_b_reloaded._note_items_by_key["basic_info"].visible)
+	assert(npc_b_reloaded._note_items_by_key["basic_info"].get_parent() == npc_b_reloaded.get_node("%NoteAnchor_01"))
+	assert(npc_b_reloaded._note_entry_tweens.is_empty())
+	assert(npc_b_reloaded._note_items_by_key["basic_info"].position == Vector2.ZERO)
+	assert(npc_b_reloaded._note_items_by_key["basic_info"].scale == Vector2.ONE)
+	assert(is_equal_approx(npc_b_reloaded._note_items_by_key["basic_info"].modulate.a, 1.0))
+	assert(not npc_b_reloaded._note_items_by_key["basic_info"].disabled)
 
-	# Completing NPC_B and its memory flag must not mutate any NPC_C field.
+	# Completing 李磊 and its memory flag must not mutate any 刘桂兰 field.
 	var npc_b_reloaded_continue: Button = npc_b_reloaded.get_node("%ContinueButton")
 	npc_b_reloaded_continue.pressed.emit()
 	assert(npc_b_reloaded.dialogue_completed)
 	assert(npc_b_reloaded.memory_ready)
 	assert(npc_b_reloaded.get_node("%MemoryButton").visible)
-	assert(GameState.mark_memory_completed(&"npc_b"))
+	assert(GameState.mark_memory_completed(&"npc_li_lei"))
 	assert(npc_b_reloaded.memory_completed)
 	assert(npc_c_progress.current_dialogue_index == 1)
 	assert(not npc_c_progress.dialogue_completed)
@@ -213,7 +250,7 @@ func _verify_npc_progress_isolation() -> void:
 	assert(not npc_c_progress.memory_completed)
 	_dispose_npc(npc_b_reloaded)
 
-	# Reloading NPC_C restores its own state, not NPC_B's completed state.
+	# Reloading 刘桂兰 restores its own state, not 李磊's completed state.
 	var npc_c_reloaded := await _instantiate_npc(npc_c_data.source_path)
 	assert(npc_c_reloaded.npc_progress == npc_c_progress)
 	assert(npc_c_reloaded.current_dialogue_index == 1)

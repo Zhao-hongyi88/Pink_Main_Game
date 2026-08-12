@@ -12,6 +12,10 @@ signal time_finished
 @onready var time_value: Label = %TimeValue
 
 var _remaining_seconds := 282180
+var _value_feedback_tween: Tween
+
+const VALUE_FEEDBACK_SCALE := Vector2(1.04, 1.04)
+const VALUE_FEEDBACK_HALF_DURATION := 0.09
 
 @export_range(0, 31536000, 1) var remaining_seconds: int = 282180:
 	get:
@@ -79,6 +83,14 @@ func get_remaining_seconds() -> int:
 	return remaining_seconds
 
 
+func is_value_feedback_running() -> bool:
+	return (
+		_value_feedback_tween != null
+		and _value_feedback_tween.is_valid()
+		and _value_feedback_tween.is_running()
+	)
+
+
 func get_display_text() -> String:
 	var parts := get_time_parts()
 	return "%dH %02dMin" % [parts["hours"], parts["minutes"]]
@@ -115,4 +127,28 @@ func _finish_countdown() -> void:
 
 
 func _update_display() -> void:
-	time_value.text = get_display_text()
+	var new_display_text := get_display_text()
+	if time_value.text == new_display_text:
+		return
+	time_value.text = new_display_text
+	_play_value_feedback()
+
+
+func _play_value_feedback() -> void:
+	if _value_feedback_tween != null and _value_feedback_tween.is_valid():
+		_value_feedback_tween.kill()
+
+	time_value.pivot_offset = time_value.size / 2.0
+	_value_feedback_tween = create_tween()
+	_value_feedback_tween.tween_property(
+		time_value,
+		"scale",
+		VALUE_FEEDBACK_SCALE,
+		VALUE_FEEDBACK_HALF_DURATION
+	).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+	_value_feedback_tween.tween_property(
+		time_value,
+		"scale",
+		Vector2.ONE,
+		VALUE_FEEDBACK_HALF_DURATION
+	).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN)

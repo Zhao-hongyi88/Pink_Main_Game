@@ -7,12 +7,12 @@ func _ready() -> void:
 	GameState.clear_runtime_state()
 	var original_json := FileAccess.get_file_as_string(NPC_DATA_PATH)
 
-	assert(not GameState.has_npc_progress(&"npc_a"))
-	assert(not GameState.has_npc_progress(&"npc_b"))
+	assert(not GameState.has_npc_progress(&"npc_zhang_yuan"))
+	assert(not GameState.has_npc_progress(&"npc_li_lei"))
 
-	var npc_a_progress := GameState.get_or_create_npc_progress(&"npc_a")
+	var npc_a_progress := GameState.get_or_create_npc_progress(&"npc_zhang_yuan")
 	assert(npc_a_progress is NPCProgress)
-	assert(npc_a_progress.npc_id == &"npc_a")
+	assert(npc_a_progress.npc_id == &"npc_zhang_yuan")
 	assert(npc_a_progress.current_dialogue_index == 0)
 	assert(not npc_a_progress.dialogue_completed)
 	assert(npc_a_progress.unlocked_keys.is_empty())
@@ -23,9 +23,9 @@ func _ready() -> void:
 	npc_a_progress.current_dialogue_index = 2
 	npc_a_progress.unlocked_keys["basic_info"] = true
 	npc_a_progress.revealed_note_keys.append("basic_info")
-	assert(GameState.get_or_create_npc_progress(&"npc_a") == npc_a_progress)
+	assert(GameState.get_or_create_npc_progress(&"npc_zhang_yuan") == npc_a_progress)
 
-	var npc_b_progress := GameState.get_or_create_npc_progress(&"npc_b")
+	var npc_b_progress := GameState.get_or_create_npc_progress(&"npc_li_lei")
 	assert(npc_b_progress is NPCProgress)
 	assert(npc_b_progress != npc_a_progress)
 	assert(npc_b_progress.current_dialogue_index == 0)
@@ -40,7 +40,7 @@ func _ready() -> void:
 	assert(not npc_a_progress.unlocked_keys.has("npc_b_test"))
 	assert(npc_a_progress.revealed_note_keys == ["basic_info"])
 
-	assert(GameState.mark_memory_completed(&"npc_a"))
+	assert(GameState.mark_memory_completed(&"npc_zhang_yuan"))
 	assert(npc_a_progress.memory_completed)
 	assert(not npc_b_progress.memory_completed)
 
