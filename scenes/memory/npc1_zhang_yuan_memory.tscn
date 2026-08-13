@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3]
+[gd_scene load_steps=9 format=3]
 
 [ext_resource type="PackedScene" path="res://scenes/memory/memory_base.tscn" id="1_base"]
 [ext_resource type="Script" path="res://scripts/memory/npc1_zhang_yuan_memory.gd" id="2_memory"]
@@ -7,6 +7,7 @@
 [ext_resource type="Resource" path="res://data/memory/npc1/degree_certificate.tres" id="5_data_b"]
 [ext_resource type="Resource" path="res://data/memory/npc1/interview_result.tres" id="6_data_c"]
 [ext_resource type="Texture2D" path="res://TextureAsset/Memory/NPC1/zhang_yuan_memory_background.png" id="7_background"]
+[ext_resource type="Texture2D" path="res://TextureAsset/Memory/Common/unexplored_marker.png" id="8_unexplored_marker"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_point"]
 size = Vector2(220, 120)
@@ -42,15 +43,17 @@ mouse_filter = 2
 
 [node name="StudyRecord" type="Area2D" parent="ObservationPoints"]
 unique_name_in_owner = true
-position = Vector2(250, 340)
+position = Vector2(537, 349)
 script = ExtResource("3_point")
 observation_data = ExtResource("4_data_a")
 
 [node name="Visual" type="Polygon2D" parent="ObservationPoints/StudyRecord"]
+visible = false
 polygon = PackedVector2Array(-110, -60, 110, -60, 110, 60, -110, 60)
 color = Color(0.3, 0.48, 0.7, 1)
 
 [node name="Label" type="Label" parent="ObservationPoints/StudyRecord"]
+visible = false
 offset_left = -100.0
 offset_top = -18.0
 offset_right = 100.0
@@ -63,17 +66,24 @@ mouse_filter = 2
 [node name="CollisionShape2D" type="CollisionShape2D" parent="ObservationPoints/StudyRecord"]
 shape = SubResource("RectangleShape2D_point")
 
+[node name="UnexploredMarker" type="Sprite2D" parent="ObservationPoints/StudyRecord"]
+position = Vector2(0, 0)
+scale = Vector2(0.2, 0.2)
+texture = ExtResource("8_unexplored_marker")
+
 [node name="DegreeCertificate" type="Area2D" parent="ObservationPoints"]
 unique_name_in_owner = true
-position = Vector2(576, 285)
+position = Vector2(204, 426)
 script = ExtResource("3_point")
 observation_data = ExtResource("5_data_b")
 
 [node name="Visual" type="Polygon2D" parent="ObservationPoints/DegreeCertificate"]
+visible = false
 polygon = PackedVector2Array(-110, -60, 110, -60, 110, 60, -110, 60)
 color = Color(0.36, 0.55, 0.72, 1)
 
 [node name="Label" type="Label" parent="ObservationPoints/DegreeCertificate"]
+visible = false
 offset_left = -100.0
 offset_top = -18.0
 offset_right = 100.0
@@ -86,17 +96,24 @@ mouse_filter = 2
 [node name="CollisionShape2D" type="CollisionShape2D" parent="ObservationPoints/DegreeCertificate"]
 shape = SubResource("RectangleShape2D_point")
 
+[node name="UnexploredMarker" type="Sprite2D" parent="ObservationPoints/DegreeCertificate"]
+position = Vector2(0, 0)
+scale = Vector2(0.2, 0.2)
+texture = ExtResource("8_unexplored_marker")
+
 [node name="InterviewResult" type="Area2D" parent="ObservationPoints"]
 unique_name_in_owner = true
-position = Vector2(902, 360)
+position = Vector2(900, 292)
 script = ExtResource("3_point")
 observation_data = ExtResource("6_data_c")
 
 [node name="Visual" type="Polygon2D" parent="ObservationPoints/InterviewResult"]
+visible = false
 polygon = PackedVector2Array(-110, -60, 110, -60, 110, 60, -110, 60)
 color = Color(0.27, 0.43, 0.65, 1)
 
 [node name="Label" type="Label" parent="ObservationPoints/InterviewResult"]
+visible = false
 offset_left = -100.0
 offset_top = -18.0
 offset_right = 100.0
@@ -108,4 +125,9 @@ mouse_filter = 2
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="ObservationPoints/InterviewResult"]
 shape = SubResource("RectangleShape2D_point")
+
+[node name="UnexploredMarker" type="Sprite2D" parent="ObservationPoints/InterviewResult"]
+position = Vector2(0, 0)
+scale = Vector2(0.2, 0.2)
+texture = ExtResource("8_unexplored_marker")
 
