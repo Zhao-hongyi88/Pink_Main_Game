@@ -33,6 +33,7 @@ const NOTE_ITEM_SCENE: PackedScene = preload("res://scenes/ui/npc/note_card.tscn
 @onready var note_board_area: Control = %RelatedDataArea
 @onready var note_detail_popup: Control = %NoteDetailPopup
 @onready var memory_button: Button = %MemoryButton
+@onready var exit_button: Button = %ExitButton
 @onready var _note_anchors: Array[Control] = [
 	%RelatedSlot01,
 	%RelatedSlot02,
@@ -95,6 +96,7 @@ func _ready() -> void:
 	continue_button.pressed.connect(advance_dialogue)
 	dialogue_panel.gui_input.connect(_on_dialogue_panel_gui_input)
 	memory_button.pressed.connect(_on_memory_pressed)
+	exit_button.pressed.connect(_on_exit_pressed)
 	_consume_navigation_payload()
 	if not _load_npc_data(npc_data_path):
 		_show_load_error()
@@ -593,6 +595,10 @@ func _on_memory_pressed() -> void:
 		"return_npc_data_path": npc_data_path,
 		"npc_id": String(npc_data.npc_id),
 	})
+
+
+func _on_exit_pressed() -> void:
+	SceneRouter.go_to(&"home")
 
 
 func _show_load_error() -> void:

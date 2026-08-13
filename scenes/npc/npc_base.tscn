@@ -69,6 +69,18 @@ corner_radius_bottom_left = 22
 
 [sub_resource type="StyleBoxEmpty" id="StyleBox_memory_focus"]
 
+[sub_resource type="StyleBoxEmpty" id="StyleBox_exit_transparent"]
+
+[sub_resource type="Gradient" id="Gradient_exit_placeholder"]
+colors = PackedColorArray(0.95, 0.78, 0.88, 0.95, 0.48, 0.2, 0.38, 0.95)
+
+[sub_resource type="GradientTexture2D" id="Texture_exit_placeholder"]
+gradient = SubResource("Gradient_exit_placeholder")
+width = 48
+height = 48
+fill_from = Vector2(0, 0)
+fill_to = Vector2(1, 1)
+
 [sub_resource type="Gradient" id="Gradient_portrait_frame"]
 offsets = PackedFloat32Array(0, 0.5, 1)
 colors = PackedColorArray(0.776471, 0.443137, 0.639216, 1, 0.329412, 0.160784, 0.286275, 1, 0.87451, 0.607843, 0.752941, 1)
@@ -438,6 +450,57 @@ mouse_filter = 2
 texture = SubResource("Texture_portrait_frame")
 expand_mode = 1
 stretch_mode = 5
+
+[node name="ExitButton" type="Button" parent="."]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 20.0
+offset_top = 18.0
+offset_right = 78.0
+offset_bottom = 76.0
+pivot_offset = Vector2(29, 29)
+mouse_default_cursor_shape = 2
+action_mode = 0
+theme_override_styles/normal = SubResource("StyleBox_exit_transparent")
+theme_override_styles/pressed = SubResource("StyleBox_exit_transparent")
+theme_override_styles/hover = SubResource("StyleBox_exit_transparent")
+theme_override_styles/disabled = SubResource("StyleBox_exit_transparent")
+theme_override_styles/focus = SubResource("StyleBox_exit_transparent")
+theme_override_colors/font_color = Color(0.18, 0.035, 0.1, 1)
+theme_override_colors/font_hover_color = Color(0.18, 0.035, 0.1, 1)
+theme_override_colors/font_pressed_color = Color(0.18, 0.035, 0.1, 1)
+theme_override_colors/font_focus_color = Color(0.18, 0.035, 0.1, 1)
+theme_override_colors/font_outline_color = Color(1, 0.9, 0.96, 0.95)
+theme_override_constants/outline_size = 2
+theme_override_font_sizes/font_size = 34
+flat = true
+text = "←"
+tooltip_text = "返回主页"
+
+[node name="ExitTexture" type="TextureRect" parent="ExitButton"]
+unique_name_in_owner = true
+show_behind_parent = true
+layout_mode = 0
+offset_left = 5.0
+offset_top = 5.0
+offset_right = 53.0
+offset_bottom = 53.0
+mouse_filter = 2
+texture = SubResource("Texture_exit_placeholder")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="HoverEffect" type="Control" parent="ExitButton"]
+layout_mode = 0
+mouse_filter = 2
+script = ExtResource("10_hover")
+hover_scale = 1.08
+hover_brightness = 1.12
+hover_offset = Vector2(0, -3)
+hover_duration = 0.18
+pressed_scale = 0.95
+pressed_rebound_scale = 1.0
+pressed_duration = 0.12
 
 [node name="NoteDetailPopup" parent="." unique_id=1245895994 instance=ExtResource("2_note_detail_popup")]
 layout_mode = 1
