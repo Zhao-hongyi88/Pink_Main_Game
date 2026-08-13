@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=3]
+[gd_scene load_steps=8 format=3]
 
 [ext_resource type="PackedScene" path="res://scenes/memory/memory_base.tscn" id="1_base"]
 [ext_resource type="Script" path="res://scripts/memory/npc1_zhang_yuan_memory.gd" id="2_memory"]
@@ -6,6 +6,7 @@
 [ext_resource type="Resource" path="res://data/memory/npc1/study_record.tres" id="4_data_a"]
 [ext_resource type="Resource" path="res://data/memory/npc1/degree_certificate.tres" id="5_data_b"]
 [ext_resource type="Resource" path="res://data/memory/npc1/interview_result.tres" id="6_data_c"]
+[ext_resource type="Texture2D" path="res://TextureAsset/Memory/NPC1/zhang_yuan_memory_background.png" id="7_background"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_point"]
 size = Vector2(220, 120)
@@ -13,7 +14,7 @@ size = Vector2(220, 120)
 [node name="ZhangYuanMemory" instance=ExtResource("1_base")]
 script = ExtResource("2_memory")
 
-[node name="Background" type="ColorRect" parent="." index="0"]
+[node name="Background" type="TextureRect" parent="." index="0"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -21,7 +22,9 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-color = Color(0.08, 0.105, 0.16, 1)
+texture = ExtResource("7_background")
+expand_mode = 1
+stretch_mode = 6
 
 [node name="SceneTitle" type="Label" parent="Background"]
 layout_mode = 1
