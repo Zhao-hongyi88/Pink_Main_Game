@@ -103,6 +103,73 @@ class MemoryRoundTripProbe:
 		assert(false, "Scene transition did not finish within the smoke-test timeout.")
 
 
+class ExitRoundTripProbe:
+	extends Node
+
+	var expected_data_path := ""
+	var expected_npc_id: StringName = &""
+	var expected_dialogue_index := 0
+	var expected_dialogue_text := ""
+	var expected_unlocked_keys: Dictionary = {}
+	var expected_revealed_note_keys: Array[String] = []
+	var original_json := ""
+
+
+	func _ready() -> void:
+		call_deferred("_verify_exit_round_trip")
+
+
+	func _verify_exit_round_trip() -> void:
+		await _wait_for_scene(&"MainMenu")
+		var main_menu := get_tree().current_scene
+		assert(main_menu is Control)
+		assert(main_menu.name == "MainMenu")
+		var progress := GameState.get_npc_progress(expected_npc_id)
+		assert(progress != null)
+		assert(progress.current_dialogue_index == expected_dialogue_index)
+		assert(progress.unlocked_keys == expected_unlocked_keys)
+		assert(progress.revealed_note_keys == expected_revealed_note_keys)
+		assert(progress.dialogue_completed)
+		assert(progress.memory_ready)
+		assert(not progress.memory_completed)
+
+		assert(SceneRouter.go_to(&"npc_base", {
+			"npc_data_path": expected_data_path,
+		}))
+		await _wait_for_scene(&"NPCBase")
+		var returned_npc := get_tree().current_scene
+		assert(returned_npc is NPCBase)
+		assert(returned_npc.npc_id == expected_npc_id)
+		assert(returned_npc.current_dialogue_index == expected_dialogue_index)
+		assert(returned_npc.get_node("%DialogueText").text == expected_dialogue_text)
+		assert(returned_npc.npc_progress.unlocked_keys == expected_unlocked_keys)
+		assert(returned_npc.npc_progress.revealed_note_keys == expected_revealed_note_keys)
+		assert(returned_npc.get_node("%ExitButton").visible)
+
+		var memory_probe := MemoryRoundTripProbe.new()
+		memory_probe.expected_data_path = expected_data_path
+		memory_probe.expected_npc_id = expected_npc_id
+		memory_probe.expected_dialogue_index = expected_dialogue_index
+		memory_probe.expected_dialogue_text = expected_dialogue_text
+		memory_probe.original_json = original_json
+		get_tree().root.add_child(memory_probe)
+		returned_npc.get_node("%MemoryButton").pressed.emit()
+		queue_free()
+
+
+	func _wait_for_scene(expected_scene_name: StringName) -> void:
+		for _frame in 300:
+			var current_scene := get_tree().current_scene
+			if (
+				current_scene != null
+				and current_scene.name == expected_scene_name
+				and not SceneRouter.is_transitioning()
+			):
+				return
+			await get_tree().process_frame
+		assert(false, "Expected scene did not become active: %s" % expected_scene_name)
+
+
 func _ready() -> void:
 	GameState.clear_runtime_state()
 	var original_json := FileAccess.get_file_as_string(NPC_DATA_PATH)
@@ -142,6 +209,9 @@ func _ready() -> void:
 	var note_board_area: Control = npc_base.get_node("%RelatedDataArea")
 	var note_detail_popup: Control = npc_base.get_node("%NoteDetailPopup")
 	var memory_button: Button = npc_base.get_node("%MemoryButton")
+	var exit_button: Button = npc_base.get_node("%ExitButton")
+	var exit_texture: TextureRect = npc_base.get_node("%ExitTexture")
+	var exit_hover: HoverEffect = exit_button.get_node("HoverEffect")
 	var profile_hover: Node = npc_base.get_node("%DossierPanel/ProfileBoard/HoverEffect")
 	var memory_hover: Node = memory_button.get_node("HoverEffect")
 	var expected_dialogues: Array = expected_data["dialogues"]
@@ -176,6 +246,30 @@ func _ready() -> void:
 	assert(memory_hover.get("hover_brightness") == 1.15)
 	assert(npc_base._note_items.size() == expected_notes.size())
 	assert(not note_detail_popup.visible)
+	assert(exit_button.visible)
+	assert(not exit_button.disabled)
+	assert(exit_button.position == Vector2(20.0, 18.0))
+	assert(exit_button.size == Vector2(58.0, 58.0))
+	assert(exit_button.pivot_offset == Vector2(29.0, 29.0))
+	assert(exit_button.mouse_filter == Control.MOUSE_FILTER_STOP)
+	assert(exit_button.action_mode == BaseButton.ACTION_MODE_BUTTON_PRESS)
+	assert(exit_texture.size == Vector2(48.0, 48.0))
+	assert(exit_texture.mouse_filter == Control.MOUSE_FILTER_IGNORE)
+	assert(exit_texture.expand_mode == TextureRect.EXPAND_IGNORE_SIZE)
+	assert(exit_texture.stretch_mode == TextureRect.STRETCH_KEEP_ASPECT_CENTERED)
+	assert(exit_hover.mouse_filter == Control.MOUSE_FILTER_IGNORE)
+	assert(exit_texture.texture != null)
+	assert(exit_texture.texture is GradientTexture2D)
+	var placeholder_exit_texture: Texture2D = exit_texture.texture
+	var replaceable_exit_texture := GradientTexture1D.new()
+	exit_texture.texture = replaceable_exit_texture
+	assert(exit_texture.texture == replaceable_exit_texture)
+	exit_texture.texture = placeholder_exit_texture
+	assert(npc_base_source.find("load(") == -1 or npc_base_source.find("ExitTexture") == -1)
+	assert(exit_button.pressed.is_connected(Callable(npc_base, "_on_exit_pressed")))
+	assert(note_detail_popup.get_index() > exit_button.get_index())
+	assert(note_detail_popup.mouse_filter == Control.MOUSE_FILTER_STOP)
+	assert(note_detail_popup.get_rect().encloses(exit_button.get_rect()))
 	assert(note_detail_popup.get_node("%DimBackground") is ColorRect)
 	assert(note_detail_popup.get_node("%DocumentRoot") is Control)
 	assert(note_detail_popup.get_node("%PaperPlaceholder") is ColorRect)
@@ -341,6 +435,34 @@ func _ready() -> void:
 	assert(interaction_progress.current_dialogue_index == completed_index)
 	interaction_npc.note_detail_popup.hide()
 	interaction_npc.queue_free()
+
+	# ExitButton 独立于 DialoguePanel；MOUSE_FILTER_STOP 防止点击穿透，快速 Hover 不累计偏移。
+	var exit_index_before_input: int = npc_base.current_dialogue_index
+	note_detail_popup.show()
+	var popup_exit_click := InputEventMouseButton.new()
+	popup_exit_click.button_index = MOUSE_BUTTON_LEFT
+	popup_exit_click.pressed = true
+	popup_exit_click.position = exit_button.get_global_rect().get_center()
+	get_viewport().push_input(popup_exit_click)
+	await get_tree().process_frame
+	assert(not SceneRouter.is_transitioning())
+	assert(npc_base.current_dialogue_index == exit_index_before_input)
+	popup_exit_click.pressed = false
+	get_viewport().push_input(popup_exit_click)
+	await get_tree().create_timer(0.3).timeout
+	assert(not note_detail_popup.visible)
+	exit_button.mouse_entered.emit()
+	var first_exit_tween: Tween = exit_hover._effect_tween
+	exit_button.mouse_exited.emit()
+	assert(not first_exit_tween.is_valid())
+	var second_exit_tween: Tween = exit_hover._effect_tween
+	exit_button.mouse_entered.emit()
+	assert(not second_exit_tween.is_valid())
+	exit_button.mouse_exited.emit()
+	await get_tree().create_timer(exit_hover.hover_duration + 0.05).timeout
+	assert(exit_button.position.is_equal_approx(Vector2(20.0, 18.0)))
+	assert(exit_button.scale.is_equal_approx(Vector2.ONE))
+	assert(exit_button.modulate.is_equal_approx(Color.WHITE))
 
 	# 空 key、未知 key 和第 1 条无 key 对话都不产生资料。
 	assert(not npc_base.unlock_info(""))
@@ -525,15 +647,41 @@ func _ready() -> void:
 	assert(npc_a_progress.revealed_note_keys == ["basic_info", "work_info"])
 	assert(not npc_b_progress.memory_ready)
 
-	# 真实执行 Memory 完成与返回，Probe 在切换场景后继续检查完整 UI。
-	var round_trip_probe := MemoryRoundTripProbe.new()
-	round_trip_probe.expected_data_path = NPC_DATA_PATH
-	round_trip_probe.expected_npc_id = formal_data.npc_id
-	round_trip_probe.expected_dialogue_index = expected_dialogues.size() - 1
-	round_trip_probe.expected_dialogue_text = expected_dialogues[4]["text"]
-	round_trip_probe.original_json = original_json
-	get_tree().root.add_child(round_trip_probe)
-	memory_button.pressed.emit()
+	# 真实执行退出主页、恢复同一 NPC，再继续 Memory 完成与返回。
+	var exit_round_trip_probe := ExitRoundTripProbe.new()
+	exit_round_trip_probe.expected_data_path = NPC_DATA_PATH
+	exit_round_trip_probe.expected_npc_id = formal_data.npc_id
+	exit_round_trip_probe.expected_dialogue_index = expected_dialogues.size() - 1
+	exit_round_trip_probe.expected_dialogue_text = expected_dialogues[4]["text"]
+	exit_round_trip_probe.expected_unlocked_keys = npc_a_progress.unlocked_keys.duplicate(true)
+	exit_round_trip_probe.expected_revealed_note_keys = npc_a_progress.revealed_note_keys.duplicate()
+	exit_round_trip_probe.original_json = original_json
+	get_tree().root.add_child(exit_round_trip_probe)
+	var exit_index_before_navigation: int = npc_base.current_dialogue_index
+	exit_button = npc_base.get_node("%ExitButton")
+	var exit_click_position := exit_button.get_global_rect().get_center()
+	exit_button.set_meta(&"smoke_test_button_down", false)
+	exit_button.button_down.connect(
+		func() -> void: exit_button.set_meta(&"smoke_test_button_down", true),
+		CONNECT_ONE_SHOT
+	)
+	var exit_press := InputEventMouseButton.new()
+	exit_press.button_index = MOUSE_BUTTON_LEFT
+	exit_press.button_mask = MOUSE_BUTTON_MASK_LEFT
+	exit_press.pressed = true
+	exit_press.position = exit_click_position
+	exit_press.global_position = exit_click_position
+	get_viewport().push_input(exit_press, true)
+	await get_tree().process_frame
+	assert(exit_button.get_meta(&"smoke_test_button_down", false), "Real viewport click did not reach ExitButton")
+	assert(npc_base.current_dialogue_index == exit_index_before_navigation)
+	var exit_release := InputEventMouseButton.new()
+	exit_release.button_index = MOUSE_BUTTON_LEFT
+	exit_release.button_mask = 0
+	exit_release.pressed = false
+	exit_release.position = exit_click_position
+	exit_release.global_position = exit_click_position
+	get_viewport().push_input(exit_release, true)
 
 
 func _read_json(path: String) -> Dictionary:
