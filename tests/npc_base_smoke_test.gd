@@ -403,6 +403,19 @@ func _ready() -> void:
 	assert(note_detail_popup.get_node("%PreviewImage").texture != null)
 	assert(note_detail_popup.get_node("%PreviewImage").texture is not GradientTexture1D)
 	assert(note_detail_popup.get_node("%PreviewImage").texture is not GradientTexture2D)
+	var formal_preview_texture: Texture2D = note_detail_popup.get_node("%PreviewImage").texture
+	var default_preview_texture: Texture2D = note_detail_popup.get("_default_preview_texture")
+	assert(formal_preview_texture != default_preview_texture)
+	var placeholder_preview_texture := GradientTexture1D.new()
+	note_detail_popup.call(
+		"open_note",
+		"placeholder_preview_test",
+		"Placeholder Preview",
+		"The previous formal preview must not remain visible.",
+		placeholder_preview_texture
+	)
+	assert(note_detail_popup.get_node("%PreviewImage").texture == default_preview_texture)
+	assert(note_detail_popup.get_node("%PreviewImage").texture != formal_preview_texture)
 	assert(note_detail_popup.get_node("%DocumentRoot").scale == Vector2(0.96, 0.96))
 	await get_tree().create_timer(0.35).timeout
 	assert(note_detail_popup.get_node("%DocumentRoot").scale.is_equal_approx(Vector2.ONE))

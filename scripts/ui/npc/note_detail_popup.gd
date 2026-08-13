@@ -15,12 +15,14 @@ signal popup_closed()
 var current_note_key := ""
 var _popup_tween: Tween
 var _animation_generation := 0
+var _default_preview_texture: Texture2D
 
 const ANIMATION_DURATION := 0.25
 const CLOSED_DOCUMENT_SCALE := Vector2(0.96, 0.96)
 
 
 func _ready() -> void:
+	_default_preview_texture = preview_image.texture
 	close_hit_area.pressed.connect(close_popup)
 	dim_background.gui_input.connect(_on_dim_background_gui_input)
 	_reset_closed_visual()
@@ -42,6 +44,7 @@ func open_note(
 	current_note_key = note_key
 	title_label.text = header
 	content_label.text = content
+	preview_image.texture = _default_preview_texture
 	# 测试阶段的 NoteCard 仍使用 GradientTexture 占位；详情页保留档案图片占位，
 	# 正式图片接入后会直接显示传入的 Texture2D。
 	if (
