@@ -6,7 +6,7 @@
 script = ExtResource("1_observation_data")
 observation_id = &"charity_forum_record"
 title = "线上筹备公益项目的论坛讨论记录"
-info = "社区公益项目筹备记录\n\n王建国：\n独居老人名单我整理好了，明天再核对一遍。\n\n志愿者A：\n周六还缺两个人搬物资。\n\n王建国：\n我去。\n\n志愿者B：\n上次也是你，这周休息吧。\n\n王建国：\n没事，我有时间。\n\n02:13\n\n王建国上传：\n《社区援助名单_v7.xlsx》"
+info = "社区公益项目筹备记录\n\nTom：\n独居老人名单我整理好了，明天再核对一遍。\n\n志愿者A：\n周六还缺两个人搬物资。\n\nTom：\n我去。\n\n志愿者B：\n上次也是你，这周休息吧。\n\nTom：\n没事，我有时间。\n\n02:13\n\nTom上传：\n《社区援助名单_v7.xlsx》"
 images = []
 image_placeholders = []
 dialogue = PackedStringArray("物资登记、联系人员、安排运输……这些都是他在处理。")

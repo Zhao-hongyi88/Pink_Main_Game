@@ -5,6 +5,7 @@ extends RefCounted
 
 var npc_id: StringName = &""
 var display_name := ""
+var dialogue_name := ""
 var name_unlock_key: StringName = &""
 var dialogues: Array[Dictionary] = []
 var notes: Array[Dictionary] = []
@@ -56,6 +57,7 @@ func _read_and_validate() -> void:
 	var raw: Dictionary = json.data
 	npc_id = StringName(_read_required_string(raw, "npc_id"))
 	display_name = _read_required_string(raw, "display_name")
+	dialogue_name = _read_optional_string(raw, "dialogue_name", display_name)
 	name_unlock_key = StringName(_read_required_string(raw, "name_unlock_key", true))
 	memory_scene = _read_required_string(raw, "memory_scene")
 	_read_dialogues(raw)
@@ -75,6 +77,16 @@ func _read_required_string(raw: Dictionary, field: String, allow_empty := false)
 	if value.is_empty() and not allow_empty:
 		validation_errors.append("NPCData: 字段 '%s' 不能为空。" % field)
 	return value
+
+
+func _read_optional_string(raw: Dictionary, field: String, fallback: String) -> String:
+	if not raw.has(field):
+		return fallback
+	if typeof(raw[field]) != TYPE_STRING:
+		validation_errors.append("NPCData: 字段 '%s' 必须是 String。" % field)
+		return fallback
+	var value := str(raw[field]).strip_edges()
+	return value if not value.is_empty() else fallback
 
 
 func _read_dialogues(raw: Dictionary) -> void:

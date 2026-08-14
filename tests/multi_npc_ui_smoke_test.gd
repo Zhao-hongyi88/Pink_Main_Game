@@ -8,35 +8,40 @@ const NPC_CASES: Array[Dictionary] = [
 	{
 		"path": "res://data/npc/npc_a.json",
 		"npc_id": "npc_zhang_yuan",
-		"display_name": "张远",
+		"display_name": "Ryan Miller",
+		"dialogue_name": "Ryan",
 		"dialogue_count": 5,
 		"note_count": 5,
 	},
 	{
 		"path": "res://data/npc/npc_b.json",
 		"npc_id": "npc_li_lei",
-		"display_name": "李磊",
+		"display_name": "Mike Carter",
+		"dialogue_name": "Mike",
 		"dialogue_count": 3,
 		"note_count": 2,
 	},
 	{
 		"path": "res://data/npc/npc_c.json",
 		"npc_id": "npc_liu_guilan",
-		"display_name": "刘桂兰",
+		"display_name": "Mary Carter",
+		"dialogue_name": "Mary",
 		"dialogue_count": 4,
 		"note_count": 3,
 	},
 	{
 		"path": "res://data/npc/npc_d.json",
 		"npc_id": "npc_su_qing",
-		"display_name": "苏晴",
+		"display_name": "Lisa Wilson",
+		"dialogue_name": "Lisa",
 		"dialogue_count": 5,
 		"note_count": 2,
 	},
 	{
 		"path": "res://data/npc/npc_e.json",
 		"npc_id": "npc_wang_jianguo",
-		"display_name": "王建国",
+		"display_name": "Tom Brown",
+		"dialogue_name": "Tom",
 		"dialogue_count": 4,
 		"note_count": 3,
 	},
@@ -94,6 +99,7 @@ func _verify_all_npcs_use_shared_ui() -> void:
 		assert(npc_base.npc_data.source_path == data_path)
 		assert(String(npc_base.npc_id) == test_case["npc_id"])
 		assert(npc_base.get_node("%NPCName").text == test_case["display_name"])
+		assert(npc_base.get_node("%SpeakerName").text == test_case["dialogue_name"])
 		assert(not npc_base.get_node("%NPCName").visible)
 		assert(npc_base.get_node_or_null("CharacterLayer") == null)
 		assert(npc_base.get_node_or_null("%CharacterPortrait") == null)
@@ -132,6 +138,11 @@ func _verify_all_npcs_use_shared_ui() -> void:
 				assert(bool(npc_base.npc_progress.unlocked_keys.get(unlock_key, false)))
 				var note_item: NoteItem = npc_base._note_items_by_key[unlock_key]
 				assert(note_item.visible)
+				assert(not note_item.get_node("%NoteHeader").visible)
+				assert(not note_item.get_node("%NoteContent").visible)
+				assert(note_item.get_node("%NoteHeader").text.is_empty())
+				assert(note_item.get_node("%NoteContent").text.is_empty())
+				assert(note_item.tooltip_text.is_empty())
 				var anchor_name := "%%RelatedSlot0%d" % expected_revealed_keys.size()
 				assert(note_item.get_parent() == npc_base.get_node(anchor_name))
 				assert(npc_base._note_entry_tweens.has(unlock_key))
