@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bvbrhiftcmcfo"
-path="res://.godot/imported/对话背景.png-b4f89631a5c6a275d73a050998995db6.ctex"
+uid="uid://dtbqjbn3taxt5"
+path="res://.godot/imported/4c2444abe576a72f4782e03defdb37c9.png-d7cbc2063777b09ec91d3b4b29a76249.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://TextureAsset/Levevl2/对话背景.png"
-dest_files=["res://.godot/imported/对话背景.png-b4f89631a5c6a275d73a050998995db6.ctex"]
+source_file="res://TextureAsset/Level1/4c2444abe576a72f4782e03defdb37c9.png"
+dest_files=["res://.godot/imported/4c2444abe576a72f4782e03defdb37c9.png-d7cbc2063777b09ec91d3b4b29a76249.ctex"]
 
 [params]
 

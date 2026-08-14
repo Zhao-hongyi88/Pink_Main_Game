@@ -1,12 +1,12 @@
 [gd_scene format=3 uid="uid://c5ygs1a6tr1fm"]
 
 [ext_resource type="Script" uid="uid://0ium3bbfggr2" path="res://scripts/main/main_menu.gd" id="1_script"]
-[ext_resource type="Texture2D" uid="uid://ft2jhddtnno6" path="res://TextureAsset/Level1/主页背景1-export.png" id="2_75pso"]
-[ext_resource type="PackedScene" path="res://scenes/ui/time_display.tscn" id="2_time"]
+[ext_resource type="Texture2D" uid="uid://dtbqjbn3taxt5" path="res://TextureAsset/Level1/4c2444abe576a72f4782e03defdb37c9.png" id="2_bxtry"]
+[ext_resource type="PackedScene" uid="uid://c40begripg0ni" path="res://scenes/ui/time_display.tscn" id="2_time"]
 [ext_resource type="PackedScene" path="res://scenes/ui/rule_panel.tscn" id="3_rules"]
-[ext_resource type="PackedScene" path="res://scenes/ui/archive_panel.tscn" id="4_archive"]
+[ext_resource type="PackedScene" uid="uid://d3he4hicmh74a" path="res://scenes/ui/archive_panel.tscn" id="4_archive"]
 [ext_resource type="PackedScene" path="res://scenes/home/home_world.tscn" id="5_home_world"]
-[ext_resource type="PackedScene" path="res://scenes/ui/start_button.tscn" id="6_start"]
+[ext_resource type="PackedScene" uid="uid://co64gqrnj81sy" path="res://scenes/ui/start_button.tscn" id="6_start"]
 [ext_resource type="Script" uid="uid://d2ghfiodtl6ru" path="res://scripts/ui/button_hover_effect.gd" id="8_button_hover"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBox_button"]
@@ -39,7 +39,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-texture = ExtResource("2_75pso")
+texture = ExtResource("2_bxtry")
 expand_mode = 1
 stretch_mode = 6
 
@@ -74,7 +74,6 @@ grow_horizontal = 0
 [node name="ArchivePanel" parent="." unique_id=2049237815 instance=ExtResource("4_archive")]
 unique_name_in_owner = true
 layout_mode = 1
-anchors_preset = 0
 offset_left = 48.0
 offset_top = 330.0
 offset_right = 368.0

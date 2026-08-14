@@ -138,6 +138,7 @@ func _verify_all_npcs_use_shared_ui() -> void:
 				assert(bool(npc_base.npc_progress.unlocked_keys.get(unlock_key, false)))
 				var note_item: NoteItem = npc_base._note_items_by_key[unlock_key]
 				assert(note_item.visible)
+				assert(not note_item.get_node("Divider").visible)
 				assert(not note_item.get_node("%NoteHeader").visible)
 				assert(not note_item.get_node("%NoteContent").visible)
 				assert(note_item.get_node("%NoteHeader").text.is_empty())

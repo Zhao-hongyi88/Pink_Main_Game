@@ -283,7 +283,7 @@ func _ready() -> void:
 	assert(note_detail_popup.get_rect().encloses(exit_button.get_rect()))
 	assert(note_detail_popup.get_node("%DimBackground") is ColorRect)
 	assert(note_detail_popup.get_node("%DocumentRoot") is Control)
-	assert(note_detail_popup.get_node("%PaperPlaceholder") is ColorRect)
+	assert(note_detail_popup.get_node_or_null("%PaperPlaceholder") == null)
 	assert(note_detail_popup.get_node("%PaperBackground") is TextureRect)
 	assert(note_detail_popup.get_node("%PreviewImage") is TextureRect)
 	assert(note_detail_popup.get_node("%DimBackground").position == Vector2.ZERO)
@@ -293,12 +293,17 @@ func _ready() -> void:
 	assert(note_detail_popup.get_node("%DocumentRoot").position == Vector2(120.0, 120.0))
 	assert(note_detail_popup.get_node("%DocumentRoot").size.is_equal_approx(Vector2(920.0, 480.0)))
 	assert(note_detail_popup.get_node("%DocumentRoot").pivot_offset == Vector2(460.0, 240.0))
-	assert(note_detail_popup.get_node("%PaperPlaceholder").position == Vector2.ZERO)
-	assert(note_detail_popup.get_node("%PaperPlaceholder").size.is_equal_approx(Vector2(920.0, 480.0)))
 	assert(note_detail_popup.get_node("%PaperBackground").position == Vector2.ZERO)
 	assert(note_detail_popup.get_node("%PaperBackground").size.is_equal_approx(Vector2(920.0, 480.0)))
-	assert(note_detail_popup.get_node("%PaperBackground").texture == null)
-	assert(note_detail_popup.get_node("%PaperBackground").stretch_mode == TextureRect.STRETCH_SCALE)
+	assert(note_detail_popup.get_node("%PaperBackground").texture != null)
+	assert(
+		note_detail_popup.get_node("%PaperBackground").stretch_mode
+		== TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	)
+	assert(
+		note_detail_popup.get_node("%PaperBackground").mouse_filter
+		== Control.MOUSE_FILTER_IGNORE
+	)
 	assert(note_detail_popup.get_node("%PreviewImage").position == Vector2(-100.0, -80.0))
 	assert(note_detail_popup.get_node("%PreviewImage").size.is_equal_approx(Vector2(190.0, 190.0)))
 	assert(note_detail_popup.get_node("%TitleLabel").position == Vector2(120.0, 70.0))
@@ -356,6 +361,7 @@ func _ready() -> void:
 		assert(note_hover.get("hover_offset") == Vector2(0.0, -3.0))
 		assert(note_item is Button)
 		assert(note_item.get_node("NoteBackground") is TextureRect)
+		assert(not note_item.get_node("Divider").visible)
 		var thumbnail_header := note_item.get_node("%NoteHeader") as Label
 		var thumbnail_content := note_item.get_node("%NoteContent") as Label
 		assert(not thumbnail_header.visible)
