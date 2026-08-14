@@ -8,35 +8,40 @@ const NPC_CASES: Array[Dictionary] = [
 	{
 		"path": "res://data/npc/npc_a.json",
 		"npc_id": "npc_zhang_yuan",
-		"display_name": "张远",
+		"display_name": "Ryan Miller",
+		"dialogue_name": "Ryan",
 		"dialogue_count": 5,
 		"note_count": 5,
 	},
 	{
 		"path": "res://data/npc/npc_b.json",
 		"npc_id": "npc_li_lei",
-		"display_name": "李磊",
+		"display_name": "Mike Carter",
+		"dialogue_name": "Mike",
 		"dialogue_count": 3,
 		"note_count": 2,
 	},
 	{
 		"path": "res://data/npc/npc_c.json",
 		"npc_id": "npc_liu_guilan",
-		"display_name": "刘桂兰",
+		"display_name": "Mary Carter",
+		"dialogue_name": "Mary",
 		"dialogue_count": 4,
 		"note_count": 3,
 	},
 	{
 		"path": "res://data/npc/npc_d.json",
 		"npc_id": "npc_su_qing",
-		"display_name": "苏晴",
+		"display_name": "Lisa Wilson",
+		"dialogue_name": "Lisa",
 		"dialogue_count": 5,
 		"note_count": 2,
 	},
 	{
 		"path": "res://data/npc/npc_e.json",
 		"npc_id": "npc_wang_jianguo",
-		"display_name": "王建国",
+		"display_name": "Tom Brown",
+		"dialogue_name": "Tom",
 		"dialogue_count": 4,
 		"note_count": 3,
 	},
@@ -94,8 +99,10 @@ func _verify_all_npcs_use_shared_ui() -> void:
 		assert(npc_base.npc_data.source_path == data_path)
 		assert(String(npc_base.npc_id) == test_case["npc_id"])
 		assert(npc_base.get_node("%NPCName").text == test_case["display_name"])
+		assert(npc_base.get_node("%SpeakerName").text == test_case["dialogue_name"])
 		assert(not npc_base.get_node("%NPCName").visible)
-		assert(npc_base.get_node("%CharacterPortrait").texture != null)
+		assert(npc_base.get_node_or_null("CharacterLayer") == null)
+		assert(npc_base.get_node_or_null("%CharacterPortrait") == null)
 		assert(npc_base.get_node("%ProfilePhoto").texture != null)
 		assert(npc_base.get_node("%DialogueText").text == npc_data.dialogues[0]["text"])
 		assert(npc_base.dialogue_manager._dialogues.size() == npc_data.dialogues.size())
@@ -105,7 +112,6 @@ func _verify_all_npcs_use_shared_ui() -> void:
 		assert(npc_base.get_node_or_null("DossierPanel/NoteScroll") == null)
 		assert(note_board_area.get_child_count() == 6 + npc_data.notes.size())
 		assert(npc_base._note_items_by_key.size() == npc_data.notes.size())
-		assert(not npc_base.get_node("%CharacterLayer").visible)
 		assert(not npc_base.get_node("%DialoguePanel").visible)
 		assert(not npc_base.get_node("%NamePlate").visible)
 		assert(not npc_base.get_node("%DossierPanel").visible)
@@ -114,10 +120,11 @@ func _verify_all_npcs_use_shared_ui() -> void:
 		progress_by_id[npc_data.npc_id] = npc_base.npc_progress
 		var intro_index := npc_base.current_dialogue_index
 		npc_base._reveal_first_conversation()
-		assert(npc_base.get_node("%CharacterLayer").visible)
 		assert(npc_base.get_node("%DialoguePanel").visible)
 		assert(npc_base.current_dialogue_index == intro_index)
-		await get_tree().create_timer(npc_base.character_reveal_duration + 0.08).timeout
+		await get_tree().create_timer(
+			npc_base.dialogue_reveal_delay + npc_base.dialogue_reveal_duration + 0.08
+		).timeout
 
 		var expected_revealed_keys: Array[String] = []
 		var continue_button: Button = npc_base.get_node("%ContinueButton")
@@ -131,6 +138,11 @@ func _verify_all_npcs_use_shared_ui() -> void:
 				assert(bool(npc_base.npc_progress.unlocked_keys.get(unlock_key, false)))
 				var note_item: NoteItem = npc_base._note_items_by_key[unlock_key]
 				assert(note_item.visible)
+				assert(not note_item.get_node("%NoteHeader").visible)
+				assert(not note_item.get_node("%NoteContent").visible)
+				assert(note_item.get_node("%NoteHeader").text.is_empty())
+				assert(note_item.get_node("%NoteContent").text.is_empty())
+				assert(note_item.tooltip_text.is_empty())
 				var anchor_name := "%%RelatedSlot0%d" % expected_revealed_keys.size()
 				assert(note_item.get_parent() == npc_base.get_node(anchor_name))
 				assert(npc_base._note_entry_tweens.has(unlock_key))
@@ -194,7 +206,9 @@ func _verify_npc_progress_isolation() -> void:
 	# 李磊 advances far enough to unlock basic_info, but remains incomplete.
 	var npc_b := await _instantiate_npc(npc_b_data.source_path)
 	npc_b._reveal_first_conversation()
-	await get_tree().create_timer(npc_b.character_reveal_duration + 0.08).timeout
+	await get_tree().create_timer(
+		npc_b.dialogue_reveal_delay + npc_b.dialogue_reveal_duration + 0.08
+	).timeout
 	var npc_b_continue: Button = npc_b.get_node("%ContinueButton")
 	npc_b_continue.pressed.emit()
 	npc_b_continue.pressed.emit()
@@ -226,7 +240,9 @@ func _verify_npc_progress_isolation() -> void:
 	assert(not npc_c.get_node("%DossierPanel").visible)
 	assert(not npc_c.get_node("%MemoryButton").visible)
 	npc_c._reveal_first_conversation()
-	await get_tree().create_timer(npc_c.character_reveal_duration + 0.08).timeout
+	await get_tree().create_timer(
+		npc_c.dialogue_reveal_delay + npc_c.dialogue_reveal_duration + 0.08
+	).timeout
 	var npc_c_continue: Button = npc_c.get_node("%ContinueButton")
 	npc_c_continue.pressed.emit()
 	assert(npc_c.current_dialogue_index == 1)
@@ -243,7 +259,6 @@ func _verify_npc_progress_isolation() -> void:
 	assert(not npc_b_reloaded.memory_ready)
 	assert(not npc_b_reloaded.memory_completed)
 	assert(npc_b_reloaded.get_node("%NPCName").visible)
-	assert(npc_b_reloaded.get_node("%CharacterLayer").visible)
 	assert(npc_b_reloaded.get_node("%DialoguePanel").visible)
 	assert(npc_b_reloaded.get_node("%NamePlate").visible)
 	assert(npc_b_reloaded.get_node("%DossierPanel").visible)
@@ -282,7 +297,6 @@ func _verify_npc_progress_isolation() -> void:
 	assert(not npc_c_reloaded.memory_ready)
 	assert(not npc_c_reloaded.memory_completed)
 	assert(not npc_c_reloaded.get_node("%NPCName").visible)
-	assert(npc_c_reloaded.get_node("%CharacterLayer").visible)
 	assert(npc_c_reloaded.get_node("%DialoguePanel").visible)
 	assert(not npc_c_reloaded.get_node("%DossierPanel").visible)
 	assert(not npc_c_reloaded.get_node("%MemoryButton").visible)

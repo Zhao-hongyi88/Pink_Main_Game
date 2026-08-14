@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=3]
+[gd_scene load_steps=13 format=3]
 
 [ext_resource type="PackedScene" path="res://scenes/memory/memory_base.tscn" id="1_base"]
 [ext_resource type="Script" path="res://scripts/memory/npc5_wang_jianguo_memory.gd" id="2_memory"]
@@ -6,14 +6,22 @@
 [ext_resource type="Resource" path="res://data/memory/npc5/community_supplies.tres" id="4_data_a"]
 [ext_resource type="Resource" path="res://data/memory/npc5/donation_certificates.tres" id="5_data_b"]
 [ext_resource type="Resource" path="res://data/memory/npc5/charity_forum_record.tres" id="6_data_c"]
+[ext_resource type="Texture2D" path="res://TextureAsset/Memory/NPC5/wang_jianguo_street.png" id="7_stage_one"]
+[ext_resource type="Texture2D" path="res://TextureAsset/Memory/NPC5/wang_jianguo_activity_room.png" id="8_stage_two"]
+[ext_resource type="Texture2D" path="res://TextureAsset/Memory/NPC5/wang_jianguo_community_supplies.png" id="9_stage_three"]
+[ext_resource type="Texture2D" path="res://TextureAsset/Memory/Common/memory_scene_entry_marker.png" id="10_entry_marker"]
+[ext_resource type="Texture2D" path="res://TextureAsset/Memory/Common/unexplored_marker.png" id="11_marker"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_point"]
 size = Vector2(220, 120)
 
+[sub_resource type="CircleShape2D" id="CircleShape2D_entry"]
+radius = 30.0
+
 [node name="WangJianguoMemory" instance=ExtResource("1_base")]
 script = ExtResource("2_memory")
 
-[node name="Background" type="ColorRect" parent="." index="0"]
+[node name="Background" type="TextureRect" parent="." index="0"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -21,9 +29,12 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-color = Color(0.14, 0.125, 0.08, 1)
+texture = ExtResource("7_stage_one")
+expand_mode = 1
+stretch_mode = 6
 
 [node name="SceneTitle" type="Label" parent="Background"]
+visible = false
 layout_mode = 1
 anchors_preset = 10
 anchor_right = 1.0
@@ -31,23 +42,54 @@ offset_top = 82.0
 offset_bottom = 126.0
 grow_horizontal = 2
 theme_override_font_sizes/font_size = 30
-text = "王建国 · Memory"
+text = "Tom Brown · Memory"
 horizontal_alignment = 1
 mouse_filter = 2
+
+[node name="StageTwoBackground" type="TextureRect" parent="." index="1"]
+visible = false
+z_index = -1
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("8_stage_two")
+expand_mode = 1
+stretch_mode = 6
+
+[node name="StageThreeBackground" type="TextureRect" parent="." index="2"]
+visible = false
+z_index = -1
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("9_stage_three")
+expand_mode = 1
+stretch_mode = 6
 
 [node name="ObservationPoints" type="Node2D" parent="." index="1"]
 
 [node name="CommunitySupplies" type="Area2D" parent="ObservationPoints"]
 unique_name_in_owner = true
-position = Vector2(250, 340)
+visible = false
+position = Vector2(532, 391)
 script = ExtResource("3_point")
 observation_data = ExtResource("4_data_a")
 
 [node name="Visual" type="Polygon2D" parent="ObservationPoints/CommunitySupplies"]
+visible = false
 polygon = PackedVector2Array(-110, -60, 110, -60, 110, 60, -110, 60)
 color = Color(0.64, 0.55, 0.29, 1)
 
 [node name="Label" type="Label" parent="ObservationPoints/CommunitySupplies"]
+visible = false
 offset_left = -100.0
 offset_top = -18.0
 offset_right = 100.0
@@ -60,17 +102,24 @@ mouse_filter = 2
 [node name="CollisionShape2D" type="CollisionShape2D" parent="ObservationPoints/CommunitySupplies"]
 shape = SubResource("RectangleShape2D_point")
 
+[node name="UnexploredMarker" type="Sprite2D" parent="ObservationPoints/CommunitySupplies"]
+texture = ExtResource("11_marker")
+scale = Vector2(0.2, 0.2)
+
 [node name="DonationCertificates" type="Area2D" parent="ObservationPoints"]
 unique_name_in_owner = true
-position = Vector2(576, 285)
+visible = false
+position = Vector2(801, 313)
 script = ExtResource("3_point")
 observation_data = ExtResource("5_data_b")
 
 [node name="Visual" type="Polygon2D" parent="ObservationPoints/DonationCertificates"]
+visible = false
 polygon = PackedVector2Array(-110, -60, 110, -60, 110, 60, -110, 60)
 color = Color(0.72, 0.61, 0.34, 1)
 
 [node name="Label" type="Label" parent="ObservationPoints/DonationCertificates"]
+visible = false
 offset_left = -100.0
 offset_top = -18.0
 offset_right = 100.0
@@ -83,17 +132,24 @@ mouse_filter = 2
 [node name="CollisionShape2D" type="CollisionShape2D" parent="ObservationPoints/DonationCertificates"]
 shape = SubResource("RectangleShape2D_point")
 
+[node name="UnexploredMarker" type="Sprite2D" parent="ObservationPoints/DonationCertificates"]
+texture = ExtResource("11_marker")
+scale = Vector2(0.2, 0.2)
+
 [node name="CharityForumRecord" type="Area2D" parent="ObservationPoints"]
 unique_name_in_owner = true
-position = Vector2(902, 360)
+visible = false
+position = Vector2(249, 369)
 script = ExtResource("3_point")
 observation_data = ExtResource("6_data_c")
 
 [node name="Visual" type="Polygon2D" parent="ObservationPoints/CharityForumRecord"]
+visible = false
 polygon = PackedVector2Array(-110, -60, 110, -60, 110, 60, -110, 60)
 color = Color(0.56, 0.47, 0.23, 1)
 
 [node name="Label" type="Label" parent="ObservationPoints/CharityForumRecord"]
+visible = false
 offset_left = -100.0
 offset_top = -18.0
 offset_right = 100.0
@@ -105,4 +161,33 @@ mouse_filter = 2
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="ObservationPoints/CharityForumRecord"]
 shape = SubResource("RectangleShape2D_point")
+<<<<<<< HEAD
 
+[node name="UnexploredMarker" type="Sprite2D" parent="ObservationPoints/CharityForumRecord"]
+texture = ExtResource("11_marker")
+scale = Vector2(0.2, 0.2)
+
+[node name="ActivityRoomEntry" type="Area2D" parent="ObservationPoints"]
+unique_name_in_owner = true
+position = Vector2(453, 248)
+
+[node name="EntryMarker" type="Sprite2D" parent="ObservationPoints/ActivityRoomEntry"]
+texture = ExtResource("10_entry_marker")
+scale = Vector2(0.3, 0.3)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="ObservationPoints/ActivityRoomEntry"]
+shape = SubResource("CircleShape2D_entry")
+
+[node name="SuppliesRoomEntry" type="Area2D" parent="ObservationPoints"]
+unique_name_in_owner = true
+position = Vector2(791, 182)
+
+[node name="EntryMarker" type="Sprite2D" parent="ObservationPoints/SuppliesRoomEntry"]
+texture = ExtResource("10_entry_marker")
+scale = Vector2(0.3, 0.3)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="ObservationPoints/SuppliesRoomEntry"]
+shape = SubResource("CircleShape2D_entry")
+
+=======
+>>>>>>> 412671b62599c70a0377e5ed355a215f41bab903

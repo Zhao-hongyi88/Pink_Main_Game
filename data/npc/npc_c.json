@@ -1,23 +1,24 @@
 {
 	"npc_id": "npc_liu_guilan",
-	"display_name": "刘桂兰",
+	"display_name": "Mary Carter",
+	"dialogue_name": "Mary",
 	"portrait": "",
 	"name_unlock_key": "basic_info",
 	"dialogues": [
 		{
-			"text": "刘桂兰：Placeholder dialogue 01.",
+			"text": "Placeholder dialogue 01.",
 			"unlock_key": ""
 		},
 		{
-			"text": "刘桂兰：Placeholder dialogue 02.",
+			"text": "Placeholder dialogue 02.",
 			"unlock_key": "basic_info"
 		},
 		{
-			"text": "刘桂兰：Placeholder dialogue 03.",
+			"text": "Placeholder dialogue 03.",
 			"unlock_key": "c_status_info"
 		},
 		{
-			"text": "刘桂兰：Placeholder dialogue 04.",
+			"text": "Placeholder dialogue 04.",
 			"unlock_key": "c_extra_info"
 		}
 	],
@@ -25,17 +26,17 @@
 		{
 			"key": "basic_info",
 			"header": "Basic Information",
-			"content": "姓名：刘桂兰"
+			"content": "姓名：Mary Carter"
 		},
 		{
 			"key": "c_status_info",
 			"header": "Status Information",
-			"content": "刘桂兰 placeholder status information."
+			"content": "Mary Carter placeholder status information."
 		},
 		{
 			"key": "c_extra_info",
 			"header": "Additional Information",
-			"content": "刘桂兰 placeholder additional information."
+			"content": "Mary Carter placeholder additional information."
 		}
 	],
 	"memory_scene": "res://scenes/memory/npc3_liu_guilan_memory.tscn"

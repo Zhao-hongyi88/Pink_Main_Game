@@ -6,7 +6,8 @@ const NPC_CASES: Array[Dictionary] = [
 	{
 		"path": "res://data/npc/npc_a.json",
 		"npc_id": "npc_zhang_yuan",
-		"display_name": "张远",
+		"display_name": "Ryan Miller",
+		"dialogue_name": "Ryan",
 		"memory_scene": "res://scenes/memory/npc1_zhang_yuan_memory.tscn",
 		"dialogue_count": 5,
 		"note_count": 5,
@@ -14,7 +15,8 @@ const NPC_CASES: Array[Dictionary] = [
 	{
 		"path": "res://data/npc/npc_b.json",
 		"npc_id": "npc_li_lei",
-		"display_name": "李磊",
+		"display_name": "Mike Carter",
+		"dialogue_name": "Mike",
 		"memory_scene": "res://scenes/memory/npc2_li_lei_memory.tscn",
 		"dialogue_count": 3,
 		"note_count": 2,
@@ -22,7 +24,8 @@ const NPC_CASES: Array[Dictionary] = [
 	{
 		"path": "res://data/npc/npc_c.json",
 		"npc_id": "npc_liu_guilan",
-		"display_name": "刘桂兰",
+		"display_name": "Mary Carter",
+		"dialogue_name": "Mary",
 		"memory_scene": "res://scenes/memory/npc3_liu_guilan_memory.tscn",
 		"dialogue_count": 4,
 		"note_count": 3,
@@ -30,7 +33,8 @@ const NPC_CASES: Array[Dictionary] = [
 	{
 		"path": "res://data/npc/npc_d.json",
 		"npc_id": "npc_su_qing",
-		"display_name": "苏晴",
+		"display_name": "Lisa Wilson",
+		"dialogue_name": "Lisa",
 		"memory_scene": "res://scenes/memory/npc4_su_qing_memory.tscn",
 		"dialogue_count": 5,
 		"note_count": 2,
@@ -38,7 +42,8 @@ const NPC_CASES: Array[Dictionary] = [
 	{
 		"path": "res://data/npc/npc_e.json",
 		"npc_id": "npc_wang_jianguo",
-		"display_name": "王建国",
+		"display_name": "Tom Brown",
+		"dialogue_name": "Tom",
 		"memory_scene": "res://scenes/memory/npc5_wang_jianguo_memory.tscn",
 		"dialogue_count": 4,
 		"note_count": 3,
@@ -63,7 +68,7 @@ func _ready() -> void:
 		assert(not known_npc_ids.has(npc_data.npc_id), "Duplicate npc_id: %s" % npc_data.npc_id)
 		known_npc_ids[npc_data.npc_id] = true
 		assert(npc_data.display_name == test_case["display_name"])
-		assert(npc_data.portrait.is_empty())
+		assert(npc_data.dialogue_name == test_case["dialogue_name"])
 		assert(npc_data.memory_scene == test_case["memory_scene"])
 		assert(ResourceLoader.exists(npc_data.memory_scene, "PackedScene"))
 		assert(npc_data.dialogues.size() == test_case["dialogue_count"])
@@ -97,7 +102,10 @@ func _ready() -> void:
 		assert(npc_base.npc_data.source_path == data_path)
 		assert(npc_base.npc_id == npc_data.npc_id)
 		assert(npc_base.get_node("%NPCName").text == npc_data.display_name)
-		assert(npc_base.get_node("%CharacterPortrait").texture != null)
+		assert(npc_base.get_node("%SpeakerName").text == npc_data.dialogue_name)
+		assert(npc_base.get_node_or_null("CharacterLayer") == null)
+		assert(npc_base.get_node_or_null("%CharacterPortrait") == null)
+		assert(npc_base.get_node("Background") is TextureRect)
 		assert(npc_base.dialogue_manager is DialogueManager)
 		assert(npc_base.unlock_system is UnlockSystem)
 		assert(npc_base._valid_unlock_keys.size() == npc_data.notes.size())

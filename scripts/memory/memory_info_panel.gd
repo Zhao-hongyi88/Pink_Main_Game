@@ -17,12 +17,23 @@ var _showing_info := true
 @onready var image_placeholders: HBoxContainer = $Panel/ImagePlaceholders
 @onready var continue_button: Button = $Panel/ContinueButton
 @onready var close_button: Button = $Panel/CloseButton
+@onready var dialogue_box: Control = $DialogueBox
+@onready var dialogue_content_label: Label = $DialogueBox/DialogueContentLabel
+@onready var dialogue_continue_button: Button = $DialogueBox/DialogueContinueButton
+@onready var dialogue_close_button: Button = $DialogueBox/DialogueCloseButton
 
 
 func _ready() -> void:
 	hide()
+	dialogue_box.hide()
 	continue_button.pressed.connect(_on_continue_pressed)
 	close_button.pressed.connect(close_without_completion)
+	dialogue_continue_button.pressed.connect(_on_continue_pressed)
+	dialogue_close_button.pressed.connect(close_without_completion)
+<<<<<<< HEAD
+	dialogue_box.gui_input.connect(_on_dialogue_box_gui_input)
+=======
+>>>>>>> 412671b62599c70a0377e5ed355a215f41bab903
 
 
 func show_observation(data) -> void:
@@ -34,7 +45,11 @@ func show_observation(data) -> void:
 	_dialogue_index = -1
 	_showing_info = true
 	title_label.text = data.title
+	$Panel.show()
+	dialogue_box.hide()
 	section_label.text = "物品信息"
+	$Panel.show()
+	dialogue_box.hide()
 	_show_object_info(data)
 	continue_button.text = "继续"
 	show()
@@ -65,23 +80,47 @@ func _on_continue_pressed() -> void:
 	_complete_and_close()
 
 
+func _on_dialogue_box_gui_input(event: InputEvent) -> void:
+	if _showing_info:
+		return
+	if event is InputEventMouseButton \
+		and event.button_index == MOUSE_BUTTON_LEFT \
+		and event.pressed:
+		_on_continue_pressed()
+		dialogue_box.accept_event()
+
+
 func _show_dialogue_line() -> void:
+	$Panel.hide()
+	dialogue_box.show()
+<<<<<<< HEAD
+	dialogue_continue_button.grab_focus()
 	section_label.text = "主角观察"
 	_reset_info_layout()
 	image_placeholders.hide()
 	content_label.show()
+=======
+>>>>>>> 412671b62599c70a0377e5ed355a215f41bab903
 	if _current_data.dialogue.is_empty():
 		_complete_and_close()
 		return
 
+<<<<<<< HEAD
 	content_label.text = _current_data.dialogue[_dialogue_index]
+=======
+>>>>>>> 412671b62599c70a0377e5ed355a215f41bab903
+	dialogue_content_label.text = _current_data.dialogue[_dialogue_index]
 	if _dialogue_index == _current_data.dialogue.size() - 1:
-		continue_button.text = "完成并关闭"
+		dialogue_continue_button.text = "完成并关闭"
 	else:
-		continue_button.text = "继续"
+		dialogue_continue_button.text = "继续"
+
+	dialogue_continue_button.text = continue_button.text
 
 
 func _show_object_info(data) -> void:
+	$Panel.show()
+	dialogue_box.hide()
 	_clear_image_placeholders()
 	_reset_info_layout()
 	var has_images = not data.images.is_empty() or not data.image_placeholders.is_empty()
@@ -152,6 +191,11 @@ func _reset_panel() -> void:
 	_current_data = null
 	_dialogue_index = -1
 	_showing_info = true
+<<<<<<< HEAD
+=======
+	$Panel.show()
+>>>>>>> 412671b62599c70a0377e5ed355a215f41bab903
+	dialogue_box.hide()
 	hide()
 
 

@@ -1,27 +1,28 @@
 {
 	"npc_id": "npc_zhang_yuan",
-	"display_name": "张远",
+	"display_name": "Ryan Miller",
+	"dialogue_name": "Ryan",
 	"portrait": "",
 	"name_unlock_key": "basic_info",
 	"dialogues": [
 		{
-			"text": "张远：这里是测试对话01。",
+			"text": "这里是测试对话01。",
 			"unlock_key": ""
 		},
 		{
-			"text": "张远：这里是测试对话02。",
+			"text": "这里是测试对话02。",
 			"unlock_key": "basic_info"
 		},
 		{
-			"text": "张远：这里是测试对话03。",
+			"text": "这里是测试对话03。",
 			"unlock_key": ""
 		},
 		{
-			"text": "张远：这里是测试对话04。",
+			"text": "这里是测试对话04。",
 			"unlock_key": "work_info"
 		},
 		{
-			"text": "张远：这里是测试对话05。",
+			"text": "这里是测试对话05。",
 			"unlock_key": ""
 		}
 	],
@@ -29,7 +30,7 @@
 		{
 			"key": "basic_info",
 			"header": "基本信息",
-			"content": "姓名：张远"
+			"content": "姓名：Ryan Miller"
 		},
 		{
 			"key": "additional_info",

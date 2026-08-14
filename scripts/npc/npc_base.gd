@@ -13,15 +13,12 @@ const NOTE_ITEM_SCENE: PackedScene = preload("res://scenes/ui/npc/note_card.tscn
 @export_range(0.0, 20.0, 0.5) var note_entry_rotation_degrees := 4.0
 @export var note_slot_textures: Array[Texture2D] = []
 @export_group("First Entry Animation")
-@export_range(0.1, 1.0, 0.01) var character_reveal_duration := 0.40
 @export_range(0.0, 0.5, 0.01) var dialogue_reveal_delay := 0.10
 @export_range(0.1, 1.0, 0.01) var dialogue_reveal_duration := 0.30
 @export_group("Identity Reveal Animation")
 @export_range(0.1, 1.0, 0.01) var identity_reveal_duration := 0.40
 
-@onready var character_layer: Control = %CharacterLayer
-@onready var character_area: TextureRect = %CharacterPortrait
-@onready var profile_photo: TextureRect = %ProfilePhoto
+@onready var background: TextureRect = $Background
 @onready var name_plate: Control = %NamePlate
 @onready var npc_name: Label = %NPCName
 @onready var identity_label: Label = %IdentityLabel
@@ -85,7 +82,6 @@ var _intro_tween: Tween
 var _identity_tween: Tween
 var _awaiting_intro_reveal := false
 var _intro_animation_playing := false
-var _character_final_position := Vector2.ZERO
 var _dialogue_final_position := Vector2.ZERO
 var _name_plate_final_position := Vector2.ZERO
 var _dossier_final_position := Vector2.ZERO
@@ -128,7 +124,6 @@ func _unhandled_input(event: InputEvent) -> void:
 
 
 func _cache_visual_layout() -> void:
-	_character_final_position = character_layer.position
 	_dialogue_final_position = dialogue_panel.position
 	_name_plate_final_position = name_plate.position
 	_dossier_final_position = note_panel.position
@@ -158,8 +153,8 @@ func _load_npc_data(path: String) -> bool:
 	memory_scene_path = npc_data.memory_scene
 	_note_data = npc_data.notes.duplicate(true)
 	identity_label.text = _get_identity_display_text()
-	speaker_name.text = "UNKNOWN"
-	return _apply_portrait(npc_data.portrait)
+	speaker_name.text = npc_data.dialogue_name
+	return true
 
 
 func _get_identity_display_text() -> String:
@@ -176,18 +171,6 @@ func _get_identity_display_text() -> String:
 	return npc_data.display_name
 
 
-func _apply_portrait(portrait_path: String) -> bool:
-	if portrait_path.is_empty():
-		return true
-	var portrait_resource := load(portrait_path)
-	if not portrait_resource is Texture2D:
-		push_error("NPCBase: portrait 无法作为 Texture2D 加载：%s" % portrait_path)
-		return false
-	character_area.texture = portrait_resource
-	profile_photo.texture = portrait_resource
-	return true
-
-
 func _bind_npc_progress() -> bool:
 	npc_progress = GameState.get_or_create_npc_progress(npc_data.npc_id)
 	return npc_progress != null
@@ -201,6 +184,32 @@ func _setup_unlock_system() -> bool:
 func _setup_dialogue_manager() -> bool:
 	dialogue_manager = DialogueManager.new()
 	return dialogue_manager.setup(npc_data.dialogues, npc_progress)
+
+
+func _apply_dialogue_background(dialogue: Dictionary) -> bool:
+	var background_path := str(dialogue.get("background", "")).strip_edges()
+	if background_path.is_empty():
+		return false
+	if not ResourceLoader.exists(background_path, "Texture2D"):
+		push_warning("NPCBase: Dialogue background 路径无效，保留当前背景：%s" % background_path)
+		return false
+	var background_resource := load(background_path)
+	if not background_resource is Texture2D:
+		push_warning("NPCBase: Dialogue background 不是 Texture2D，保留当前背景：%s" % background_path)
+		return false
+	background.texture = background_resource
+	return true
+
+
+func _restore_dialogue_background() -> void:
+	if npc_data == null or npc_progress == null or npc_data.dialogues.is_empty():
+		return
+	var last_dialogue_index := mini(
+		npc_progress.current_dialogue_index,
+		npc_data.dialogues.size() - 1
+	)
+	for dialogue_index in range(last_dialogue_index + 1):
+		_apply_dialogue_background(npc_data.dialogues[dialogue_index])
 
 
 func _extract_valid_unlock_keys() -> void:
@@ -240,12 +249,11 @@ func _restore_page_state() -> void:
 	_cancel_intro_tween()
 	_cancel_identity_tween()
 	_awaiting_intro_reveal = false
-	character_layer.hide()
 	dialogue_panel.hide()
 	name_plate.hide()
 	npc_name.hide()
 	identity_label.hide()
-	speaker_name.text = "UNKNOWN"
+	speaker_name.text = npc_data.dialogue_name
 	note_panel.hide()
 	note_detail_popup.hide()
 	for note_item in _note_items:
@@ -253,7 +261,8 @@ func _restore_page_state() -> void:
 		_set_note_final_visual(note_item)
 		note_item.hide()
 
-	_refresh_dialogue_ui()
+	_refresh_dialogue_ui(false, false)
+	_restore_dialogue_background()
 	_restore_revealed_notes()
 	if _is_name_unlocked():
 		_show_identity_info(false)
@@ -304,14 +313,12 @@ func _has_dialogue_progress() -> bool:
 func _prepare_first_entry() -> void:
 	_awaiting_intro_reveal = true
 	_set_conversation_final_visual()
-	character_layer.hide()
 	dialogue_panel.hide()
 
 
 func _show_conversation_direct() -> void:
 	_awaiting_intro_reveal = false
 	_set_conversation_final_visual()
-	character_layer.show()
 	dialogue_panel.show()
 
 
@@ -321,11 +328,7 @@ func _reveal_first_conversation() -> void:
 	_awaiting_intro_reveal = false
 	_cancel_intro_tween()
 	_intro_animation_playing = true
-	character_layer.show()
 	dialogue_panel.show()
-	character_layer.position = _character_final_position + Vector2(0.0, 20.0)
-	character_layer.scale = Vector2(0.98, 0.98)
-	character_layer.modulate.a = 0.0
 	dialogue_panel.position = _dialogue_final_position + Vector2(0.0, 15.0)
 	dialogue_panel.modulate.a = 0.0
 
@@ -333,15 +336,6 @@ func _reveal_first_conversation() -> void:
 	_intro_tween.set_parallel(true)
 	_intro_tween.set_trans(Tween.TRANS_SINE)
 	_intro_tween.set_ease(Tween.EASE_OUT)
-	_intro_tween.tween_property(
-		character_layer, "position", _character_final_position, character_reveal_duration
-	)
-	_intro_tween.tween_property(
-		character_layer, "scale", Vector2.ONE, character_reveal_duration
-	)
-	_intro_tween.tween_property(
-		character_layer, "modulate:a", 1.0, character_reveal_duration
-	)
 	_intro_tween.tween_property(
 		dialogue_panel, "position", _dialogue_final_position, dialogue_reveal_duration
 	).set_delay(dialogue_reveal_delay)
@@ -358,9 +352,6 @@ func _on_intro_animation_finished() -> void:
 
 
 func _set_conversation_final_visual() -> void:
-	character_layer.position = _character_final_position
-	character_layer.scale = Vector2.ONE
-	character_layer.modulate.a = 1.0
 	dialogue_panel.position = _dialogue_final_position
 	dialogue_panel.modulate.a = 1.0
 
@@ -376,7 +367,7 @@ func _show_identity_info(animate := false) -> void:
 	_cancel_identity_tween()
 	npc_name.show()
 	identity_label.show()
-	speaker_name.text = npc_data.display_name
+	speaker_name.text = npc_data.dialogue_name
 	name_plate.show()
 	note_panel.show()
 	if not animate:
@@ -574,9 +565,11 @@ func _get_note_ui_order_index(target_key: String) -> int:
 	return order_index
 
 
-func _refresh_dialogue_ui(grab_memory_focus := false) -> void:
+func _refresh_dialogue_ui(grab_memory_focus := false, apply_background := true) -> void:
 	# 当前阶段 memory_ready 与 dialogue_completed 保持严格同步。
 	npc_progress.memory_ready = npc_progress.dialogue_completed
+	if apply_background:
+		_apply_dialogue_background(dialogue_manager.get_current_dialogue())
 	dialogue_text.text = dialogue_manager.get_current_text()
 	continue_button.disabled = npc_progress.dialogue_completed
 	memory_button.hide()
@@ -605,7 +598,6 @@ func _show_load_error() -> void:
 	_awaiting_intro_reveal = false
 	_cancel_intro_tween()
 	_cancel_identity_tween()
-	character_layer.hide()
 	name_plate.hide()
 	npc_name.text = "NPC DATA ERROR"
 	npc_name.hide()
