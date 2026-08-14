@@ -3,7 +3,11 @@ extends Node
 
 func _ready() -> void:
 	var dialogues: Array[Dictionary] = [
-		{"text": "Dialogue 01", "unlock_key": ""},
+		{
+			"text": "Dialogue 01",
+			"unlock_key": "",
+			"background": "res://tests/resources/dialogue_background_a.tres",
+		},
 		{"text": "Dialogue 02", "unlock_key": "basic_info"},
 		{"text": "Dialogue 03", "unlock_key": "final_info"},
 	]
@@ -13,6 +17,7 @@ func _ready() -> void:
 
 	assert(npc_a_progress.current_dialogue_index == 0)
 	assert(manager.get_current_dialogue() == dialogues[0])
+	assert(manager.get_current_dialogue()["background"] == dialogues[0]["background"])
 	assert(manager.get_current_text() == "Dialogue 01")
 	assert(manager.get_current_unlock_key().is_empty())
 	assert(manager.has_next())

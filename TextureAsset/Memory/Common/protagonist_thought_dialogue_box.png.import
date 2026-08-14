@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://d24sthu3gtpyp"
-path="res://.godot/imported/Q主角.png-76107148eccdc466a9c10b06f81f74d8.ctex"
+uid="uid://chsrqm2l32fig"
+path="res://.godot/imported/protagonist_thought_dialogue_box.png-db10b57a8af52eb7c97aa9d77d745958.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://tests/Q主角.png"
-dest_files=["res://.godot/imported/Q主角.png-76107148eccdc466a9c10b06f81f74d8.ctex"]
+source_file="res://TextureAsset/Memory/Common/protagonist_thought_dialogue_box.png"
+dest_files=["res://.godot/imported/protagonist_thought_dialogue_box.png-db10b57a8af52eb7c97aa9d77d745958.ctex"]
 
 [params]
 
