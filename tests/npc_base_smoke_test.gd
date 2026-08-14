@@ -3,6 +3,9 @@ extends Node
 const NPC_DATA_PATH := "res://data/npc/npc_a.json"
 const NPC_SCENE_PATH := "res://scenes/npc/npc_base.tscn"
 const MEMORY_SCENE_PATH := "res://scenes/memory/npc1_zhang_yuan_memory.tscn"
+const BACKGROUND_TEST_DATA_PATH := "res://tests/data/npc_background_test.json"
+const BACKGROUND_A_PATH := "res://tests/resources/dialogue_background_a.tres"
+const BACKGROUND_B_PATH := "res://tests/resources/dialogue_background_b.tres"
 
 
 class MemoryRoundTripProbe:
@@ -176,7 +179,6 @@ func _ready() -> void:
 	var expected_data := _read_json(NPC_DATA_PATH)
 	assert(not expected_data.is_empty())
 	assert(expected_data["npc_id"] == "npc_zhang_yuan")
-	assert(expected_data["portrait"] == "")
 	assert(expected_data["name_unlock_key"] == "basic_info")
 	assert(expected_data["memory_scene"] == MEMORY_SCENE_PATH)
 	assert(ResourceLoader.exists(NPC_SCENE_PATH))
@@ -186,8 +188,9 @@ func _ready() -> void:
 	assert(formal_data.is_valid(), formal_data.get_error_message())
 	assert(formal_data.npc_id == StringName(expected_data["npc_id"]))
 	assert(formal_data.display_name == expected_data["display_name"])
-	assert(formal_data.portrait.is_empty())
 	assert(formal_data.memory_scene == expected_data["memory_scene"])
+	await _verify_dialogue_background_system()
+	GameState.clear_runtime_state()
 
 	var npc_base_source := FileAccess.get_file_as_string("res://scripts/npc/npc_base.gd")
 	assert(npc_base_source.find("npc_a.json") == -1)
@@ -232,7 +235,6 @@ func _ready() -> void:
 	assert(not identity_label.visible)
 	assert(speaker_name.text == "UNKNOWN")
 	assert(not note_panel.visible)
-	assert(not npc_base.get_node("%CharacterLayer").visible)
 	assert(not npc_base.get_node("%DialoguePanel").visible)
 	assert(not npc_base.get_node("%NamePlate").visible)
 	assert(not continue_button.disabled)
@@ -246,6 +248,15 @@ func _ready() -> void:
 	assert(memory_hover.get("hover_brightness") == 1.15)
 	assert(npc_base._note_items.size() == expected_notes.size())
 	assert(not note_detail_popup.visible)
+	assert(npc_base.get_node_or_null("CharacterLayer") == null)
+	assert(npc_base.get_node_or_null("%CharacterPortrait") == null)
+	var page_background := npc_base.get_node("Background") as TextureRect
+	assert(page_background != null)
+	assert(page_background.mouse_filter == Control.MOUSE_FILTER_IGNORE)
+	assert(page_background.expand_mode == TextureRect.EXPAND_IGNORE_SIZE)
+	assert(page_background.stretch_mode == TextureRect.STRETCH_KEEP_ASPECT_COVERED)
+	assert(page_background.anchor_right == 1.0)
+	assert(page_background.anchor_bottom == 1.0)
 	assert(exit_button.visible)
 	assert(not exit_button.disabled)
 	assert(exit_button.position == Vector2(20.0, 18.0))
@@ -301,9 +312,7 @@ func _ready() -> void:
 	assert(note_detail_popup.get_node("%CloseHitArea").position == Vector2(850.0, 20.0))
 	assert(note_detail_popup.get_node("%CloseHitArea").size.is_equal_approx(Vector2(50.0, 50.0)))
 	assert(note_detail_popup.get_node("%CloseHitArea").texture_normal == null)
-	assert(npc_base.get_node("%CharacterPortrait").texture != null)
 	assert(npc_base.get_node("%ProfilePhoto").texture != null)
-	assert(npc_base.get_node("%CharacterPortrait").get_parent().name == "CharacterSlot")
 	assert(npc_base.get_node("%DialogueText").get_parent().name == "DialoguePanel")
 	assert(npc_base.get_node("%SpeakerName").get_parent().name == "DialoguePanel")
 	assert(npc_base.get_node_or_null("%NoteContainer") == null)
@@ -317,12 +326,12 @@ func _ready() -> void:
 	reveal_click.button_index = MOUSE_BUTTON_LEFT
 	reveal_click.pressed = true
 	npc_base._unhandled_input(reveal_click)
-	assert(npc_base.get_node("%CharacterLayer").visible)
 	assert(npc_base.get_node("%DialoguePanel").visible)
 	assert(npc_base.current_dialogue_index == first_dialogue_index)
 	assert(dialogue_text.text == first_dialogue_text)
-	await get_tree().create_timer(npc_base.character_reveal_duration + 0.08).timeout
-	assert(npc_base.get_node("%CharacterLayer").position == npc_base._character_final_position)
+	await get_tree().create_timer(
+		npc_base.dialogue_reveal_delay + npc_base.dialogue_reveal_duration + 0.08
+	).timeout
 	assert(npc_base.get_node("%DialoguePanel").position == npc_base._dialogue_final_position)
 	assert(npc_base.get_node("%DialoguePanel").mouse_filter == Control.MOUSE_FILTER_PASS)
 	assert(npc_base.get_node("%SpeakerName").mouse_filter == Control.MOUSE_FILTER_IGNORE)
@@ -372,7 +381,11 @@ func _ready() -> void:
 	assert(final_unlock_npc.dialogue_manager.setup(final_unlock_dialogues, final_unlock_progress))
 	final_unlock_npc._restore_page_state()
 	final_unlock_npc._reveal_first_conversation()
-	await get_tree().create_timer(final_unlock_npc.character_reveal_duration + 0.08).timeout
+	await get_tree().create_timer(
+		final_unlock_npc.dialogue_reveal_delay
+		+ final_unlock_npc.dialogue_reveal_duration
+		+ 0.08
+	).timeout
 	var final_continue_button: Button = final_unlock_npc.get_node("%ContinueButton")
 	final_continue_button.pressed.emit()
 	assert(final_unlock_progress.dialogue_completed)
@@ -418,7 +431,11 @@ func _ready() -> void:
 	panel_click.pressed = true
 	interaction_npc.get_node("%DialoguePanel").gui_input.emit(panel_click)
 	assert(interaction_progress.current_dialogue_index == 0)
-	await get_tree().create_timer(interaction_npc.character_reveal_duration + 0.08).timeout
+	await get_tree().create_timer(
+		interaction_npc.dialogue_reveal_delay
+		+ interaction_npc.dialogue_reveal_duration
+		+ 0.08
+	).timeout
 	interaction_npc.get_node("%ContinueButton").pressed.emit()
 	assert(interaction_progress.current_dialogue_index == 1)
 	for click_position: Vector2 in [Vector2(12, 80), Vector2(120, 70), Vector2(730, 30)]:
@@ -682,6 +699,101 @@ func _ready() -> void:
 	exit_release.position = exit_click_position
 	exit_release.global_position = exit_click_position
 	get_viewport().push_input(exit_release, true)
+
+
+func _verify_dialogue_background_system() -> void:
+	assert(ResourceLoader.exists(BACKGROUND_A_PATH, "Texture2D"))
+	assert(ResourceLoader.exists(BACKGROUND_B_PATH, "Texture2D"))
+	var background_a := load(BACKGROUND_A_PATH) as Texture2D
+	var background_b := load(BACKGROUND_B_PATH) as Texture2D
+	assert(background_a != null)
+	assert(background_b != null)
+	assert(background_a != background_b)
+
+	var test_data := NPCData.load_from_json(BACKGROUND_TEST_DATA_PATH)
+	assert(test_data.is_valid(), test_data.get_error_message())
+	assert(test_data.dialogues.size() == 5)
+	assert(test_data.dialogues[0]["background"] == BACKGROUND_A_PATH)
+	assert(not test_data.dialogues[1].has("background"))
+	assert(not test_data.dialogues[2].has("background"))
+	assert(test_data.dialogues[3]["background"] == BACKGROUND_B_PATH)
+	assert(test_data.dialogues[4].has("background"))
+
+	var npc_scene := load(NPC_SCENE_PATH) as PackedScene
+	var background_npc := npc_scene.instantiate() as NPCBase
+	background_npc.npc_data_path = BACKGROUND_TEST_DATA_PATH
+	add_child(background_npc)
+	await get_tree().process_frame
+	assert(background_npc.npc_data != null)
+	assert(background_npc.get_node_or_null("CharacterLayer") == null)
+	assert(background_npc.get_node_or_null("%CharacterPortrait") == null)
+	assert(background_npc.background.texture == background_a)
+	assert(not background_npc.get_node("%DialoguePanel").visible)
+
+	background_npc._reveal_first_conversation()
+	await get_tree().create_timer(
+		background_npc.dialogue_reveal_delay
+		+ background_npc.dialogue_reveal_duration
+		+ 0.08
+	).timeout
+	var continue_button := background_npc.get_node("%ContinueButton") as Button
+	assert(background_npc.current_dialogue_index == 0)
+	assert(background_npc.background.texture == background_a)
+
+	continue_button.pressed.emit()
+	assert(background_npc.current_dialogue_index == 1)
+	assert(background_npc.background.texture == background_a)
+	continue_button.pressed.emit()
+	assert(background_npc.current_dialogue_index == 2)
+	assert(background_npc.background.texture == background_a)
+	assert(background_npc.npc_progress.unlocked_keys.get("basic_info", false))
+	assert(background_npc.npc_progress.revealed_note_keys == ["basic_info"])
+	await get_tree().create_timer(
+		maxf(background_npc.note_entry_duration, background_npc.identity_reveal_duration) + 0.08
+	).timeout
+
+	continue_button.pressed.emit()
+	assert(background_npc.current_dialogue_index == 3)
+	assert(background_npc.background.texture == background_b)
+	continue_button.pressed.emit()
+	assert(background_npc.current_dialogue_index == 4)
+	assert(background_npc.background.texture == background_b)
+	assert(background_npc.npc_progress.unlocked_keys.get("work_info", false))
+	assert(background_npc.npc_progress.revealed_note_keys == ["basic_info", "work_info"])
+	await get_tree().create_timer(background_npc.note_entry_duration + 0.08).timeout
+
+	remove_child(background_npc)
+	background_npc.free()
+	background_npc = npc_scene.instantiate() as NPCBase
+	background_npc.npc_data_path = BACKGROUND_TEST_DATA_PATH
+	add_child(background_npc)
+	await get_tree().process_frame
+	assert(background_npc.current_dialogue_index == 4)
+	assert(not background_npc.dialogue_completed)
+	assert(background_npc.background.texture == background_b)
+	assert(background_npc.npc_progress.revealed_note_keys == ["basic_info", "work_info"])
+	assert(background_npc.get_node("%NPCName").visible)
+	assert(not background_npc.get_node("%MemoryButton").visible)
+
+	continue_button = background_npc.get_node("%ContinueButton") as Button
+	continue_button.pressed.emit()
+	assert(background_npc.dialogue_completed)
+	assert(background_npc.memory_ready)
+	assert(background_npc.background.texture == background_b)
+	assert(background_npc.get_node("%MemoryButton").visible)
+
+	remove_child(background_npc)
+	background_npc.free()
+	background_npc = npc_scene.instantiate() as NPCBase
+	background_npc.npc_data_path = BACKGROUND_TEST_DATA_PATH
+	add_child(background_npc)
+	await get_tree().process_frame
+	assert(background_npc.dialogue_completed)
+	assert(background_npc.current_dialogue_index == 4)
+	assert(background_npc.background.texture == background_b)
+	assert(background_npc.get_node("%MemoryButton").visible)
+	remove_child(background_npc)
+	background_npc.free()
 
 
 func _read_json(path: String) -> Dictionary:

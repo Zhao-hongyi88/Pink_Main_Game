@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://d24sthu3gtpyp"
-path="res://.godot/imported/Q主角.png-76107148eccdc466a9c10b06f81f74d8.ctex"
+uid="uid://ca66xhmav2y4"
+path="res://.godot/imported/张远.png-71fd9dd3939d1049c30d292cb4f367cd.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://tests/Q主角.png"
-dest_files=["res://.godot/imported/Q主角.png-76107148eccdc466a9c10b06f81f74d8.ctex"]
+source_file="res://TextureAsset/Level1/张远.png"
+dest_files=["res://.godot/imported/张远.png-71fd9dd3939d1049c30d292cb4f367cd.ctex"]
 
 [params]
 

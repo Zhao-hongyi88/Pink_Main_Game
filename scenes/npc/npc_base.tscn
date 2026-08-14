@@ -3,7 +3,6 @@
 [ext_resource type="Script" uid="uid://0mtv0vflgfg" path="res://scripts/npc/npc_base.gd" id="1_script"]
 [ext_resource type="Texture2D" uid="uid://bvbrhiftcmcfo" path="res://TextureAsset/Levevl2/对话背景.png" id="2_bianu"]
 [ext_resource type="PackedScene" path="res://scenes/ui/npc/note_detail_popup.tscn" id="2_note_detail_popup"]
-[ext_resource type="Texture2D" uid="uid://d24sthu3gtpyp" path="res://tests/Q主角.png" id="3_hahxb"]
 [ext_resource type="Texture2D" uid="uid://ujewq46wi6vc" path="res://TextureAsset/Levevl2/截屏2026-08-07 08.09.56 1.png" id="3_lnc5x"]
 [ext_resource type="Texture2D" uid="uid://4o4oher8lnsw" path="res://TextureAsset/Levevl2/Rectangle 2990.png" id="4_hahxb"]
 [ext_resource type="Texture2D" uid="uid://b7rmw8wqb3mwf" path="res://TextureAsset/Levevl2/名字框.png" id="5_pimgl"]
@@ -11,8 +10,7 @@
 [ext_resource type="Texture2D" uid="uid://cdo38kug00vr4" path="res://TextureAsset/Levevl2/回忆按钮.png" id="7_qhhuu"]
 [ext_resource type="Texture2D" uid="uid://cwthv8regohyn" path="res://TextureAsset/Levevl2/便利贴2.png" id="8_note_02"]
 [ext_resource type="Texture2D" uid="uid://dgmu3m83x227w" path="res://TextureAsset/Levevl2/便利贴3.png" id="9_note_03"]
-
-[ext_resource type="Script" path="res://scripts/ui/hover_effect.gd" id="10_hover"]
+[ext_resource type="Script" uid="uid://bdlyw32qwdsqx" path="res://scripts/ui/hover_effect.gd" id="10_hover"]
 
 [sub_resource type="SystemFont" id="SystemFont_dialogue_bold"]
 font_names = PackedStringArray("Microsoft YaHei", "Noto Sans CJK SC", "SimHei")
@@ -69,6 +67,16 @@ corner_radius_bottom_left = 22
 
 [sub_resource type="StyleBoxEmpty" id="StyleBox_memory_focus"]
 
+[sub_resource type="Gradient" id="Gradient_memory_camera"]
+offsets = PackedFloat32Array(0, 0.5, 1)
+colors = PackedColorArray(0.776471, 0.443137, 0.639216, 1, 0.329412, 0.160784, 0.286275, 1, 0.87451, 0.607843, 0.752941, 1)
+
+[sub_resource type="GradientTexture2D" id="Texture_memory_camera"]
+gradient = SubResource("Gradient_memory_camera")
+width = 640
+height = 360
+fill_to = Vector2(1, 1)
+
 [sub_resource type="StyleBoxEmpty" id="StyleBox_exit_transparent"]
 
 [sub_resource type="Gradient" id="Gradient_exit_placeholder"]
@@ -78,17 +86,6 @@ colors = PackedColorArray(0.95, 0.78, 0.88, 0.95, 0.48, 0.2, 0.38, 0.95)
 gradient = SubResource("Gradient_exit_placeholder")
 width = 48
 height = 48
-fill_from = Vector2(0, 0)
-fill_to = Vector2(1, 1)
-
-[sub_resource type="Gradient" id="Gradient_portrait_frame"]
-offsets = PackedFloat32Array(0, 0.5, 1)
-colors = PackedColorArray(0.776471, 0.443137, 0.639216, 1, 0.329412, 0.160784, 0.286275, 1, 0.87451, 0.607843, 0.752941, 1)
-
-[sub_resource type="GradientTexture2D" id="Texture_portrait_frame"]
-gradient = SubResource("Gradient_portrait_frame")
-width = 640
-height = 360
 fill_to = Vector2(1, 1)
 
 [node name="NPCBase" type="Control" unique_id=1302377562]
@@ -113,39 +110,6 @@ mouse_filter = 2
 texture = ExtResource("2_bianu")
 expand_mode = 1
 stretch_mode = 6
-
-[node name="CharacterLayer" type="Control" parent="." unique_id=1493502529]
-unique_name_in_owner = true
-visible = false
-anchors_preset = 0
-offset_left = 390.0
-offset_top = 95.0
-offset_right = 760.0
-offset_bottom = 470.0
-pivot_offset = Vector2(185, 187.5)
-mouse_filter = 2
-
-[node name="CharacterSlot" type="Control" parent="CharacterLayer" unique_id=1467155370]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 2
-
-[node name="CharacterPortrait" type="TextureRect" parent="CharacterLayer/CharacterSlot" unique_id=2046888891]
-unique_name_in_owner = true
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 2
-texture = ExtResource("3_hahxb")
-expand_mode = 1
-stretch_mode = 5
 
 [node name="DialoguePanel" type="Control" parent="." unique_id=542820583]
 unique_name_in_owner = true
@@ -269,7 +233,6 @@ offset_left = 25.0
 offset_top = 15.0
 offset_right = 350.0
 offset_bottom = 250.0
-mouse_filter = 0
 
 [node name="ProfileBoardTexture" type="TextureRect" parent="DossierPanel/ProfileBoard" unique_id=1732597270]
 layout_mode = 1
@@ -308,7 +271,7 @@ theme_override_font_sizes/font_size = 13
 text = "IDENTITY LOCKED"
 autowrap_mode = 2
 
-[node name="HoverEffect" type="Node" parent="DossierPanel/ProfileBoard"]
+[node name="HoverEffect" type="Node" parent="DossierPanel/ProfileBoard" unique_id=715370098]
 script = ExtResource("10_hover")
 hover_offset = Vector2(0, -4)
 
@@ -430,7 +393,7 @@ texture = ExtResource("7_qhhuu")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="HoverEffect" type="Node" parent="DossierPanel/MemoryButton"]
+[node name="HoverEffect" type="Node" parent="DossierPanel/MemoryButton" unique_id=983418094]
 script = ExtResource("10_hover")
 hover_scale = 1.08
 hover_brightness = 1.15
@@ -447,11 +410,11 @@ offset_top = 465.0
 offset_right = 355.0
 offset_bottom = 615.0
 mouse_filter = 2
-texture = SubResource("Texture_portrait_frame")
+texture = SubResource("Texture_memory_camera")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="ExitButton" type="Button" parent="."]
+[node name="ExitButton" type="Button" parent="." unique_id=2053666918]
 unique_name_in_owner = true
 layout_mode = 0
 offset_left = 20.0
@@ -459,25 +422,25 @@ offset_top = 18.0
 offset_right = 78.0
 offset_bottom = 76.0
 pivot_offset = Vector2(29, 29)
+tooltip_text = "返回主页"
 mouse_default_cursor_shape = 2
-action_mode = 0
+theme_override_colors/font_color = Color(0.18, 0.035, 0.1, 1)
+theme_override_colors/font_focus_color = Color(0.18, 0.035, 0.1, 1)
+theme_override_colors/font_pressed_color = Color(0.18, 0.035, 0.1, 1)
+theme_override_colors/font_hover_color = Color(0.18, 0.035, 0.1, 1)
+theme_override_colors/font_outline_color = Color(1, 0.9, 0.96, 0.95)
+theme_override_constants/outline_size = 2
+theme_override_font_sizes/font_size = 34
 theme_override_styles/normal = SubResource("StyleBox_exit_transparent")
 theme_override_styles/pressed = SubResource("StyleBox_exit_transparent")
 theme_override_styles/hover = SubResource("StyleBox_exit_transparent")
 theme_override_styles/disabled = SubResource("StyleBox_exit_transparent")
 theme_override_styles/focus = SubResource("StyleBox_exit_transparent")
-theme_override_colors/font_color = Color(0.18, 0.035, 0.1, 1)
-theme_override_colors/font_hover_color = Color(0.18, 0.035, 0.1, 1)
-theme_override_colors/font_pressed_color = Color(0.18, 0.035, 0.1, 1)
-theme_override_colors/font_focus_color = Color(0.18, 0.035, 0.1, 1)
-theme_override_colors/font_outline_color = Color(1, 0.9, 0.96, 0.95)
-theme_override_constants/outline_size = 2
-theme_override_font_sizes/font_size = 34
-flat = true
+action_mode = 0
 text = "←"
-tooltip_text = "返回主页"
+flat = true
 
-[node name="ExitTexture" type="TextureRect" parent="ExitButton"]
+[node name="ExitTexture" type="TextureRect" parent="ExitButton" unique_id=1662623076]
 unique_name_in_owner = true
 show_behind_parent = true
 layout_mode = 0
@@ -490,17 +453,13 @@ texture = SubResource("Texture_exit_placeholder")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="HoverEffect" type="Control" parent="ExitButton"]
-layout_mode = 0
+[node name="HoverEffect" type="Control" parent="ExitButton" unique_id=223572131]
+anchors_preset = 0
 mouse_filter = 2
 script = ExtResource("10_hover")
 hover_scale = 1.08
-hover_brightness = 1.12
-hover_offset = Vector2(0, -3)
-hover_duration = 0.18
 pressed_scale = 0.95
 pressed_rebound_scale = 1.0
-pressed_duration = 0.12
 
 [node name="NoteDetailPopup" parent="." unique_id=1245895994 instance=ExtResource("2_note_detail_popup")]
 layout_mode = 1

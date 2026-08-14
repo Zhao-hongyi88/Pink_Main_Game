@@ -5,7 +5,6 @@ extends RefCounted
 
 var npc_id: StringName = &""
 var display_name := ""
-var portrait := ""
 var name_unlock_key: StringName = &""
 var dialogues: Array[Dictionary] = []
 var notes: Array[Dictionary] = []
@@ -57,7 +56,6 @@ func _read_and_validate() -> void:
 	var raw: Dictionary = json.data
 	npc_id = StringName(_read_required_string(raw, "npc_id"))
 	display_name = _read_required_string(raw, "display_name")
-	portrait = _read_required_string(raw, "portrait", true)
 	name_unlock_key = StringName(_read_required_string(raw, "name_unlock_key", true))
 	memory_scene = _read_required_string(raw, "memory_scene")
 	_read_dialogues(raw)
@@ -101,14 +99,21 @@ func _read_dialogues(raw: Dictionary) -> void:
 		if not dialogue.has("unlock_key") or typeof(dialogue["unlock_key"]) != TYPE_STRING:
 			validation_errors.append("NPCData: dialogues[%d].unlock_key 必须是 String。" % index)
 			continue
+		if dialogue.has("background") and typeof(dialogue["background"]) != TYPE_STRING:
+			validation_errors.append("NPCData: dialogues[%d].background 必须是 String。" % index)
+			continue
 		var text := str(dialogue["text"]).strip_edges()
 		if text.is_empty():
 			validation_errors.append("NPCData: dialogues[%d].text 不能为空。" % index)
 			continue
-		dialogues.append({
+		var normalized_dialogue := {
 			"text": text,
 			"unlock_key": str(dialogue["unlock_key"]).strip_edges(),
-		})
+		}
+		var background_path := str(dialogue.get("background", "")).strip_edges()
+		if not background_path.is_empty():
+			normalized_dialogue["background"] = background_path
+		dialogues.append(normalized_dialogue)
 
 
 func _read_notes(raw: Dictionary) -> void:
@@ -152,8 +157,6 @@ func _normalize_note(note: Dictionary, index: int) -> Dictionary:
 
 
 func _validate_resource_paths() -> void:
-	if not portrait.is_empty() and not ResourceLoader.exists(portrait, "Texture2D"):
-		validation_errors.append("NPCData: portrait 不是有效的 Texture2D 路径：%s" % portrait)
 	if not memory_scene.is_empty() and not ResourceLoader.exists(memory_scene, "PackedScene"):
 		validation_errors.append("NPCData: memory_scene 不是有效的场景路径：%s" % memory_scene)
 
