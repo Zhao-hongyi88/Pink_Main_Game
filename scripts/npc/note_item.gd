@@ -29,9 +29,11 @@ func setup(header: String, content: String, key: String = "") -> void:
 
 
 func _apply_text() -> void:
-	note_header.text = full_header
-	note_content.text = _make_summary(full_content)
-	tooltip_text = full_header
+	note_header.text = ""
+	note_content.text = ""
+	note_header.hide()
+	note_content.hide()
+	tooltip_text = ""
 
 
 func _make_summary(content: String) -> String:
