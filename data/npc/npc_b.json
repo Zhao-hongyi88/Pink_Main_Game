@@ -1,19 +1,20 @@
 {
 	"npc_id": "npc_li_lei",
-	"display_name": "李磊",
+	"display_name": "Mike Carter",
+	"dialogue_name": "Mike",
 	"portrait": "",
 	"name_unlock_key": "basic_info",
 	"dialogues": [
 		{
-			"text": "李磊：Placeholder dialogue 01.",
+			"text": "Placeholder dialogue 01.",
 			"unlock_key": ""
 		},
 		{
-			"text": "李磊：Placeholder dialogue 02.",
+			"text": "Placeholder dialogue 02.",
 			"unlock_key": "basic_info"
 		},
 		{
-			"text": "李磊：Placeholder dialogue 03.",
+			"text": "Placeholder dialogue 03.",
 			"unlock_key": "b_extra_info"
 		}
 	],
@@ -21,12 +22,12 @@
 		{
 			"key": "basic_info",
 			"header": "Basic Information",
-			"content": "姓名：李磊"
+			"content": "姓名：Mike Carter"
 		},
 		{
 			"key": "b_extra_info",
 			"header": "Additional Information",
-			"content": "李磊 placeholder additional information."
+			"content": "Mike Carter placeholder additional information."
 		}
 	],
 	"memory_scene": "res://scenes/memory/npc2_li_lei_memory.tscn"

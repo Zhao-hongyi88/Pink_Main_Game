@@ -31,7 +31,7 @@ offset_top = 82.0
 offset_bottom = 126.0
 grow_horizontal = 2
 theme_override_font_sizes/font_size = 30
-text = "王建国 · Memory"
+text = "Tom Brown · Memory"
 horizontal_alignment = 1
 mouse_filter = 2
 
@@ -105,4 +105,3 @@ mouse_filter = 2
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="ObservationPoints/CharityForumRecord"]
 shape = SubResource("RectangleShape2D_point")
-

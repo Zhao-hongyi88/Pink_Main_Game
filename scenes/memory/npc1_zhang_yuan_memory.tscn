@@ -35,7 +35,7 @@ offset_top = 82.0
 offset_bottom = 126.0
 grow_horizontal = 2
 theme_override_font_sizes/font_size = 30
-text = "张远 · Memory"
+text = "Ryan Miller · Memory"
 horizontal_alignment = 1
 mouse_filter = 2
 

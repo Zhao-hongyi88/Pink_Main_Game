@@ -1,23 +1,24 @@
 {
 	"npc_id": "npc_wang_jianguo",
-	"display_name": "王建国",
+	"display_name": "Tom Brown",
+	"dialogue_name": "Tom",
 	"portrait": "",
 	"name_unlock_key": "basic_info",
 	"dialogues": [
 		{
-			"text": "王建国：Placeholder dialogue 01.",
+			"text": "Placeholder dialogue 01.",
 			"unlock_key": ""
 		},
 		{
-			"text": "王建国：Placeholder dialogue 02.",
+			"text": "Placeholder dialogue 02.",
 			"unlock_key": "basic_info"
 		},
 		{
-			"text": "王建国：Placeholder dialogue 03.",
+			"text": "Placeholder dialogue 03.",
 			"unlock_key": "e_extra_info"
 		},
 		{
-			"text": "王建国：Placeholder dialogue 04.",
+			"text": "Placeholder dialogue 04.",
 			"unlock_key": "e_final_info"
 		}
 	],
@@ -25,17 +26,17 @@
 		{
 			"key": "basic_info",
 			"header": "Basic Information",
-			"content": "姓名：王建国"
+			"content": "姓名：Tom Brown"
 		},
 		{
 			"key": "e_extra_info",
 			"header": "Additional Information",
-			"content": "王建国 placeholder additional information."
+			"content": "Tom Brown placeholder additional information."
 		},
 		{
 			"key": "e_final_info",
 			"header": "Final Placeholder Information",
-			"content": "王建国 placeholder final information."
+			"content": "Tom Brown placeholder final information."
 		}
 	],
 	"memory_scene": "res://scenes/memory/npc5_wang_jianguo_memory.tscn"

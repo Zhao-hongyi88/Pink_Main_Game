@@ -153,7 +153,7 @@ func _load_npc_data(path: String) -> bool:
 	memory_scene_path = npc_data.memory_scene
 	_note_data = npc_data.notes.duplicate(true)
 	identity_label.text = _get_identity_display_text()
-	speaker_name.text = "UNKNOWN"
+	speaker_name.text = npc_data.dialogue_name
 	return true
 
 
@@ -253,7 +253,7 @@ func _restore_page_state() -> void:
 	name_plate.hide()
 	npc_name.hide()
 	identity_label.hide()
-	speaker_name.text = "UNKNOWN"
+	speaker_name.text = npc_data.dialogue_name
 	note_panel.hide()
 	note_detail_popup.hide()
 	for note_item in _note_items:
@@ -367,7 +367,7 @@ func _show_identity_info(animate := false) -> void:
 	_cancel_identity_tween()
 	npc_name.show()
 	identity_label.show()
-	speaker_name.text = npc_data.display_name
+	speaker_name.text = npc_data.dialogue_name
 	name_plate.show()
 	note_panel.show()
 	if not animate:
