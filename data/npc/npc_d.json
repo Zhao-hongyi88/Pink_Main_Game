@@ -3,6 +3,7 @@
 	"display_name": "Lisa Wilson",
 	"dialogue_name": "Lisa",
 	"portrait": "",
+	"profile_photo": "res://TextureAsset/NPC/Profile/lisa_profile.png",
 	"name_unlock_key": "basic_info",
 	"dialogues": [
 		{

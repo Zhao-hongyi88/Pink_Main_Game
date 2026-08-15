@@ -1,11 +1,14 @@
 extends Node
 
-const NPC_DATA_PATH := "res://data/npc/npc_a.json"
+const NPC_DATA_PATH := "res://tests/data/npc_complete_test.json"
 const NPC_SCENE_PATH := "res://scenes/npc/npc_base.tscn"
 const MEMORY_SCENE_PATH := "res://scenes/memory/npc1_zhang_yuan_memory.tscn"
 const BACKGROUND_TEST_DATA_PATH := "res://tests/data/npc_background_test.json"
 const BACKGROUND_A_PATH := "res://tests/resources/dialogue_background_a.tres"
 const BACKGROUND_B_PATH := "res://tests/resources/dialogue_background_b.tres"
+const BACKGROUND_C_PATH := "res://tests/resources/dialogue_background_c.tres"
+const BACKGROUND_D_PATH := "res://tests/resources/dialogue_background_d.tres"
+const PROFILE_PHOTO_PATH := "res://TextureAsset/NPC/Profile/ryan_profile.png"
 
 
 class MemoryRoundTripProbe:
@@ -233,7 +236,8 @@ func _ready() -> void:
 	assert(npc_base.npc_progress.revealed_note_keys.is_empty())
 	assert(not npc_name.visible)
 	assert(not identity_label.visible)
-	assert(speaker_name.text == npc_base.npc_data.dialogue_name)
+	assert(npc_name.text == "???")
+	assert(speaker_name.text == "???")
 	assert(not note_panel.visible)
 	assert(not npc_base.get_node("%DialoguePanel").visible)
 	assert(not npc_base.get_node("%NamePlate").visible)
@@ -317,9 +321,21 @@ func _ready() -> void:
 	assert(note_detail_popup.get_node("%CloseHitArea").position == Vector2(850.0, 20.0))
 	assert(note_detail_popup.get_node("%CloseHitArea").size.is_equal_approx(Vector2(50.0, 50.0)))
 	assert(note_detail_popup.get_node("%CloseHitArea").texture_normal == null)
-	assert(npc_base.get_node("%ProfilePhoto").texture != null)
+	var profile_photo := npc_base.get_node("%ProfilePhoto") as TextureRect
+	assert(profile_photo != null)
+	assert(profile_photo.texture != null)
+	assert(profile_photo.texture.resource_path == PROFILE_PHOTO_PATH)
+	assert(profile_photo.position == Vector2(28.0, 32.0))
+	assert(profile_photo.size.is_equal_approx(Vector2(109.0, 132.0)))
+	assert(profile_photo.stretch_mode == TextureRect.STRETCH_KEEP_ASPECT_CENTERED)
+	assert(profile_photo.mouse_filter == Control.MOUSE_FILTER_IGNORE)
+	assert(npc_base.find_children("ProfileBoard", "Control", true, false).size() == 1)
+	assert(npc_base.find_children("ProfilePhoto", "TextureRect", true, false).size() == 1)
 	assert(npc_base.get_node("%DialogueText").get_parent().name == "DialoguePanel")
 	assert(npc_base.get_node("%SpeakerName").get_parent().name == "DialoguePanel")
+	assert(dialogue_text.get_theme_font_size(&"font_size") == 22)
+	assert(npc_name.get_theme_font_size(&"font_size") == 22)
+	assert(dialogue_text.autowrap_mode == TextServer.AUTOWRAP_WORD_SMART)
 	assert(npc_base.get_node_or_null("%NoteContainer") == null)
 	assert(npc_base.get_node_or_null("DossierPanel/NoteScroll") == null)
 	assert(note_board_area.get_child_count() == 6 + expected_notes.size())
@@ -332,6 +348,9 @@ func _ready() -> void:
 	reveal_click.pressed = true
 	npc_base._unhandled_input(reveal_click)
 	assert(npc_base.get_node("%DialoguePanel").visible)
+	assert(npc_base.get_node("%NamePlate").visible)
+	assert(npc_name.visible)
+	assert(npc_name.text == "???")
 	assert(npc_base.current_dialogue_index == first_dialogue_index)
 	assert(dialogue_text.text == first_dialogue_text)
 	await get_tree().create_timer(
@@ -718,19 +737,33 @@ func _ready() -> void:
 func _verify_dialogue_background_system() -> void:
 	assert(ResourceLoader.exists(BACKGROUND_A_PATH, "Texture2D"))
 	assert(ResourceLoader.exists(BACKGROUND_B_PATH, "Texture2D"))
+	assert(ResourceLoader.exists(BACKGROUND_C_PATH, "Texture2D"))
+	assert(ResourceLoader.exists(BACKGROUND_D_PATH, "Texture2D"))
 	var background_a := load(BACKGROUND_A_PATH) as Texture2D
 	var background_b := load(BACKGROUND_B_PATH) as Texture2D
+	var background_c := load(BACKGROUND_C_PATH) as Texture2D
+	var background_d := load(BACKGROUND_D_PATH) as Texture2D
 	assert(background_a != null)
 	assert(background_b != null)
-	assert(background_a != background_b)
+	assert(background_c != null)
+	assert(background_d != null)
+	assert(background_a != background_b and background_b != background_c)
+	assert(background_c != background_d)
 
 	var test_data := NPCData.load_from_json(BACKGROUND_TEST_DATA_PATH)
 	assert(test_data.is_valid(), test_data.get_error_message())
+	assert(test_data.initial_background == BACKGROUND_A_PATH)
+	assert(test_data.dialogue_complete_on_end)
 	assert(test_data.dialogues.size() == 5)
-	assert(test_data.dialogues[0]["background"] == BACKGROUND_A_PATH)
+	assert(test_data.dialogues[0]["speaker_name"] == "Me")
+	assert(test_data.dialogues[0]["speaker_role"] == "player")
+	assert(test_data.dialogues[0]["background"] == BACKGROUND_B_PATH)
 	assert(not test_data.dialogues[1].has("background"))
-	assert(not test_data.dialogues[2].has("background"))
-	assert(test_data.dialogues[3]["background"] == BACKGROUND_B_PATH)
+	assert(not test_data.dialogues[1].has("speaker_name"))
+	assert(test_data.dialogues[2]["background"] == BACKGROUND_C_PATH)
+	assert(test_data.dialogues[2]["open_note_key"] == "basic_info")
+	assert(test_data.dialogues[2]["after_note_background"] == BACKGROUND_D_PATH)
+	assert(not test_data.dialogues[3].has("background"))
 	assert(test_data.dialogues[4].has("background"))
 
 	var npc_scene := load(NPC_SCENE_PATH) as PackedScene
@@ -743,6 +776,9 @@ func _verify_dialogue_background_system() -> void:
 	assert(background_npc.get_node_or_null("%CharacterPortrait") == null)
 	assert(background_npc.background.texture == background_a)
 	assert(not background_npc.get_node("%DialoguePanel").visible)
+	assert(background_npc.get_node("%SpeakerName").text == "Me")
+	assert(background_npc.get_node("%NPCName").text == "Me")
+	assert(not background_npc.get_node("%NamePlate").visible)
 
 	background_npc._reveal_first_conversation()
 	await get_tree().create_timer(
@@ -752,26 +788,47 @@ func _verify_dialogue_background_system() -> void:
 	).timeout
 	var continue_button := background_npc.get_node("%ContinueButton") as Button
 	assert(background_npc.current_dialogue_index == 0)
-	assert(background_npc.background.texture == background_a)
+	assert(background_npc.background.texture == background_b)
+	assert(background_npc.get_node("%SpeakerName").text == "Me")
+	assert(background_npc.get_node("%NPCName").text == "Me")
+	assert(background_npc.get_node("%NamePlate").visible)
 
 	continue_button.pressed.emit()
 	assert(background_npc.current_dialogue_index == 1)
-	assert(background_npc.background.texture == background_a)
+	assert(background_npc.background.texture == background_b)
+	assert(background_npc.get_node("%SpeakerName").text == "???")
+	assert(background_npc.get_node("%NPCName").text == "???")
 	continue_button.pressed.emit()
 	assert(background_npc.current_dialogue_index == 2)
-	assert(background_npc.background.texture == background_a)
+	assert(background_npc.background.texture == background_c)
 	assert(background_npc.npc_progress.unlocked_keys.get("basic_info", false))
 	assert(background_npc.npc_progress.revealed_note_keys == ["basic_info"])
+	assert(background_npc._note_items_by_key["basic_info"].visible)
+	assert(background_npc.note_detail_popup.visible)
+	assert(background_npc._auto_note_interaction_locked)
+	assert(continue_button.disabled)
+	assert(background_npc.get_node("%NPCName").text == test_data.dialogue_name)
+	background_npc.advance_dialogue()
+	assert(background_npc.current_dialogue_index == 2)
+	assert(background_npc.background.texture == background_c)
+	background_npc.note_detail_popup.get_node("%CloseHitArea").pressed.emit()
+	assert(background_npc.note_detail_popup.visible)
+	assert(background_npc.background.texture == background_c)
+	await get_tree().create_timer(0.35).timeout
+	assert(not background_npc.note_detail_popup.visible)
+	assert(not background_npc._auto_note_interaction_locked)
+	assert(background_npc.background.texture == background_d)
+	assert(not continue_button.disabled)
 	await get_tree().create_timer(
 		maxf(background_npc.note_entry_duration, background_npc.identity_reveal_duration) + 0.08
 	).timeout
 
 	continue_button.pressed.emit()
 	assert(background_npc.current_dialogue_index == 3)
-	assert(background_npc.background.texture == background_b)
+	assert(background_npc.background.texture == background_d)
 	continue_button.pressed.emit()
 	assert(background_npc.current_dialogue_index == 4)
-	assert(background_npc.background.texture == background_b)
+	assert(background_npc.background.texture == background_d)
 	assert(background_npc.npc_progress.unlocked_keys.get("work_info", false))
 	assert(background_npc.npc_progress.revealed_note_keys == ["basic_info", "work_info"])
 	await get_tree().create_timer(background_npc.note_entry_duration + 0.08).timeout
@@ -784,16 +841,22 @@ func _verify_dialogue_background_system() -> void:
 	await get_tree().process_frame
 	assert(background_npc.current_dialogue_index == 4)
 	assert(not background_npc.dialogue_completed)
-	assert(background_npc.background.texture == background_b)
+	assert(background_npc.background.texture == background_d)
 	assert(background_npc.npc_progress.revealed_note_keys == ["basic_info", "work_info"])
 	assert(background_npc.get_node("%NPCName").visible)
 	assert(not background_npc.get_node("%MemoryButton").visible)
+	assert(not background_npc.note_detail_popup.visible)
+	background_npc._note_items_by_key["basic_info"].pressed.emit()
+	assert(background_npc.note_detail_popup.visible)
+	background_npc.note_detail_popup.get_node("%CloseHitArea").pressed.emit()
+	await get_tree().create_timer(0.35).timeout
+	assert(background_npc.background.texture == background_d)
 
 	continue_button = background_npc.get_node("%ContinueButton") as Button
 	continue_button.pressed.emit()
 	assert(background_npc.dialogue_completed)
 	assert(background_npc.memory_ready)
-	assert(background_npc.background.texture == background_b)
+	assert(background_npc.background.texture == background_d)
 	assert(background_npc.get_node("%MemoryButton").visible)
 
 	remove_child(background_npc)
@@ -804,7 +867,7 @@ func _verify_dialogue_background_system() -> void:
 	await get_tree().process_frame
 	assert(background_npc.dialogue_completed)
 	assert(background_npc.current_dialogue_index == 4)
-	assert(background_npc.background.texture == background_b)
+	assert(background_npc.background.texture == background_d)
 	assert(background_npc.get_node("%MemoryButton").visible)
 	remove_child(background_npc)
 	background_npc.free()

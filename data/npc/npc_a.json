@@ -3,27 +3,73 @@
 	"display_name": "Ryan Miller",
 	"dialogue_name": "Ryan",
 	"portrait": "",
+	"profile_photo": "res://TextureAsset/NPC/Profile/ryan_profile.png",
+	"initial_background": "res://TextureAsset/Level1/Ryan/ryan_loan_01_arrival.png",
 	"name_unlock_key": "basic_info",
 	"dialogues": [
 		{
-			"text": "这里是测试对话01。",
+			"speaker_name": "Me",
+			"speaker_role": "player",
+			"text": "你好，请问前来办理什么业务",
+			"unlock_key": "",
+			"background": "res://TextureAsset/Level1/Ryan/ryan_loan_02_counter.png"
+		},
+		{
+			"speaker_name": "Ryan",
+			"text": "我想办理小额贷款。",
 			"unlock_key": ""
 		},
 		{
-			"text": "这里是测试对话02。",
-			"unlock_key": "basic_info"
-		},
-		{
-			"text": "这里是测试对话03。",
+			"speaker_name": "Me",
+			"speaker_role": "player",
+			"text": "好的，请提供您的贷款用途。",
 			"unlock_key": ""
 		},
 		{
-			"text": "这里是测试对话04。",
-			"unlock_key": "work_info"
+			"speaker_name": "Ryan",
+			"text": "培训。\n一家职业认证机构的课程。\n他们说完成培训后，可以提升我的时间价值评级。",
+			"unlock_key": ""
 		},
 		{
-			"text": "这里是测试对话05。",
+			"speaker_name": "Me",
+			"speaker_role": "player",
+			"text": "提醒您，培训贷款需要使用未来劳动时间偿还。如果培训没有达到预期，偿还压力可能增加。",
 			"unlock_key": ""
+		},
+		{
+			"speaker_name": "Ryan",
+			"text": "（沉默了一会）我明白。",
+			"unlock_key": ""
+		},
+		{
+			"speaker_name": "Me",
+			"speaker_role": "player",
+			"text": "你为什么选择这个培训机构？",
+			"unlock_key": ""
+		},
+		{
+			"speaker_name": "Ryan",
+			"text": "因为他们承诺，会帮我提高我的时间价值等级。",
+			"unlock_key": ""
+		},
+		{
+			"speaker_name": "Ryan",
+			"text": "我只是想让我的时间……\n至少有一个被需要的机会。",
+			"unlock_key": ""
+		},
+		{
+			"speaker_name": "Me",
+			"speaker_role": "player",
+			"text": "贷款申请已提交，请递交您的申请资料。\n请等待审核结果。",
+			"unlock_key": ""
+		},
+		{
+			"speaker_name": "Ryan",
+			"text": "（递交资料）好的，这是我的资料",
+			"unlock_key": "basic_info",
+			"background": "res://TextureAsset/Level1/Ryan/ryan_loan_03_submit_documents.png",
+			"open_note_key": "basic_info",
+			"after_note_background": "res://TextureAsset/Level1/Ryan/ryan_loan_04_after_submit.png"
 		}
 	],
 	"notes": [

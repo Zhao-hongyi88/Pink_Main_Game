@@ -6,6 +6,9 @@ extends RefCounted
 var npc_id: StringName = &""
 var display_name := ""
 var dialogue_name := ""
+var profile_photo := ""
+var initial_background := ""
+var dialogue_complete_on_end := true
 var name_unlock_key: StringName = &""
 var dialogues: Array[Dictionary] = []
 var notes: Array[Dictionary] = []
@@ -58,6 +61,9 @@ func _read_and_validate() -> void:
 	npc_id = StringName(_read_required_string(raw, "npc_id"))
 	display_name = _read_required_string(raw, "display_name")
 	dialogue_name = _read_optional_string(raw, "dialogue_name", display_name)
+	profile_photo = _read_optional_string(raw, "profile_photo", "")
+	initial_background = _read_optional_string(raw, "initial_background", "")
+	dialogue_complete_on_end = _read_optional_bool(raw, "dialogue_complete_on_end", true)
 	name_unlock_key = StringName(_read_required_string(raw, "name_unlock_key", true))
 	memory_scene = _read_required_string(raw, "memory_scene")
 	_read_dialogues(raw)
@@ -89,6 +95,15 @@ func _read_optional_string(raw: Dictionary, field: String, fallback: String) -> 
 	return value if not value.is_empty() else fallback
 
 
+func _read_optional_bool(raw: Dictionary, field: String, fallback: bool) -> bool:
+	if not raw.has(field):
+		return fallback
+	if typeof(raw[field]) != TYPE_BOOL:
+		validation_errors.append("NPCData: 字段 '%s' 必须是 bool。" % field)
+		return fallback
+	return bool(raw[field])
+
+
 func _read_dialogues(raw: Dictionary) -> void:
 	if not raw.has("dialogues") or typeof(raw["dialogues"]) != TYPE_ARRAY:
 		validation_errors.append("NPCData: 字段 'dialogues' 必须是 Array。")
@@ -111,8 +126,21 @@ func _read_dialogues(raw: Dictionary) -> void:
 		if not dialogue.has("unlock_key") or typeof(dialogue["unlock_key"]) != TYPE_STRING:
 			validation_errors.append("NPCData: dialogues[%d].unlock_key 必须是 String。" % index)
 			continue
-		if dialogue.has("background") and typeof(dialogue["background"]) != TYPE_STRING:
-			validation_errors.append("NPCData: dialogues[%d].background 必须是 String。" % index)
+		var optional_string_fields := [
+			"background",
+			"speaker_name",
+			"speaker_role",
+			"open_note_key",
+			"after_note_background",
+		]
+		var optional_fields_valid := true
+		for field: String in optional_string_fields:
+			if dialogue.has(field) and typeof(dialogue[field]) != TYPE_STRING:
+				validation_errors.append(
+					"NPCData: dialogues[%d].%s 必须是 String。" % [index, field]
+				)
+				optional_fields_valid = false
+		if not optional_fields_valid:
 			continue
 		var text := str(dialogue["text"]).strip_edges()
 		if text.is_empty():
@@ -125,6 +153,30 @@ func _read_dialogues(raw: Dictionary) -> void:
 		var background_path := str(dialogue.get("background", "")).strip_edges()
 		if not background_path.is_empty():
 			normalized_dialogue["background"] = background_path
+		var dialogue_speaker_name := str(dialogue.get("speaker_name", "")).strip_edges()
+		if not dialogue_speaker_name.is_empty():
+			normalized_dialogue["speaker_name"] = dialogue_speaker_name
+		var speaker_role := str(dialogue.get("speaker_role", "")).strip_edges().to_lower()
+		if not speaker_role.is_empty():
+			if speaker_role not in ["player", "npc"]:
+				validation_errors.append(
+					"NPCData: dialogues[%d].speaker_role 必须是 'player' 或 'npc'。" % index
+				)
+				continue
+			if speaker_role == "player" and dialogue_speaker_name.is_empty():
+				validation_errors.append(
+					"NPCData: dialogues[%d] 的 player speaker_role 需要 speaker_name。" % index
+				)
+				continue
+			normalized_dialogue["speaker_role"] = speaker_role
+		var open_note_key := str(dialogue.get("open_note_key", "")).strip_edges()
+		if not open_note_key.is_empty():
+			normalized_dialogue["open_note_key"] = open_note_key
+		var after_note_background := str(
+			dialogue.get("after_note_background", "")
+		).strip_edges()
+		if not after_note_background.is_empty():
+			normalized_dialogue["after_note_background"] = after_note_background
 		dialogues.append(normalized_dialogue)
 
 
@@ -169,6 +221,17 @@ func _normalize_note(note: Dictionary, index: int) -> Dictionary:
 
 
 func _validate_resource_paths() -> void:
+	if not profile_photo.is_empty() and not ResourceLoader.exists(profile_photo, "Texture2D"):
+		validation_errors.append(
+			"NPCData: profile_photo 不是有效的图片路径：%s" % profile_photo
+		)
+	if (
+		not initial_background.is_empty()
+		and not ResourceLoader.exists(initial_background, "Texture2D")
+	):
+		validation_errors.append(
+			"NPCData: initial_background 不是有效的图片路径：%s" % initial_background
+		)
 	if not memory_scene.is_empty() and not ResourceLoader.exists(memory_scene, "PackedScene"):
 		validation_errors.append("NPCData: memory_scene 不是有效的场景路径：%s" % memory_scene)
 
@@ -184,4 +247,19 @@ func _validate_unlock_references() -> void:
 		if not unlock_key.is_empty() and not note_keys.has(unlock_key):
 			validation_errors.append(
 				"NPCData: dialogues[%d].unlock_key 没有对应的 Note：%s" % [index, unlock_key]
+			)
+		var open_note_key := str(dialogues[index].get("open_note_key", ""))
+		if not open_note_key.is_empty() and not note_keys.has(open_note_key):
+			validation_errors.append(
+				"NPCData: dialogues[%d].open_note_key 没有对应的 Note：%s" % [
+					index,
+					open_note_key,
+				]
+			)
+		if (
+			dialogues[index].has("after_note_background")
+			and open_note_key.is_empty()
+		):
+			validation_errors.append(
+				"NPCData: dialogues[%d].after_note_background 需要 open_note_key。" % index
 			)

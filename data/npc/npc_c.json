@@ -3,6 +3,7 @@
 	"display_name": "Mary Carter",
 	"dialogue_name": "Mary",
 	"portrait": "",
+	"profile_photo": "res://TextureAsset/NPC/Profile/mary_profile.png",
 	"name_unlock_key": "basic_info",
 	"dialogues": [
 		{

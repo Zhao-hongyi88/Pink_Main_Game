@@ -148,7 +148,9 @@ func _verify_archive_and_sequence_progression() -> void:
 	assert(GameState.selected_npc_id == ordered_npc_ids[0])
 	assert(GameState.unlocked_npc_ids.size() == 2)
 	assert(GameState.get_npc_progress(ordered_npc_ids[0]) == first_progress)
-	assert(first_progress.current_dialogue_index == 2)
+	assert(str(first_data.dialogues[first_progress.current_dialogue_index].get(
+		"unlock_key", ""
+	)) == String(first_data.name_unlock_key))
 	assert(first_progress.unlocked_keys.get(String(first_data.name_unlock_key), false))
 	assert(first_progress.revealed_note_keys == [String(first_data.name_unlock_key)])
 	_dispose_main_menu(menu)
@@ -299,15 +301,18 @@ func _trigger_name_unlock_through_dialogue(npc_id: StringName) -> NPCProgress:
 
 	var name_unlock_observed := false
 	for _dialogue_index in npc_data.dialogues.size():
-		var dialogue_result := dialogue_manager.advance()
-		assert(dialogue_result["accepted"])
-		var unlock_key := str(dialogue_result["unlock_key"])
+		# NPCBase processes the newly visible dialogue's unlock action before the
+		# player advances away from it. Mirror that order so an intentionally
+		# incomplete final line does not get marked complete by this test helper.
+		var unlock_key := dialogue_manager.get_current_unlock_key()
 		if not unlock_key.is_empty():
 			var unlock_result := unlock_system.request_unlock(unlock_key)
 			assert(unlock_result["accepted"])
 		if unlock_key == String(npc_data.name_unlock_key):
 			name_unlock_observed = true
 			break
+		var dialogue_result := dialogue_manager.advance()
+		assert(dialogue_result["accepted"])
 	assert(name_unlock_observed)
 	assert(progress.unlocked_keys.get(String(npc_data.name_unlock_key), false))
 	return progress

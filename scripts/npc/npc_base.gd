@@ -22,13 +22,14 @@ const NOTE_ITEM_SCENE: PackedScene = preload("res://scenes/ui/npc/note_card.tscn
 @onready var name_plate: Control = %NamePlate
 @onready var npc_name: Label = %NPCName
 @onready var identity_label: Label = %IdentityLabel
+@onready var profile_photo: TextureRect = %ProfilePhoto
 @onready var dialogue_panel: Control = %DialoguePanel
 @onready var speaker_name: Label = %SpeakerName
 @onready var dialogue_text: Label = %DialogueText
 @onready var continue_button: Button = %ContinueButton
 @onready var note_panel: Control = %DossierPanel
 @onready var note_board_area: Control = %RelatedDataArea
-@onready var note_detail_popup: Control = %NoteDetailPopup
+@onready var note_detail_popup: NoteDetailPopup = %NoteDetailPopup
 @onready var memory_button: Button = %MemoryButton
 @onready var exit_button: Button = %ExitButton
 @onready var _note_anchors: Array[Control] = [
@@ -85,12 +86,16 @@ var _intro_animation_playing := false
 var _dialogue_final_position := Vector2.ZERO
 var _name_plate_final_position := Vector2.ZERO
 var _dossier_final_position := Vector2.ZERO
+var _auto_note_interaction_locked := false
+var _active_auto_note_key := ""
+var _active_after_note_background := ""
 
 
 func _ready() -> void:
 	_cache_visual_layout()
 	continue_button.pressed.connect(advance_dialogue)
 	dialogue_panel.gui_input.connect(_on_dialogue_panel_gui_input)
+	note_detail_popup.popup_closed.connect(_on_note_detail_popup_closed)
 	memory_button.pressed.connect(_on_memory_pressed)
 	exit_button.pressed.connect(_on_exit_pressed)
 	_consume_navigation_payload()
@@ -148,13 +153,27 @@ func _load_npc_data(path: String) -> bool:
 
 	npc_data = loaded_data
 	npc_id = npc_data.npc_id
-	npc_name.text = npc_data.display_name
+	_refresh_profile_photo()
+	npc_name.text = "???"
 	_name_unlock_key = npc_data.name_unlock_key
 	memory_scene_path = npc_data.memory_scene
 	_note_data = npc_data.notes.duplicate(true)
 	identity_label.text = _get_identity_display_text()
-	speaker_name.text = npc_data.dialogue_name
+	speaker_name.text = "???"
 	return true
+
+
+func _refresh_profile_photo() -> void:
+	profile_photo.texture = null
+	if npc_data == null or npc_data.profile_photo.is_empty():
+		return
+	var photo_resource := load(npc_data.profile_photo)
+	if not photo_resource is Texture2D:
+		push_warning(
+			"NPCBase: profile_photo 不是 Texture2D，保持照片为空：%s" % npc_data.profile_photo
+		)
+		return
+	profile_photo.texture = photo_resource
 
 
 func _get_identity_display_text() -> String:
@@ -187,15 +206,34 @@ func _setup_dialogue_manager() -> bool:
 
 
 func _apply_dialogue_background(dialogue: Dictionary) -> bool:
-	var background_path := str(dialogue.get("background", "")).strip_edges()
+	return _apply_background_path(
+		str(dialogue.get("background", "")).strip_edges(),
+		"Dialogue background"
+	)
+
+
+func _apply_initial_background() -> bool:
+	if npc_data == null:
+		return false
+	return _apply_background_path(npc_data.initial_background, "initial_background")
+
+
+func _apply_after_note_background(dialogue: Dictionary) -> bool:
+	return _apply_background_path(
+		str(dialogue.get("after_note_background", "")).strip_edges(),
+		"after_note_background"
+	)
+
+
+func _apply_background_path(background_path: String, field_label: String) -> bool:
 	if background_path.is_empty():
 		return false
 	if not ResourceLoader.exists(background_path, "Texture2D"):
-		push_warning("NPCBase: Dialogue background 路径无效，保留当前背景：%s" % background_path)
+		push_warning("NPCBase: %s 路径无效，保留当前背景：%s" % [field_label, background_path])
 		return false
 	var background_resource := load(background_path)
 	if not background_resource is Texture2D:
-		push_warning("NPCBase: Dialogue background 不是 Texture2D，保留当前背景：%s" % background_path)
+		push_warning("NPCBase: %s 不是 Texture2D，保留当前背景：%s" % [field_label, background_path])
 		return false
 	background.texture = background_resource
 	return true
@@ -204,12 +242,18 @@ func _apply_dialogue_background(dialogue: Dictionary) -> bool:
 func _restore_dialogue_background() -> void:
 	if npc_data == null or npc_progress == null or npc_data.dialogues.is_empty():
 		return
+	_apply_initial_background()
+	if not _has_dialogue_progress():
+		return
 	var last_dialogue_index := mini(
 		npc_progress.current_dialogue_index,
 		npc_data.dialogues.size() - 1
 	)
 	for dialogue_index in range(last_dialogue_index + 1):
-		_apply_dialogue_background(npc_data.dialogues[dialogue_index])
+		var dialogue: Dictionary = npc_data.dialogues[dialogue_index]
+		_apply_dialogue_background(dialogue)
+		if _is_note_interaction_completed(dialogue):
+			_apply_after_note_background(dialogue)
 
 
 func _extract_valid_unlock_keys() -> void:
@@ -248,12 +292,15 @@ func _build_note_items() -> void:
 func _restore_page_state() -> void:
 	_cancel_intro_tween()
 	_cancel_identity_tween()
+	_auto_note_interaction_locked = false
+	_active_auto_note_key = ""
+	_active_after_note_background = ""
 	_awaiting_intro_reveal = false
 	dialogue_panel.hide()
 	name_plate.hide()
 	npc_name.hide()
 	identity_label.hide()
-	speaker_name.text = npc_data.dialogue_name
+	speaker_name.text = "???"
 	note_panel.hide()
 	note_detail_popup.hide()
 	for note_item in _note_items:
@@ -261,7 +308,7 @@ func _restore_page_state() -> void:
 		_set_note_final_visual(note_item)
 		note_item.hide()
 
-	_refresh_dialogue_ui(false, false)
+	_refresh_dialogue_ui(false, false, false)
 	_restore_dialogue_background()
 	_restore_revealed_notes()
 	if _is_name_unlocked():
@@ -319,6 +366,7 @@ func _prepare_first_entry() -> void:
 func _show_conversation_direct() -> void:
 	_awaiting_intro_reveal = false
 	_set_conversation_final_visual()
+	_show_speaker_plate()
 	dialogue_panel.show()
 
 
@@ -328,6 +376,8 @@ func _reveal_first_conversation() -> void:
 	_awaiting_intro_reveal = false
 	_cancel_intro_tween()
 	_intro_animation_playing = true
+	_refresh_dialogue_ui(false, true, true)
+	_show_speaker_plate()
 	dialogue_panel.show()
 	dialogue_panel.position = _dialogue_final_position + Vector2(0.0, 15.0)
 	dialogue_panel.modulate.a = 0.0
@@ -356,6 +406,14 @@ func _set_conversation_final_visual() -> void:
 	dialogue_panel.modulate.a = 1.0
 
 
+func _show_speaker_plate() -> void:
+	name_plate.position = _name_plate_final_position
+	name_plate.scale = Vector2.ONE
+	name_plate.modulate.a = 1.0
+	npc_name.show()
+	name_plate.show()
+
+
 func _cancel_intro_tween() -> void:
 	if _intro_tween != null and _intro_tween.is_valid():
 		_intro_tween.kill()
@@ -365,30 +423,18 @@ func _cancel_intro_tween() -> void:
 
 func _show_identity_info(animate := false) -> void:
 	_cancel_identity_tween()
-	npc_name.show()
 	identity_label.show()
-	speaker_name.text = npc_data.dialogue_name
-	name_plate.show()
 	note_panel.show()
 	if not animate:
 		_set_identity_final_visual()
 		return
 
-	name_plate.position = _name_plate_final_position
-	name_plate.scale = Vector2(0.94, 0.94)
-	name_plate.modulate.a = 0.0
 	note_panel.position = _dossier_final_position + Vector2(70.0, 0.0)
 	note_panel.modulate.a = 0.0
 	_identity_tween = create_tween()
 	_identity_tween.set_parallel(true)
 	_identity_tween.set_trans(Tween.TRANS_SINE)
 	_identity_tween.set_ease(Tween.EASE_OUT)
-	_identity_tween.tween_property(
-		name_plate, "scale", Vector2.ONE, identity_reveal_duration
-	)
-	_identity_tween.tween_property(
-		name_plate, "modulate:a", 1.0, identity_reveal_duration
-	)
 	_identity_tween.tween_property(
 		note_panel, "position", _dossier_final_position, identity_reveal_duration
 	)
@@ -398,9 +444,6 @@ func _show_identity_info(animate := false) -> void:
 
 
 func _set_identity_final_visual() -> void:
-	name_plate.position = _name_plate_final_position
-	name_plate.scale = Vector2.ONE
-	name_plate.modulate.a = 1.0
 	note_panel.position = _dossier_final_position
 	note_panel.modulate.a = 1.0
 
@@ -489,13 +532,30 @@ func _set_note_final_visual(note_item: NoteItem) -> void:
 func _on_note_selected(note_key: String, header: String, content: String) -> void:
 	if npc_progress == null or not bool(npc_progress.unlocked_keys.get(note_key, false)):
 		return
+	_open_note_detail(note_key, header, content)
+
+
+func _open_note_detail(note_key: String, header: String, content: String) -> void:
 	var preview_texture: Texture2D
 	var note_item := _note_items_by_key.get(note_key) as NoteItem
 	if note_item != null:
 		var note_background := note_item.get_node_or_null("NoteBackground") as TextureRect
 		if note_background != null:
 			preview_texture = note_background.texture
-	note_detail_popup.call("open_note", note_key, header, content, preview_texture)
+	note_detail_popup.open_note(note_key, header, content, preview_texture)
+
+
+func _open_note_detail_by_key(note_key: String) -> bool:
+	for note: Dictionary in _note_data:
+		if str(note.get("key", "")) != note_key:
+			continue
+		_open_note_detail(
+			note_key,
+			str(note.get("header", "")),
+			str(note.get("content", ""))
+		)
+		return true
+	return false
 
 
 func _on_dialogue_panel_gui_input(event: InputEvent) -> void:
@@ -514,10 +574,12 @@ func _is_dialogue_advance_blocked() -> bool:
 		or npc_progress == null
 		or _awaiting_intro_reveal
 		or _intro_animation_playing
+		or _auto_note_interaction_locked
 		or (_identity_tween != null and _identity_tween.is_valid())
 		or not _note_entry_tweens.is_empty()
 		or note_detail_popup.visible
 		or npc_progress.dialogue_completed
+		or _is_temporary_dialogue_end()
 		or not dialogue_panel.visible
 	)
 
@@ -565,13 +627,21 @@ func _get_note_ui_order_index(target_key: String) -> int:
 	return order_index
 
 
-func _refresh_dialogue_ui(grab_memory_focus := false, apply_background := true) -> void:
+func _refresh_dialogue_ui(
+	grab_memory_focus := false,
+	apply_background := true,
+	process_dialogue_actions := true
+) -> void:
 	# 当前阶段 memory_ready 与 dialogue_completed 保持严格同步。
 	npc_progress.memory_ready = npc_progress.dialogue_completed
+	var current_dialogue := dialogue_manager.get_current_dialogue()
 	if apply_background:
-		_apply_dialogue_background(dialogue_manager.get_current_dialogue())
+		_apply_dialogue_background(current_dialogue)
 	dialogue_text.text = dialogue_manager.get_current_text()
-	continue_button.disabled = npc_progress.dialogue_completed
+	if process_dialogue_actions:
+		_process_current_dialogue_actions(current_dialogue)
+	_refresh_speaker_display(current_dialogue)
+	_update_continue_button_state()
 	memory_button.hide()
 	memory_button.disabled = true
 	if npc_progress.memory_ready:
@@ -579,6 +649,113 @@ func _refresh_dialogue_ui(grab_memory_focus := false, apply_background := true) 
 		memory_button.disabled = false
 		if grab_memory_focus:
 			memory_button.grab_focus()
+
+
+func _refresh_speaker_display(dialogue: Dictionary) -> void:
+	var visible_speaker := _get_visible_speaker_name(dialogue)
+	npc_name.text = visible_speaker
+	# 保留旧隐藏节点的文本镜像，避免破坏现有场景/测试引用。
+	speaker_name.text = visible_speaker
+
+
+func _get_visible_speaker_name(dialogue: Dictionary) -> String:
+	var speaker_role := str(dialogue.get("speaker_role", "npc")).strip_edges().to_lower()
+	var configured_name := str(dialogue.get("speaker_name", "")).strip_edges()
+	if speaker_role == "player":
+		return configured_name if not configured_name.is_empty() else "Me"
+	return npc_data.dialogue_name if _is_name_unlocked() else "???"
+
+
+func _process_current_dialogue_actions(dialogue: Dictionary) -> void:
+	var open_note_key := str(dialogue.get("open_note_key", "")).strip_edges()
+	if open_note_key.is_empty() or _is_note_interaction_completed(dialogue):
+		return
+	if not unlock_info(open_note_key):
+		return
+	_auto_note_interaction_locked = true
+	_active_auto_note_key = open_note_key
+	_active_after_note_background = str(
+		dialogue.get("after_note_background", "")
+	).strip_edges()
+	if not _open_note_detail_by_key(open_note_key):
+		_auto_note_interaction_locked = false
+		_active_auto_note_key = ""
+		_active_after_note_background = ""
+
+
+func _is_note_interaction_completed(dialogue: Dictionary) -> bool:
+	if npc_progress == null:
+		return false
+	var open_note_key := str(dialogue.get("open_note_key", "")).strip_edges()
+	return (
+		not open_note_key.is_empty()
+		and bool(npc_progress.unlocked_keys.get(open_note_key, false))
+		and npc_progress.revealed_note_keys.has(open_note_key)
+	)
+
+
+func _is_temporary_dialogue_end() -> bool:
+	return (
+		npc_data != null
+		and dialogue_manager != null
+		and npc_progress != null
+		and not npc_data.dialogue_complete_on_end
+		and not npc_progress.dialogue_completed
+		and not dialogue_manager.has_next()
+	)
+
+
+func _update_continue_button_state() -> void:
+	continue_button.disabled = (
+		npc_progress == null
+		or npc_progress.dialogue_completed
+		or _auto_note_interaction_locked
+		or _is_temporary_dialogue_end()
+	)
+
+
+func _on_note_detail_popup_closed() -> void:
+	if not _auto_note_interaction_locked:
+		return
+	var should_finalize_dialogue := _should_finalize_dialogue_after_auto_note()
+	if not _active_after_note_background.is_empty():
+		_apply_background_path(_active_after_note_background, "after_note_background")
+	_auto_note_interaction_locked = false
+	_active_auto_note_key = ""
+	_active_after_note_background = ""
+	if should_finalize_dialogue:
+		_finalize_current_dialogue()
+		return
+	_update_continue_button_state()
+
+
+func _should_finalize_dialogue_after_auto_note() -> bool:
+	if (
+		npc_data == null
+		or dialogue_manager == null
+		or npc_progress == null
+		or not npc_data.dialogue_complete_on_end
+		or npc_progress.dialogue_completed
+		or dialogue_manager.has_next()
+	):
+		return false
+	var current_dialogue := dialogue_manager.get_current_dialogue()
+	return (
+		not _active_auto_note_key.is_empty()
+		and str(current_dialogue.get("open_note_key", "")).strip_edges()
+		== _active_auto_note_key
+	)
+
+
+func _finalize_current_dialogue() -> void:
+	var result := dialogue_manager.advance()
+	if not bool(result.get("accepted", false)):
+		_refresh_dialogue_ui(false, false, false)
+		return
+	var unlock_key := str(result.get("unlock_key", "")).strip_edges()
+	if not unlock_key.is_empty():
+		unlock_info(unlock_key)
+	_refresh_dialogue_ui(bool(result.get("dialogue_completed", false)), false, false)
 
 
 func _on_memory_pressed() -> void:
@@ -602,7 +779,7 @@ func _show_load_error() -> void:
 	npc_name.text = "NPC DATA ERROR"
 	npc_name.hide()
 	identity_label.hide()
-	speaker_name.text = "UNKNOWN"
+	speaker_name.text = "NPC DATA ERROR"
 	dialogue_text.text = "无法读取 NPC 数据。"
 	continue_button.disabled = true
 	note_panel.hide()

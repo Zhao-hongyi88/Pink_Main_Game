@@ -2,7 +2,6 @@
 
 [ext_resource type="Script" uid="uid://0mtv0vflgfg" path="res://scripts/npc/npc_base.gd" id="1_script"]
 [ext_resource type="PackedScene" path="res://scenes/ui/npc/note_detail_popup.tscn" id="2_note_detail_popup"]
-[ext_resource type="Texture2D" uid="uid://ujewq46wi6vc" path="res://TextureAsset/Levevl2/截屏2026-08-07 08.09.56 1.png" id="3_lnc5x"]
 [ext_resource type="Texture2D" uid="uid://4o4oher8lnsw" path="res://TextureAsset/Levevl2/Rectangle 2990.png" id="4_hahxb"]
 [ext_resource type="Texture2D" uid="uid://c70oy44n802yl" path="res://TextureAsset/Levevl2/57ab66bf12bdf1ab10778dd18c8951a7.png" id="4_kdpw7"]
 [ext_resource type="Texture2D" uid="uid://b7rmw8wqb3mwf" path="res://TextureAsset/Levevl2/名字框.png" id="5_pimgl"]
@@ -142,7 +141,7 @@ offset_top = 8.0
 offset_right = 675.0
 offset_bottom = 36.0
 theme_override_colors/font_color = Color(0.917647, 0.792157, 0.627451, 1)
-theme_override_font_sizes/font_size = 17
+theme_override_font_sizes/font_size = 22
 text = "UNKNOWN"
 
 [node name="DialogueText" type="Label" parent="DialoguePanel" unique_id=589041556]
@@ -156,10 +155,10 @@ theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_colors/font_outline_color = Color(0.05, 0.05, 0.05, 0.65)
 theme_override_constants/outline_size = 1
 theme_override_fonts/font = SubResource("SystemFont_dialogue_bold")
-theme_override_font_sizes/font_size = 30
+theme_override_font_sizes/font_size = 22
 text = "DIALOGUE"
 vertical_alignment = 1
-autowrap_mode = 2
+autowrap_mode = 3
 
 [node name="ContinueButton" type="Button" parent="DialoguePanel" unique_id=1246235409]
 unique_name_in_owner = true
@@ -204,7 +203,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_colors/font_color = Color(0.101961, 0.101961, 0.101961, 1)
-theme_override_font_sizes/font_size = 26
+theme_override_font_sizes/font_size = 22
 text = "NPC"
 horizontal_alignment = 1
 vertical_alignment = 1
@@ -254,7 +253,6 @@ offset_top = 32.0
 offset_right = 137.0
 offset_bottom = 164.0
 mouse_filter = 2
-texture = ExtResource("3_lnc5x")
 expand_mode = 1
 stretch_mode = 5
 

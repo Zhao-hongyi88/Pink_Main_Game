@@ -3,6 +3,7 @@
 	"display_name": "Mike Carter",
 	"dialogue_name": "Mike",
 	"portrait": "",
+	"profile_photo": "res://TextureAsset/NPC/Profile/mike_profile.png",
 	"name_unlock_key": "basic_info",
 	"dialogues": [
 		{

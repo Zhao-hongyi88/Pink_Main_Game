@@ -3,6 +3,7 @@
 	"display_name": "Tom Brown",
 	"dialogue_name": "Tom",
 	"portrait": "",
+	"profile_photo": "res://TextureAsset/NPC/Profile/tom_profile.png",
 	"name_unlock_key": "basic_info",
 	"dialogues": [
 		{
