@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="MemoryObservationData" load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://scripts/memory/memory_observation_data.gd" id="1_observation_data"]
+[ext_resource type="Texture2D" path="res://TextureAsset/Memory/NPC1/JobSearchRecord/info_panel_background.png" id="2_panel_background"]
+[ext_resource type="Texture2D" path="res://TextureAsset/Memory/NPC3/LiLeiEmployeeFile/employee_file_icon.png" id="3_employee_file_icon"]
+
+[resource]
+script = ExtResource("1_observation_data")
+observation_id = &"li_lei_employee_file"
+title = "李磊员工档案"
+info = ""
+images = []
+image_placeholders = []
+dialogue = PackedStringArray()
+info_panel_background = ExtResource("2_panel_background")
+info_icon = ExtResource("3_employee_file_icon")

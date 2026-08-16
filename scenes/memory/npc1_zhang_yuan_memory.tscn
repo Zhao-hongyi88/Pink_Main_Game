@@ -3,9 +3,9 @@
 [ext_resource type="PackedScene" path="res://scenes/memory/memory_base.tscn" id="1_base"]
 [ext_resource type="Script" path="res://scripts/memory/npc1_zhang_yuan_memory.gd" id="2_memory"]
 [ext_resource type="Script" path="res://scripts/memory/memory_observation_point.gd" id="3_point"]
-[ext_resource type="Resource" path="res://data/memory/npc1/study_record.tres" id="4_data_a"]
-[ext_resource type="Resource" path="res://data/memory/npc1/degree_certificate.tres" id="5_data_b"]
-[ext_resource type="Resource" path="res://data/memory/npc1/interview_result.tres" id="6_data_c"]
+[ext_resource type="Resource" path="res://data/memory/npc1/personal_practice_report.tres" id="4_data_a"]
+[ext_resource type="Resource" path="res://data/memory/npc1/time_loan_application.tres" id="5_data_b"]
+[ext_resource type="Resource" path="res://data/memory/npc1/job_search_record.tres" id="6_data_c"]
 [ext_resource type="Texture2D" path="res://TextureAsset/Memory/NPC1/zhang_yuan_memory_background.png" id="7_background"]
 [ext_resource type="Texture2D" path="res://TextureAsset/Memory/Common/unexplored_marker.png" id="8_unexplored_marker"]
 
@@ -41,92 +41,92 @@ mouse_filter = 2
 
 [node name="ObservationPoints" type="Node2D" parent="." index="1"]
 
-[node name="StudyRecord" type="Area2D" parent="ObservationPoints"]
+[node name="PersonalPracticeReport" type="Area2D" parent="ObservationPoints"]
 unique_name_in_owner = true
-position = Vector2(537, 349)
+position = Vector2(328, 403)
 script = ExtResource("3_point")
 observation_data = ExtResource("4_data_a")
 
-[node name="Visual" type="Polygon2D" parent="ObservationPoints/StudyRecord"]
+[node name="Visual" type="Polygon2D" parent="ObservationPoints/PersonalPracticeReport"]
 visible = false
 polygon = PackedVector2Array(-110, -60, 110, -60, 110, 60, -110, 60)
 color = Color(0.3, 0.48, 0.7, 1)
 
-[node name="Label" type="Label" parent="ObservationPoints/StudyRecord"]
+[node name="Label" type="Label" parent="ObservationPoints/PersonalPracticeReport"]
 visible = false
 offset_left = -100.0
 offset_top = -18.0
 offset_right = 100.0
 offset_bottom = 18.0
-text = "学习记录"
+text = "个人时间报告"
 horizontal_alignment = 1
 vertical_alignment = 1
 mouse_filter = 2
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="ObservationPoints/StudyRecord"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="ObservationPoints/PersonalPracticeReport"]
 shape = SubResource("RectangleShape2D_point")
 
-[node name="UnexploredMarker" type="Sprite2D" parent="ObservationPoints/StudyRecord"]
+[node name="UnexploredMarker" type="Sprite2D" parent="ObservationPoints/PersonalPracticeReport"]
 position = Vector2(0, 0)
 scale = Vector2(0.2, 0.2)
 texture = ExtResource("8_unexplored_marker")
 
-[node name="DegreeCertificate" type="Area2D" parent="ObservationPoints"]
+[node name="TimeLoanApplication" type="Area2D" parent="ObservationPoints"]
 unique_name_in_owner = true
-position = Vector2(204, 426)
+position = Vector2(907, 380)
 script = ExtResource("3_point")
 observation_data = ExtResource("5_data_b")
 
-[node name="Visual" type="Polygon2D" parent="ObservationPoints/DegreeCertificate"]
+[node name="Visual" type="Polygon2D" parent="ObservationPoints/TimeLoanApplication"]
 visible = false
 polygon = PackedVector2Array(-110, -60, 110, -60, 110, 60, -110, 60)
 color = Color(0.36, 0.55, 0.72, 1)
 
-[node name="Label" type="Label" parent="ObservationPoints/DegreeCertificate"]
+[node name="Label" type="Label" parent="ObservationPoints/TimeLoanApplication"]
 visible = false
 offset_left = -100.0
 offset_top = -18.0
 offset_right = 100.0
 offset_bottom = 18.0
-text = "毕业学位证书"
+text = "时间贷款申请书"
 horizontal_alignment = 1
 vertical_alignment = 1
 mouse_filter = 2
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="ObservationPoints/DegreeCertificate"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="ObservationPoints/TimeLoanApplication"]
 shape = SubResource("RectangleShape2D_point")
 
-[node name="UnexploredMarker" type="Sprite2D" parent="ObservationPoints/DegreeCertificate"]
+[node name="UnexploredMarker" type="Sprite2D" parent="ObservationPoints/TimeLoanApplication"]
 position = Vector2(0, 0)
 scale = Vector2(0.2, 0.2)
 texture = ExtResource("8_unexplored_marker")
 
-[node name="InterviewResult" type="Area2D" parent="ObservationPoints"]
+[node name="JobSearchRecord" type="Area2D" parent="ObservationPoints"]
 unique_name_in_owner = true
-position = Vector2(900, 292)
+position = Vector2(793, 349)
 script = ExtResource("3_point")
 observation_data = ExtResource("6_data_c")
 
-[node name="Visual" type="Polygon2D" parent="ObservationPoints/InterviewResult"]
+[node name="Visual" type="Polygon2D" parent="ObservationPoints/JobSearchRecord"]
 visible = false
 polygon = PackedVector2Array(-110, -60, 110, -60, 110, 60, -110, 60)
 color = Color(0.27, 0.43, 0.65, 1)
 
-[node name="Label" type="Label" parent="ObservationPoints/InterviewResult"]
+[node name="Label" type="Label" parent="ObservationPoints/JobSearchRecord"]
 visible = false
 offset_left = -100.0
 offset_top = -18.0
 offset_right = 100.0
 offset_bottom = 18.0
-text = "面试结果"
+text = "求职记录"
 horizontal_alignment = 1
 vertical_alignment = 1
 mouse_filter = 2
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="ObservationPoints/InterviewResult"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="ObservationPoints/JobSearchRecord"]
 shape = SubResource("RectangleShape2D_point")
 
-[node name="UnexploredMarker" type="Sprite2D" parent="ObservationPoints/InterviewResult"]
+[node name="UnexploredMarker" type="Sprite2D" parent="ObservationPoints/JobSearchRecord"]
 position = Vector2(0, 0)
 scale = Vector2(0.2, 0.2)
 texture = ExtResource("8_unexplored_marker")

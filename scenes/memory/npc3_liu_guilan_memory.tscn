@@ -1,21 +1,16 @@
-[gd_scene load_steps=11 format=3]
+[gd_scene load_steps=9 format=3]
 
 [ext_resource type="PackedScene" path="res://scenes/memory/memory_base.tscn" id="1_base"]
 [ext_resource type="Script" path="res://scripts/memory/npc3_liu_guilan_memory.gd" id="2_memory"]
 [ext_resource type="Script" path="res://scripts/memory/memory_observation_point.gd" id="3_point"]
-[ext_resource type="Resource" path="res://data/memory/npc3/medical_record.tres" id="4_data_a"]
-[ext_resource type="Resource" path="res://data/memory/npc3/treatment_bill.tres" id="5_data_b"]
-[ext_resource type="Resource" path="res://data/memory/npc3/treatment_bed.tres" id="6_data_c"]
-[ext_resource type="Texture2D" path="res://TextureAsset/Memory/NPC3/liu_guilan_hospital_registration.png" id="7_stage_one"]
-[ext_resource type="Texture2D" path="res://TextureAsset/Memory/Common/memory_scene_entry_marker.png" id="8_entry_marker"]
-[ext_resource type="Texture2D" path="res://TextureAsset/Memory/NPC3/liu_guilan_treatment_room.png" id="9_stage_two"]
-[ext_resource type="Texture2D" path="res://TextureAsset/Memory/Common/unexplored_marker.png" id="10_marker"]
+[ext_resource type="Resource" path="res://data/memory/npc3/employee_overtime_statistics.tres" id="4_data_a"]
+[ext_resource type="Resource" path="res://data/memory/npc3/li_lei_employee_file.tres" id="5_data_b"]
+[ext_resource type="Resource" path="res://data/memory/npc3/project_leader_list.tres" id="6_data_c"]
+[ext_resource type="Texture2D" path="res://TextureAsset/Memory/NPC3/liu_guilan_memory_background.png" id="7_background"]
+[ext_resource type="Texture2D" path="res://TextureAsset/Memory/Common/unexplored_marker.png" id="8_marker"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_point"]
 size = Vector2(220, 120)
-
-[sub_resource type="CircleShape2D" id="CircleShape2D_entry"]
-radius = 30.0
 
 [node name="LiuGuilanMemory" instance=ExtResource("1_base")]
 script = ExtResource("2_memory")
@@ -28,7 +23,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-texture = ExtResource("7_stage_one")
+texture = ExtResource("7_background")
 expand_mode = 1
 stretch_mode = 6
 
@@ -41,125 +36,95 @@ offset_top = 82.0
 offset_bottom = 126.0
 grow_horizontal = 2
 theme_override_font_sizes/font_size = 30
-text = "Mary Carter · Memory"
+text = "刘桂兰 Memory"
 horizontal_alignment = 1
 mouse_filter = 2
 
-[node name="StageTwoBackground" type="TextureRect" parent="." index="1"]
-visible = false
-z_index = -1
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 2
-texture = ExtResource("9_stage_two")
-expand_mode = 1
-stretch_mode = 6
-
 [node name="ObservationPoints" type="Node2D" parent="." index="1"]
 
-[node name="MedicalRecord" type="Area2D" parent="ObservationPoints"]
+[node name="EmployeeOvertimeStatistics" type="Area2D" parent="ObservationPoints"]
 unique_name_in_owner = true
-position = Vector2(540, 283)
+position = Vector2(106, 188)
 script = ExtResource("3_point")
 observation_data = ExtResource("4_data_a")
 
-[node name="Visual" type="Polygon2D" parent="ObservationPoints/MedicalRecord"]
+[node name="Visual" type="Polygon2D" parent="ObservationPoints/EmployeeOvertimeStatistics"]
 visible = false
 polygon = PackedVector2Array(-110, -60, 110, -60, 110, 60, -110, 60)
 color = Color(0.35, 0.58, 0.53, 1)
 
-[node name="Label" type="Label" parent="ObservationPoints/MedicalRecord"]
+[node name="Label" type="Label" parent="ObservationPoints/EmployeeOvertimeStatistics"]
 visible = false
 offset_left = -100.0
 offset_top = -18.0
 offset_right = 100.0
 offset_bottom = 18.0
-text = "医生电脑上的病历"
+text = "员工加班统计"
 horizontal_alignment = 1
 vertical_alignment = 1
 mouse_filter = 2
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="ObservationPoints/MedicalRecord"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="ObservationPoints/EmployeeOvertimeStatistics"]
 shape = SubResource("RectangleShape2D_point")
 
-[node name="UnexploredMarker" type="Sprite2D" parent="ObservationPoints/MedicalRecord"]
-texture = ExtResource("10_marker")
+[node name="UnexploredMarker" type="Sprite2D" parent="ObservationPoints/EmployeeOvertimeStatistics"]
+texture = ExtResource("8_marker")
 scale = Vector2(0.2, 0.2)
 
-[node name="TreatmentBill" type="Area2D" parent="ObservationPoints"]
+[node name="LiLeiEmployeeFile" type="Area2D" parent="ObservationPoints"]
 unique_name_in_owner = true
-position = Vector2(473, 357)
+position = Vector2(606, 199)
 script = ExtResource("3_point")
 observation_data = ExtResource("5_data_b")
 
-[node name="Visual" type="Polygon2D" parent="ObservationPoints/TreatmentBill"]
+[node name="Visual" type="Polygon2D" parent="ObservationPoints/LiLeiEmployeeFile"]
 visible = false
 polygon = PackedVector2Array(-110, -60, 110, -60, 110, 60, -110, 60)
 color = Color(0.43, 0.63, 0.56, 1)
 
-[node name="Label" type="Label" parent="ObservationPoints/TreatmentBill"]
+[node name="Label" type="Label" parent="ObservationPoints/LiLeiEmployeeFile"]
 visible = false
 offset_left = -100.0
 offset_top = -18.0
 offset_right = 100.0
 offset_bottom = 18.0
-text = "治病账单"
+text = "李磊员工档案"
 horizontal_alignment = 1
 vertical_alignment = 1
 mouse_filter = 2
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="ObservationPoints/TreatmentBill"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="ObservationPoints/LiLeiEmployeeFile"]
 shape = SubResource("RectangleShape2D_point")
 
-[node name="UnexploredMarker" type="Sprite2D" parent="ObservationPoints/TreatmentBill"]
-texture = ExtResource("10_marker")
+[node name="UnexploredMarker" type="Sprite2D" parent="ObservationPoints/LiLeiEmployeeFile"]
+texture = ExtResource("8_marker")
 scale = Vector2(0.2, 0.2)
 
-[node name="TreatmentRoomEntry" type="Area2D" parent="ObservationPoints"]
+[node name="ProjectLeaderList" type="Area2D" parent="ObservationPoints"]
 unique_name_in_owner = true
-position = Vector2(1070, 249)
-
-[node name="EntryMarker" type="Sprite2D" parent="ObservationPoints/TreatmentRoomEntry"]
-texture = ExtResource("8_entry_marker")
-scale = Vector2(0.3, 0.3)
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="ObservationPoints/TreatmentRoomEntry"]
-shape = SubResource("CircleShape2D_entry")
-
-[node name="TreatmentBed" type="Area2D" parent="ObservationPoints"]
-unique_name_in_owner = true
-visible = false
-position = Vector2(396, 368)
+position = Vector2(756, 281)
 script = ExtResource("3_point")
 observation_data = ExtResource("6_data_c")
 
-[node name="Visual" type="Polygon2D" parent="ObservationPoints/TreatmentBed"]
+[node name="Visual" type="Polygon2D" parent="ObservationPoints/ProjectLeaderList"]
 visible = false
 polygon = PackedVector2Array(-110, -60, 110, -60, 110, 60, -110, 60)
 color = Color(0.28, 0.49, 0.45, 1)
 
-[node name="Label" type="Label" parent="ObservationPoints/TreatmentBed"]
+[node name="Label" type="Label" parent="ObservationPoints/ProjectLeaderList"]
 visible = false
 offset_left = -100.0
 offset_top = -18.0
 offset_right = 100.0
 offset_bottom = 18.0
-text = "病床上的治疗"
+text = "项目负责人名单"
 horizontal_alignment = 1
 vertical_alignment = 1
 mouse_filter = 2
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="ObservationPoints/TreatmentBed"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="ObservationPoints/ProjectLeaderList"]
 shape = SubResource("RectangleShape2D_point")
-<<<<<<< HEAD
 
-[node name="UnexploredMarker" type="Sprite2D" parent="ObservationPoints/TreatmentBed"]
-texture = ExtResource("10_marker")
+[node name="UnexploredMarker" type="Sprite2D" parent="ObservationPoints/ProjectLeaderList"]
+texture = ExtResource("8_marker")
 scale = Vector2(0.2, 0.2)
-
-=======
->>>>>>> 412671b62599c70a0377e5ed355a215f41bab903

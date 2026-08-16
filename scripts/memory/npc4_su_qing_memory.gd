@@ -3,9 +3,9 @@ extends "res://scripts/memory/memory_base.gd"
 
 ## 苏晴 Memory 只声明人物专属调查点，公共流程由 MemoryBase 负责。
 
-@onready var meeting_record: Area2D = %MeetingRecord
-@onready var work_documents: Area2D = %WorkDocuments
-@onready var daughter_chat_record: Area2D = %DaughterChatRecord
+@onready var table_phone: Area2D = %TablePhone
+@onready var hospital_boxed_meal: Area2D = %HospitalBoxedMeal
+@onready var hospital_care_record: Area2D = %HospitalCareRecord
 
 var _active_unexplored_marker: CanvasItem
 var _active_observation_id := ""
@@ -14,13 +14,13 @@ var _active_observation_id := ""
 func _ready() -> void:
 	super._ready()
 	register_observation_points([
-		meeting_record,
-		work_documents,
-		daughter_chat_record,
+		table_phone,
+		hospital_boxed_meal,
+		hospital_care_record,
 	])
-	meeting_record.observation_requested.connect(_on_observation_opened.bind(meeting_record))
-	work_documents.observation_requested.connect(_on_observation_opened.bind(work_documents))
-	daughter_chat_record.observation_requested.connect(_on_observation_opened.bind(daughter_chat_record))
+	table_phone.observation_requested.connect(_on_observation_opened.bind(table_phone))
+	hospital_boxed_meal.observation_requested.connect(_on_observation_opened.bind(hospital_boxed_meal))
+	hospital_care_record.observation_requested.connect(_on_observation_opened.bind(hospital_care_record))
 	%MemoryInfoPanel.observation_cancelled.connect(_on_observation_cancelled_restore_marker)
 	%MemoryInfoPanel.observation_completed.connect(_on_observation_completed_keep_hidden)
 

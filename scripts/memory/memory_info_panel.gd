@@ -9,14 +9,19 @@ signal observation_cancelled()
 
 var _current_data = null
 var _dialogue_index := -1
+var _info_page_index := 0
 var _showing_info := true
 
+@onready var info_panel: Panel = $Panel
+@onready var dimmer: ColorRect = $Dimmer
 @onready var title_label: Label = $Panel/TitleLabel
 @onready var section_label: Label = $Panel/SectionLabel
 @onready var content_label: Label = $Panel/ContentLabel
 @onready var image_placeholders: HBoxContainer = $Panel/ImagePlaceholders
 @onready var continue_button: Button = $Panel/ContinueButton
 @onready var close_button: Button = $Panel/CloseButton
+@onready var custom_info_background: TextureRect = $Panel/CustomInfoBackground
+@onready var custom_info_icon: TextureRect = $Panel/CustomInfoIcon
 @onready var dialogue_box: Control = $DialogueBox
 @onready var dialogue_content_label: Label = $DialogueBox/DialogueContentLabel
 @onready var dialogue_continue_button: Button = $DialogueBox/DialogueContinueButton
@@ -30,10 +35,7 @@ func _ready() -> void:
 	close_button.pressed.connect(close_without_completion)
 	dialogue_continue_button.pressed.connect(_on_continue_pressed)
 	dialogue_close_button.pressed.connect(close_without_completion)
-<<<<<<< HEAD
 	dialogue_box.gui_input.connect(_on_dialogue_box_gui_input)
-=======
->>>>>>> 412671b62599c70a0377e5ed355a215f41bab903
 
 
 func show_observation(data) -> void:
@@ -43,6 +45,7 @@ func show_observation(data) -> void:
 
 	_current_data = data
 	_dialogue_index = -1
+	_info_page_index = 0
 	_showing_info = true
 	title_label.text = data.title
 	$Panel.show()
@@ -51,7 +54,8 @@ func show_observation(data) -> void:
 	$Panel.show()
 	dialogue_box.hide()
 	_show_object_info(data)
-	continue_button.text = "继续"
+	_apply_info_skin(data)
+	_update_info_continue_button()
 	show()
 	continue_button.grab_focus()
 
@@ -67,6 +71,15 @@ func _on_continue_pressed() -> void:
 		return
 
 	if _showing_info:
+		if (
+			not _current_data.info_pages.is_empty()
+			and _info_page_index < _current_data.info_pages.size() - 1
+		):
+			_info_page_index += 1
+			_show_object_info(_current_data)
+			_update_info_continue_button()
+			continue_button.grab_focus()
+			return
 		_showing_info = false
 		_dialogue_index = 0
 		_show_dialogue_line()
@@ -93,30 +106,21 @@ func _on_dialogue_box_gui_input(event: InputEvent) -> void:
 func _show_dialogue_line() -> void:
 	$Panel.hide()
 	dialogue_box.show()
-<<<<<<< HEAD
 	dialogue_continue_button.grab_focus()
 	section_label.text = "主角观察"
 	_reset_info_layout()
 	image_placeholders.hide()
 	content_label.show()
-=======
->>>>>>> 412671b62599c70a0377e5ed355a215f41bab903
 	if _current_data.dialogue.is_empty():
 		_complete_and_close()
 		return
 
-<<<<<<< HEAD
 	content_label.text = _current_data.dialogue[_dialogue_index]
-=======
->>>>>>> 412671b62599c70a0377e5ed355a215f41bab903
 	dialogue_content_label.text = _current_data.dialogue[_dialogue_index]
 	if _dialogue_index == _current_data.dialogue.size() - 1:
 		dialogue_continue_button.text = "完成并关闭"
 	else:
 		dialogue_continue_button.text = "继续"
-
-	dialogue_continue_button.text = continue_button.text
-
 
 func _show_object_info(data) -> void:
 	$Panel.show()
@@ -124,7 +128,13 @@ func _show_object_info(data) -> void:
 	_clear_image_placeholders()
 	_reset_info_layout()
 	var has_images = not data.images.is_empty() or not data.image_placeholders.is_empty()
-	content_label.text = data.info
+	var info_text: String = str(data.info)
+	if not data.info_pages.is_empty():
+		var safe_page_index := clampi(_info_page_index, 0, data.info_pages.size() - 1)
+		info_text = data.info_pages[safe_page_index]
+		if safe_page_index < data.info_page_titles.size():
+			title_label.text = data.info_page_titles[safe_page_index]
+	content_label.text = info_text
 	content_label.show()
 	image_placeholders.visible = has_images
 
@@ -144,6 +154,76 @@ func _show_object_info(data) -> void:
 		if index < data.images.size():
 			texture = data.images[index]
 		_create_image_card(placeholder_text, texture)
+
+
+func _update_info_continue_button() -> void:
+	var is_last_info_page: bool = (
+		not _current_data.info_pages.is_empty()
+		and _info_page_index == _current_data.info_pages.size() - 1
+	)
+	if is_last_info_page and _current_data.dialogue.is_empty():
+		continue_button.text = "完成并关闭"
+	else:
+		continue_button.text = "继续"
+
+
+func _apply_info_skin(data) -> void:
+	var has_custom_skin := data.info_panel_background != null
+	if not has_custom_skin:
+		_reset_info_skin()
+		return
+
+	info_panel.add_theme_stylebox_override("panel", StyleBoxEmpty.new())
+	dimmer.show()
+	info_panel.offset_left = -400.0
+	info_panel.offset_top = -220.0
+	info_panel.offset_right = 400.0
+	info_panel.offset_bottom = 220.0
+
+	custom_info_background.texture = data.info_panel_background
+	custom_info_background.show()
+	custom_info_icon.texture = data.info_icon
+	custom_info_icon.visible = data.info_icon != null
+
+	title_label.offset_left = 100.0
+	title_label.offset_top = 32.0
+	title_label.offset_right = -40.0
+	title_label.offset_bottom = 70.0
+	title_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
+	section_label.hide()
+
+	content_label.offset_left = 80.0
+	content_label.offset_top = 96.0
+	content_label.offset_right = -80.0
+	content_label.offset_bottom = -84.0
+	content_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+
+
+func _reset_info_skin() -> void:
+	info_panel.remove_theme_stylebox_override("panel")
+	dimmer.hide()
+	info_panel.offset_left = -320.0
+	info_panel.offset_top = -250.0
+	info_panel.offset_right = 320.0
+	info_panel.offset_bottom = 250.0
+
+	custom_info_background.hide()
+	custom_info_background.texture = null
+	custom_info_icon.hide()
+	custom_info_icon.texture = null
+
+	title_label.offset_left = 28.0
+	title_label.offset_top = 20.0
+	title_label.offset_right = -28.0
+	title_label.offset_bottom = 54.0
+	title_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	section_label.show()
+
+	content_label.offset_left = 38.0
+	content_label.offset_top = 102.0
+	content_label.offset_right = -38.0
+	content_label.offset_bottom = -92.0
+	content_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
 
 
 func _reset_info_layout() -> void:
@@ -190,11 +270,10 @@ func close_without_completion() -> void:
 func _reset_panel() -> void:
 	_current_data = null
 	_dialogue_index = -1
+	_info_page_index = 0
 	_showing_info = true
-<<<<<<< HEAD
-=======
+	_reset_info_skin()
 	$Panel.show()
->>>>>>> 412671b62599c70a0377e5ed355a215f41bab903
 	dialogue_box.hide()
 	hide()
 

@@ -3,14 +3,14 @@
 [ext_resource type="PackedScene" path="res://scenes/memory/memory_base.tscn" id="1_base"]
 [ext_resource type="Script" path="res://scripts/memory/npc4_su_qing_memory.gd" id="2_memory"]
 [ext_resource type="Script" path="res://scripts/memory/memory_observation_point.gd" id="3_point"]
-[ext_resource type="Resource" path="res://data/memory/npc4/meeting_record.tres" id="4_data_a"]
-[ext_resource type="Resource" path="res://data/memory/npc4/work_documents.tres" id="5_data_b"]
-[ext_resource type="Resource" path="res://data/memory/npc4/daughter_chat_record.tres" id="6_data_c"]
+[ext_resource type="Resource" path="res://data/memory/npc4/table_phone.tres" id="4_data_a"]
+[ext_resource type="Resource" path="res://data/memory/npc4/hospital_boxed_meal.tres" id="5_data_b"]
+[ext_resource type="Resource" path="res://data/memory/npc4/hospital_care_record.tres" id="6_data_c"]
 [ext_resource type="Texture2D" path="res://TextureAsset/Memory/NPC4/su_qing_memory_background.png" id="7_background"]
 [ext_resource type="Texture2D" path="res://TextureAsset/Memory/Common/unexplored_marker.png" id="8_marker"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_point"]
-size = Vector2(220, 120)
+size = Vector2(80, 70)
 
 [node name="SuQingMemory" instance=ExtResource("1_base")]
 script = ExtResource("2_memory")
@@ -42,93 +42,88 @@ mouse_filter = 2
 
 [node name="ObservationPoints" type="Node2D" parent="." index="1"]
 
-[node name="MeetingRecord" type="Area2D" parent="ObservationPoints"]
+[node name="TablePhone" type="Area2D" parent="ObservationPoints"]
 unique_name_in_owner = true
-position = Vector2(964, 235)
+position = Vector2(661, 564)
 script = ExtResource("3_point")
 observation_data = ExtResource("4_data_a")
 
-[node name="Visual" type="Polygon2D" parent="ObservationPoints/MeetingRecord"]
+[node name="Visual" type="Polygon2D" parent="ObservationPoints/TablePhone"]
 visible = false
 polygon = PackedVector2Array(-110, -60, 110, -60, 110, 60, -110, 60)
 color = Color(0.66, 0.37, 0.53, 1)
 
-[node name="Label" type="Label" parent="ObservationPoints/MeetingRecord"]
+[node name="Label" type="Label" parent="ObservationPoints/TablePhone"]
 visible = false
 offset_left = -100.0
 offset_top = -18.0
 offset_right = 100.0
 offset_bottom = 18.0
-text = "公司会议记录"
+text = "桌子上的手机"
 horizontal_alignment = 1
 vertical_alignment = 1
 mouse_filter = 2
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="ObservationPoints/MeetingRecord"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="ObservationPoints/TablePhone"]
 shape = SubResource("RectangleShape2D_point")
 
-[node name="UnexploredMarker" type="Sprite2D" parent="ObservationPoints/MeetingRecord"]
+[node name="UnexploredMarker" type="Sprite2D" parent="ObservationPoints/TablePhone"]
 texture = ExtResource("8_marker")
 scale = Vector2(0.2, 0.2)
 
-[node name="WorkDocuments" type="Area2D" parent="ObservationPoints"]
+[node name="HospitalBoxedMeal" type="Area2D" parent="ObservationPoints"]
 unique_name_in_owner = true
-position = Vector2(680, 290)
+position = Vector2(559, 560)
 script = ExtResource("3_point")
 observation_data = ExtResource("5_data_b")
 
-[node name="Visual" type="Polygon2D" parent="ObservationPoints/WorkDocuments"]
+[node name="Visual" type="Polygon2D" parent="ObservationPoints/HospitalBoxedMeal"]
 visible = false
 polygon = PackedVector2Array(-110, -60, 110, -60, 110, 60, -110, 60)
 color = Color(0.72, 0.43, 0.58, 1)
 
-[node name="Label" type="Label" parent="ObservationPoints/WorkDocuments"]
+[node name="Label" type="Label" parent="ObservationPoints/HospitalBoxedMeal"]
 visible = false
 offset_left = -100.0
 offset_top = -18.0
 offset_right = 100.0
 offset_bottom = 18.0
-text = "工作文件"
+text = "病房里的盒饭"
 horizontal_alignment = 1
 vertical_alignment = 1
 mouse_filter = 2
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="ObservationPoints/WorkDocuments"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="ObservationPoints/HospitalBoxedMeal"]
 shape = SubResource("RectangleShape2D_point")
 
-[node name="UnexploredMarker" type="Sprite2D" parent="ObservationPoints/WorkDocuments"]
+[node name="UnexploredMarker" type="Sprite2D" parent="ObservationPoints/HospitalBoxedMeal"]
 texture = ExtResource("8_marker")
 scale = Vector2(0.2, 0.2)
 
-[node name="DaughterChatRecord" type="Area2D" parent="ObservationPoints"]
+[node name="HospitalCareRecord" type="Area2D" parent="ObservationPoints"]
 unique_name_in_owner = true
-position = Vector2(750, 343)
+position = Vector2(1025, 151)
 script = ExtResource("3_point")
 observation_data = ExtResource("6_data_c")
 
-[node name="Visual" type="Polygon2D" parent="ObservationPoints/DaughterChatRecord"]
+[node name="Visual" type="Polygon2D" parent="ObservationPoints/HospitalCareRecord"]
 visible = false
 polygon = PackedVector2Array(-110, -60, 110, -60, 110, 60, -110, 60)
 color = Color(0.58, 0.3, 0.48, 1)
 
-[node name="Label" type="Label" parent="ObservationPoints/DaughterChatRecord"]
+[node name="Label" type="Label" parent="ObservationPoints/HospitalCareRecord"]
 visible = false
 offset_left = -100.0
 offset_top = -18.0
 offset_right = 100.0
 offset_bottom = 18.0
-text = "与女儿的聊天记录"
+text = "医院陪护记录"
 horizontal_alignment = 1
 vertical_alignment = 1
 mouse_filter = 2
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="ObservationPoints/DaughterChatRecord"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="ObservationPoints/HospitalCareRecord"]
 shape = SubResource("RectangleShape2D_point")
-<<<<<<< HEAD
-
-[node name="UnexploredMarker" type="Sprite2D" parent="ObservationPoints/DaughterChatRecord"]
+[node name="UnexploredMarker" type="Sprite2D" parent="ObservationPoints/HospitalCareRecord"]
 texture = ExtResource("8_marker")
 scale = Vector2(0.2, 0.2)
-
-=======
->>>>>>> 412671b62599c70a0377e5ed355a215f41bab903

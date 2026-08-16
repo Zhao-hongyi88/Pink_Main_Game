@@ -66,6 +66,17 @@ grow_vertical = 2
 mouse_filter = 1
 script = ExtResource("2_info_panel")
 
+[node name="Dimmer" type="ColorRect" parent="MemoryUI/MemoryInfoPanel"]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0, 0, 0, 0.58)
+
 [node name="DialogueBox" type="Control" parent="MemoryUI/MemoryInfoPanel"]
 visible = false
 layout_mode = 0
@@ -148,6 +159,29 @@ offset_right = 320.0
 offset_bottom = 250.0
 grow_horizontal = 2
 grow_vertical = 2
+
+[node name="CustomInfoBackground" type="TextureRect" parent="MemoryUI/MemoryInfoPanel/Panel"]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 6
+
+[node name="CustomInfoIcon" type="TextureRect" parent="MemoryUI/MemoryInfoPanel/Panel"]
+visible = false
+layout_mode = 0
+offset_left = -58.0
+offset_top = -44.0
+offset_right = 92.0
+offset_bottom = 106.0
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
 
 [node name="TitleLabel" type="Label" parent="MemoryUI/MemoryInfoPanel/Panel"]
 layout_mode = 1

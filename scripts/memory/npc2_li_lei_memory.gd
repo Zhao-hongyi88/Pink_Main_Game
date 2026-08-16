@@ -3,9 +3,9 @@ extends "res://scripts/memory/memory_base.gd"
 
 ## 李磊 Memory 只声明人物专属调查点，公共流程由 MemoryBase 负责。
 
-@onready var attendance_record: Area2D = %AttendanceRecord
-@onready var computer_idle_time: Area2D = %ComputerIdleTime
-@onready var rental_contract: Area2D = %RentalContract
+@onready var mother_message: Area2D = %MotherMessage
+@onready var living_expense_record: Area2D = %LivingExpenseRecord
+@onready var unfinished_personal_plan: Area2D = %UnfinishedPersonalPlan
 
 var _active_unexplored_marker: CanvasItem
 
@@ -13,13 +13,13 @@ var _active_unexplored_marker: CanvasItem
 func _ready() -> void:
 	super._ready()
 	register_observation_points([
-		attendance_record,
-		computer_idle_time,
-		rental_contract,
+		mother_message,
+		living_expense_record,
+		unfinished_personal_plan,
 	])
-	attendance_record.observation_requested.connect(_on_observation_opened.bind(attendance_record))
-	computer_idle_time.observation_requested.connect(_on_observation_opened.bind(computer_idle_time))
-	rental_contract.observation_requested.connect(_on_observation_opened.bind(rental_contract))
+	mother_message.observation_requested.connect(_on_observation_opened.bind(mother_message))
+	living_expense_record.observation_requested.connect(_on_observation_opened.bind(living_expense_record))
+	unfinished_personal_plan.observation_requested.connect(_on_observation_opened.bind(unfinished_personal_plan))
 	%MemoryInfoPanel.observation_cancelled.connect(_on_observation_cancelled_restore_marker)
 	%MemoryInfoPanel.observation_completed.connect(_on_observation_completed_keep_hidden)
 
