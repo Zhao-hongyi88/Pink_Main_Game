@@ -9,6 +9,7 @@ var dialogue_name := ""
 var profile_photo := ""
 var initial_background := ""
 var dialogue_complete_on_end := true
+var dialogue_speaker_known_from_start := false
 var name_unlock_key: StringName = &""
 var dialogues: Array[Dictionary] = []
 var notes: Array[Dictionary] = []
@@ -64,6 +65,11 @@ func _read_and_validate() -> void:
 	profile_photo = _read_optional_string(raw, "profile_photo", "")
 	initial_background = _read_optional_string(raw, "initial_background", "")
 	dialogue_complete_on_end = _read_optional_bool(raw, "dialogue_complete_on_end", true)
+	dialogue_speaker_known_from_start = _read_optional_bool(
+		raw,
+		"dialogue_speaker_known_from_start",
+		false
+	)
 	name_unlock_key = StringName(_read_required_string(raw, "name_unlock_key", true))
 	memory_scene = _read_required_string(raw, "memory_scene")
 	_read_dialogues(raw)
@@ -140,6 +146,14 @@ func _read_dialogues(raw: Dictionary) -> void:
 					"NPCData: dialogues[%d].%s 必须是 String。" % [index, field]
 				)
 				optional_fields_valid = false
+		if (
+			dialogue.has("complete_on_note_close")
+			and typeof(dialogue["complete_on_note_close"]) != TYPE_BOOL
+		):
+			validation_errors.append(
+				"NPCData: dialogues[%d].complete_on_note_close 必须是 bool。" % index
+			)
+			optional_fields_valid = false
 		if not optional_fields_valid:
 			continue
 		var text := str(dialogue["text"]).strip_edges()
@@ -177,6 +191,10 @@ func _read_dialogues(raw: Dictionary) -> void:
 		).strip_edges()
 		if not after_note_background.is_empty():
 			normalized_dialogue["after_note_background"] = after_note_background
+		if dialogue.has("complete_on_note_close"):
+			normalized_dialogue["complete_on_note_close"] = bool(
+				dialogue["complete_on_note_close"]
+			)
 		dialogues.append(normalized_dialogue)
 
 
@@ -262,4 +280,11 @@ func _validate_unlock_references() -> void:
 		):
 			validation_errors.append(
 				"NPCData: dialogues[%d].after_note_background 需要 open_note_key。" % index
+			)
+		if (
+			dialogues[index].has("complete_on_note_close")
+			and open_note_key.is_empty()
+		):
+			validation_errors.append(
+				"NPCData: dialogues[%d].complete_on_note_close 需要 open_note_key。" % index
 			)

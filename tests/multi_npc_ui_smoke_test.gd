@@ -15,6 +15,7 @@ const NPC_CASES: Array[Dictionary] = [
 		"dialogue_count": 11,
 		"note_count": 5,
 		"dialogue_complete_on_end": true,
+		"dialogue_speaker_known_from_start": false,
 	},
 	{
 		"path": "res://data/npc/npc_b.json",
@@ -26,6 +27,7 @@ const NPC_CASES: Array[Dictionary] = [
 		"dialogue_count": 10,
 		"note_count": 2,
 		"dialogue_complete_on_end": true,
+		"dialogue_speaker_known_from_start": false,
 	},
 	{
 		"path": "res://data/npc/npc_c.json",
@@ -33,10 +35,11 @@ const NPC_CASES: Array[Dictionary] = [
 		"display_name": "Mary Carter",
 		"dialogue_name": "Mary",
 		"profile_photo": "res://TextureAsset/NPC/Profile/mary_profile.png",
-		"first_speaker_name": "???",
-		"dialogue_count": 4,
+		"first_speaker_name": "Me",
+		"dialogue_count": 13,
 		"note_count": 3,
 		"dialogue_complete_on_end": true,
+		"dialogue_speaker_known_from_start": false,
 	},
 	{
 		"path": "res://data/npc/npc_d.json",
@@ -45,9 +48,10 @@ const NPC_CASES: Array[Dictionary] = [
 		"dialogue_name": "Lisa",
 		"profile_photo": "res://TextureAsset/NPC/Profile/lisa_profile.png",
 		"first_speaker_name": "???",
-		"dialogue_count": 5,
+		"dialogue_count": 9,
 		"note_count": 2,
 		"dialogue_complete_on_end": true,
+		"dialogue_speaker_known_from_start": false,
 	},
 	{
 		"path": "res://data/npc/npc_e.json",
@@ -55,10 +59,11 @@ const NPC_CASES: Array[Dictionary] = [
 		"display_name": "Tom Brown",
 		"dialogue_name": "Tom",
 		"profile_photo": "res://TextureAsset/NPC/Profile/tom_profile.png",
-		"first_speaker_name": "???",
-		"dialogue_count": 4,
+		"first_speaker_name": "Tom",
+		"dialogue_count": 11,
 		"note_count": 3,
 		"dialogue_complete_on_end": true,
+		"dialogue_speaker_known_from_start": true,
 	},
 ]
 
@@ -103,7 +108,10 @@ func _get_expected_speaker_display(
 ) -> String:
 	if str(dialogue.get("speaker_role", "npc")) == "player":
 		return str(dialogue.get("speaker_name", "Me"))
-	if progress.unlocked_keys.get(String(npc_data.name_unlock_key), false):
+	if (
+		npc_data.dialogue_speaker_known_from_start
+		or progress.unlocked_keys.get(String(npc_data.name_unlock_key), false)
+	):
 		return npc_data.dialogue_name
 	return "???"
 
@@ -119,6 +127,10 @@ func _verify_all_npcs_use_shared_ui() -> void:
 		assert(npc_data.is_valid(), "%s: %s" % [data_path, npc_data.get_error_message()])
 		assert(npc_data.dialogues.size() == test_case["dialogue_count"])
 		assert(npc_data.notes.size() == test_case["note_count"])
+		assert(
+			npc_data.dialogue_speaker_known_from_start
+			== test_case["dialogue_speaker_known_from_start"]
+		)
 		observed_dialogue_counts[npc_data.dialogues.size()] = true
 		observed_note_counts[npc_data.notes.size()] = true
 
@@ -245,6 +257,13 @@ func _verify_all_npcs_use_shared_ui() -> void:
 				continue_button.pressed.emit()
 
 		assert(npc_base.current_dialogue_index == npc_data.dialogues.size() - 1)
+		var final_dialogue: Dictionary = npc_data.dialogues[-1]
+		if (
+			bool(test_case["dialogue_complete_on_end"])
+			and not npc_base.dialogue_completed
+			and not bool(final_dialogue.get("complete_on_note_close", true))
+		):
+			continue_button.pressed.emit()
 		assert(npc_base.npc_progress.revealed_note_keys == expected_revealed_keys)
 		var visible_note_count := 0
 		for note_item: NoteItem in npc_base._note_items:

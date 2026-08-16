@@ -14,6 +14,7 @@ const NPC_CASES: Array[Dictionary] = [
 		"dialogue_count": 11,
 		"note_count": 5,
 		"dialogue_complete_on_end": true,
+		"dialogue_speaker_known_from_start": false,
 	},
 	{
 		"path": "res://data/npc/npc_b.json",
@@ -26,6 +27,7 @@ const NPC_CASES: Array[Dictionary] = [
 		"dialogue_count": 10,
 		"note_count": 2,
 		"dialogue_complete_on_end": true,
+		"dialogue_speaker_known_from_start": false,
 	},
 	{
 		"path": "res://data/npc/npc_c.json",
@@ -33,11 +35,12 @@ const NPC_CASES: Array[Dictionary] = [
 		"display_name": "Mary Carter",
 		"dialogue_name": "Mary",
 		"profile_photo": "res://TextureAsset/NPC/Profile/mary_profile.png",
-		"first_speaker_name": "???",
+		"first_speaker_name": "Me",
 		"memory_scene": "res://scenes/memory/npc3_liu_guilan_memory.tscn",
-		"dialogue_count": 4,
+		"dialogue_count": 13,
 		"note_count": 3,
 		"dialogue_complete_on_end": true,
+		"dialogue_speaker_known_from_start": false,
 	},
 	{
 		"path": "res://data/npc/npc_d.json",
@@ -47,9 +50,10 @@ const NPC_CASES: Array[Dictionary] = [
 		"profile_photo": "res://TextureAsset/NPC/Profile/lisa_profile.png",
 		"first_speaker_name": "???",
 		"memory_scene": "res://scenes/memory/npc4_su_qing_memory.tscn",
-		"dialogue_count": 5,
+		"dialogue_count": 9,
 		"note_count": 2,
 		"dialogue_complete_on_end": true,
+		"dialogue_speaker_known_from_start": false,
 	},
 	{
 		"path": "res://data/npc/npc_e.json",
@@ -57,11 +61,12 @@ const NPC_CASES: Array[Dictionary] = [
 		"display_name": "Tom Brown",
 		"dialogue_name": "Tom",
 		"profile_photo": "res://TextureAsset/NPC/Profile/tom_profile.png",
-		"first_speaker_name": "???",
+		"first_speaker_name": "Tom",
 		"memory_scene": "res://scenes/memory/npc5_wang_jianguo_memory.tscn",
-		"dialogue_count": 4,
+		"dialogue_count": 11,
 		"note_count": 3,
 		"dialogue_complete_on_end": true,
+		"dialogue_speaker_known_from_start": true,
 	},
 ]
 
@@ -91,6 +96,10 @@ func _ready() -> void:
 		assert(ResourceLoader.exists(npc_data.profile_photo, "Texture2D"))
 		assert(load(npc_data.profile_photo) is Texture2D)
 		assert(npc_data.dialogue_complete_on_end == test_case["dialogue_complete_on_end"])
+		assert(
+			npc_data.dialogue_speaker_known_from_start
+			== test_case["dialogue_speaker_known_from_start"]
+		)
 		assert(npc_data.memory_scene == test_case["memory_scene"])
 		assert(ResourceLoader.exists(npc_data.memory_scene, "PackedScene"))
 		assert(npc_data.dialogues.size() == test_case["dialogue_count"])

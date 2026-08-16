@@ -207,22 +207,26 @@ func _setup_dialogue_manager() -> bool:
 
 func _apply_dialogue_background(dialogue: Dictionary) -> bool:
 	return _apply_background_path(
-		str(dialogue.get("background", "")).strip_edges(),
+		_get_effective_dialogue_background(dialogue),
 		"Dialogue background"
 	)
+
+
+func _get_effective_dialogue_background(dialogue: Dictionary) -> String:
+	var effective_background := str(dialogue.get("background", "")).strip_edges()
+	if _is_note_interaction_completed(dialogue):
+		var after_note_background := str(
+			dialogue.get("after_note_background", "")
+		).strip_edges()
+		if not after_note_background.is_empty():
+			effective_background = after_note_background
+	return effective_background
 
 
 func _apply_initial_background() -> bool:
 	if npc_data == null:
 		return false
 	return _apply_background_path(npc_data.initial_background, "initial_background")
-
-
-func _apply_after_note_background(dialogue: Dictionary) -> bool:
-	return _apply_background_path(
-		str(dialogue.get("after_note_background", "")).strip_edges(),
-		"after_note_background"
-	)
 
 
 func _apply_background_path(background_path: String, field_label: String) -> bool:
@@ -251,9 +255,10 @@ func _restore_dialogue_background() -> void:
 	)
 	for dialogue_index in range(last_dialogue_index + 1):
 		var dialogue: Dictionary = npc_data.dialogues[dialogue_index]
-		_apply_dialogue_background(dialogue)
-		if _is_note_interaction_completed(dialogue):
-			_apply_after_note_background(dialogue)
+		_apply_background_path(
+			_get_effective_dialogue_background(dialogue),
+			"restored dialogue background"
+		)
 
 
 func _extract_valid_unlock_keys() -> void:
@@ -663,7 +668,11 @@ func _get_visible_speaker_name(dialogue: Dictionary) -> String:
 	var configured_name := str(dialogue.get("speaker_name", "")).strip_edges()
 	if speaker_role == "player":
 		return configured_name if not configured_name.is_empty() else "Me"
-	return npc_data.dialogue_name if _is_name_unlocked() else "???"
+	return (
+		npc_data.dialogue_name
+		if npc_data.dialogue_speaker_known_from_start or _is_name_unlocked()
+		else "???"
+	)
 
 
 func _process_current_dialogue_actions(dialogue: Dictionary) -> void:
@@ -744,6 +753,7 @@ func _should_finalize_dialogue_after_auto_note() -> bool:
 		not _active_auto_note_key.is_empty()
 		and str(current_dialogue.get("open_note_key", "")).strip_edges()
 		== _active_auto_note_key
+		and bool(current_dialogue.get("complete_on_note_close", true))
 	)
 
 
