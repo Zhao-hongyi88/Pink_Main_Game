@@ -22,8 +22,8 @@ const NPC_CASES: Array[Dictionary] = [
 		"display_name": "Mike Carter",
 		"dialogue_name": "Mike",
 		"profile_photo": "res://TextureAsset/NPC/Profile/mike_profile.png",
-		"first_speaker_name": "???",
-		"dialogue_count": 3,
+		"first_speaker_name": "Me",
+		"dialogue_count": 10,
 		"note_count": 2,
 		"dialogue_complete_on_end": true,
 	},
@@ -238,6 +238,11 @@ func _verify_all_npcs_use_shared_ui() -> void:
 				assert(npc_base.get_node("%NPCName").visible)
 				assert(npc_base.get_node("%NamePlate").visible)
 				assert(npc_base.get_node("%DossierPanel").visible)
+			if (
+				npc_base.current_dialogue_index == dialogue_index
+				and dialogue_index < npc_data.dialogues.size() - 1
+			):
+				continue_button.pressed.emit()
 
 		assert(npc_base.current_dialogue_index == npc_data.dialogues.size() - 1)
 		assert(npc_base.npc_progress.revealed_note_keys == expected_revealed_keys)
@@ -291,21 +296,25 @@ func _verify_npc_progress_isolation() -> void:
 	assert(npc_b_data.is_valid())
 	assert(npc_c_data.is_valid())
 
-	# 李磊 advances far enough to unlock basic_info, but remains incomplete.
+	# Mike reaches the document interaction, unlocks basic_info, but remains incomplete.
 	var npc_b := await _instantiate_npc(npc_b_data.source_path)
 	npc_b._reveal_first_conversation()
 	await get_tree().create_timer(
 		npc_b.dialogue_reveal_delay + npc_b.dialogue_reveal_duration + 0.08
 	).timeout
 	var npc_b_continue: Button = npc_b.get_node("%ContinueButton")
-	npc_b_continue.pressed.emit()
-	npc_b_continue.pressed.emit()
+	for _dialogue_index in range(1, 9):
+		npc_b_continue.pressed.emit()
+	assert(npc_b.note_detail_popup.visible)
+	assert(npc_b._auto_note_interaction_locked)
+	npc_b.note_detail_popup.get_node("%CloseHitArea").pressed.emit()
+	await get_tree().create_timer(0.45).timeout
 	var npc_b_progress: NPCProgress = npc_b.npc_progress
 	var npc_b_index := npc_b.current_dialogue_index
 	var npc_b_text: String = str(npc_b.get_node("%DialogueText").text)
 	var npc_b_unlocked: Dictionary = npc_b_progress.unlocked_keys.duplicate(true)
 	var npc_b_revealed: Array[String] = npc_b_progress.revealed_note_keys.duplicate()
-	assert(npc_b_index == 2)
+	assert(npc_b_index == 8)
 	assert(not npc_b_progress.dialogue_completed)
 	assert(npc_b_unlocked.get("basic_info", false))
 	assert(npc_b_revealed == ["basic_info"])
@@ -360,6 +369,9 @@ func _verify_npc_progress_isolation() -> void:
 
 	# Completing 李磊 and its memory flag must not mutate any 刘桂兰 field.
 	var npc_b_reloaded_continue: Button = npc_b_reloaded.get_node("%ContinueButton")
+	npc_b_reloaded_continue.pressed.emit()
+	assert(npc_b_reloaded.current_dialogue_index == 9)
+	assert(not npc_b_reloaded.dialogue_completed)
 	npc_b_reloaded_continue.pressed.emit()
 	assert(npc_b_reloaded.dialogue_completed)
 	assert(npc_b_reloaded.memory_ready)
