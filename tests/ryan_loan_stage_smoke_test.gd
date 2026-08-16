@@ -98,6 +98,7 @@ class RyanExitRoundTripProbe:
 		assert(progress.memory_completed)
 		assert(GameState.is_npc_unlocked(&"npc_li_lei"))
 
+		GameState.debug_unlock_all_npcs = true
 		print("RYAN_LOAN_STAGE_SMOKE_TEST: PASS")
 		get_tree().quit(0)
 
@@ -127,6 +128,7 @@ class RyanExitRoundTripProbe:
 
 
 func _ready() -> void:
+	GameState.debug_unlock_all_npcs = false
 	GameState.clear_runtime_state()
 	var raw_json := FileAccess.get_file_as_string(NPC_DATA_PATH)
 	for forbidden_text in [

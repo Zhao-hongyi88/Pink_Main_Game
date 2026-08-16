@@ -6,6 +6,10 @@ var npc_progress: Dictionary = {}
 var selected_npc_id: StringName = &""
 var unlocked_npc_ids: Dictionary = {}
 
+# TEMP DEVELOPMENT ONLY
+# Set false before final release to restore sequential NPC unlocking.
+var debug_unlock_all_npcs: bool = true
+
 
 func has_npc_progress(npc_id: StringName) -> bool:
 	return not npc_id.is_empty() and npc_progress.has(npc_id)
@@ -58,11 +62,17 @@ func initialize_npc_access(roster: RefCounted) -> bool:
 
 
 func is_npc_unlocked(npc_id: StringName) -> bool:
-	return not npc_id.is_empty() and bool(unlocked_npc_ids.get(npc_id, false))
+	if npc_id.is_empty():
+		return false
+	if debug_unlock_all_npcs:
+		return true
+	return bool(unlocked_npc_ids.get(npc_id, false))
 
 
 func unlock_npc(npc_id: StringName) -> bool:
-	if npc_id.is_empty() or is_npc_unlocked(npc_id):
+	# Check only formal progress here. Debug availability must never prevent a real unlock
+	# from being recorded by advance_from_completed_progress().
+	if npc_id.is_empty() or bool(unlocked_npc_ids.get(npc_id, false)):
 		return false
 	unlocked_npc_ids[npc_id] = true
 	return true

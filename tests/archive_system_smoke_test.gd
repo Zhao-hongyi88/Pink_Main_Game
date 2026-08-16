@@ -9,9 +9,14 @@ var ordered_npc_ids: Array[StringName] = []
 
 
 func _ready() -> void:
-	GameState.clear_runtime_state()
 	_load_and_verify_roster()
+	await _verify_debug_access_without_progress_pollution()
+	print("ARCHIVE_SYSTEM_SMOKE_TEST: DEBUG MODE PASS")
+	GameState.debug_unlock_all_npcs = false
+	GameState.clear_runtime_state()
 	await _verify_archive_and_sequence_progression()
+	print("ARCHIVE_SYSTEM_SMOKE_TEST: PRODUCTION MODE PASS")
+	GameState.debug_unlock_all_npcs = true
 	print("ARCHIVE_SYSTEM_SMOKE_TEST: PASS")
 	get_tree().quit(0)
 
@@ -187,6 +192,43 @@ func _verify_archive_and_sequence_progression() -> void:
 	menu = await _create_main_menu()
 	assert(GameState.selected_npc_id == ordered_npc_ids[0])
 	assert(GameState.unlocked_npc_ids.size() == ordered_npc_ids.size())
+	_dispose_main_menu(menu)
+
+
+func _verify_debug_access_without_progress_pollution() -> void:
+	GameState.debug_unlock_all_npcs = true
+	GameState.clear_runtime_state()
+	var menu := await _create_main_menu()
+	var archive: Variant = menu.get_node("%ArchivePanel")
+
+	assert(GameState.unlocked_npc_ids.size() == 1)
+	assert(bool(GameState.unlocked_npc_ids.get(ordered_npc_ids[0], false)))
+	for npc_id: StringName in ordered_npc_ids:
+		assert(GameState.is_npc_unlocked(npc_id))
+		assert(not archive.get_npc_button(npc_id).disabled)
+		assert(archive.get_npc_button(npc_id).text == "???")
+
+	for npc_id: StringName in [
+		ordered_npc_ids[4],
+		ordered_npc_ids[0],
+		ordered_npc_ids[2],
+		ordered_npc_ids[1],
+		ordered_npc_ids[3],
+	]:
+		archive.get_npc_button(npc_id).pressed.emit()
+		assert(GameState.selected_npc_id == npc_id)
+		assert(archive.get_node("%SelectedNPCLabel").text == "???")
+
+	# Even while every NPC is temporarily available, formal completion still records
+	# exactly the next roster entry in unlocked_npc_ids.
+	assert(GameState.mark_memory_completed(ordered_npc_ids[0]))
+	_dispose_main_menu(menu)
+	menu = await _create_main_menu()
+	assert(GameState.unlocked_npc_ids.size() == 2)
+	assert(bool(GameState.unlocked_npc_ids.get(ordered_npc_ids[0], false)))
+	assert(bool(GameState.unlocked_npc_ids.get(ordered_npc_ids[1], false)))
+	for locked_index in range(2, ordered_npc_ids.size()):
+		assert(not bool(GameState.unlocked_npc_ids.get(ordered_npc_ids[locked_index], false)))
 	_dispose_main_menu(menu)
 
 
