@@ -145,8 +145,16 @@ class MemoryIntegrationProbe:
 			npc_base.call("_reveal_first_conversation")
 			await _wait_for_dialogue_input(npc_base)
 		var safety_count := 0
-		while not continue_button.disabled:
+		while not bool(npc_base.get("dialogue_completed")):
+			var detail_popup := npc_base.get_node("%NoteDetailPopup") as Control
+			if detail_popup.visible:
+				detail_popup.get_node("%CloseHitArea").pressed.emit()
+				await get_tree().create_timer(0.35).timeout
+				safety_count += 1
+				assert(safety_count < 100)
+				continue
 			await _wait_for_dialogue_input(npc_base)
+			assert(not continue_button.disabled)
 			continue_button.pressed.emit()
 			await get_tree().process_frame
 			safety_count += 1

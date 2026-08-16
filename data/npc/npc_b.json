@@ -3,19 +3,68 @@
 	"display_name": "Mike Carter",
 	"dialogue_name": "Mike",
 	"portrait": "",
+	"profile_photo": "res://TextureAsset/NPC/Profile/mike_profile.png",
+	"initial_background": "res://TextureAsset/Level1/Mike/mike_loan_01_arrival.png",
 	"name_unlock_key": "basic_info",
 	"dialogues": [
 		{
-			"text": "Placeholder dialogue 01.",
+			"speaker_name": "Me",
+			"speaker_role": "player",
+			"text": "你好，请问前来办理什么业务",
+			"unlock_key": "",
+			"background": "res://TextureAsset/Level1/Mike/mike_loan_02_counter.png"
+		},
+		{
+			"speaker_name": "Mike",
+			"text": "你好，我想申请一年半的时间贷款用于家庭医疗贷款。",
 			"unlock_key": ""
 		},
 		{
-			"text": "Placeholder dialogue 02.",
-			"unlock_key": "basic_info"
+			"speaker_name": "Me",
+			"speaker_role": "player",
+			"text": "好的。\n请问贷款用途是用于本人医疗，还是家庭成员？",
+			"unlock_key": ""
 		},
 		{
-			"text": "Placeholder dialogue 03.",
-			"unlock_key": "b_extra_info"
+			"speaker_name": "Mike",
+			"text": "用于我的母亲Mary。",
+			"unlock_key": ""
+		},
+		{
+			"speaker_name": "Me",
+			"speaker_role": "player",
+			"text": "18个月时间额度。\n用途是长期治疗支持吗？",
+			"unlock_key": ""
+		},
+		{
+			"speaker_name": "Mike",
+			"text": "嗯。\n她患有慢性疾病，需要持续维持自己的时间。",
+			"unlock_key": ""
+		},
+		{
+			"speaker_name": "Me",
+			"speaker_role": "player",
+			"text": "好的。\n请确认，贷款时间额度将在未来通过您的劳动时间进行偿还。",
+			"unlock_key": ""
+		},
+		{
+			"speaker_name": "Mike",
+			"text": "我了解，在来申请贷款之前我已经提前了解了时间偿还规则",
+			"unlock_key": ""
+		},
+		{
+			"speaker_name": "Mike",
+			"text": "（递交资料）这是我的申请资料",
+			"unlock_key": "basic_info",
+			"background": "res://TextureAsset/Level1/Mike/mike_loan_03_submit_documents.png",
+			"open_note_key": "basic_info",
+			"after_note_background": "res://TextureAsset/Level1/Mike/mike_loan_04_after_submit.png"
+		},
+		{
+			"speaker_name": "Me",
+			"speaker_role": "player",
+			"text": "好的。\n资料登记完成。\n请您等待审核。",
+			"unlock_key": ""
 		}
 	],
 	"notes": [

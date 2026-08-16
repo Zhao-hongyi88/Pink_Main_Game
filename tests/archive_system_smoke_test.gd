@@ -9,9 +9,14 @@ var ordered_npc_ids: Array[StringName] = []
 
 
 func _ready() -> void:
-	GameState.clear_runtime_state()
 	_load_and_verify_roster()
+	await _verify_debug_access_without_progress_pollution()
+	print("ARCHIVE_SYSTEM_SMOKE_TEST: DEBUG MODE PASS")
+	GameState.debug_unlock_all_npcs = false
+	GameState.clear_runtime_state()
 	await _verify_archive_and_sequence_progression()
+	print("ARCHIVE_SYSTEM_SMOKE_TEST: PRODUCTION MODE PASS")
+	GameState.debug_unlock_all_npcs = true
 	print("ARCHIVE_SYSTEM_SMOKE_TEST: PASS")
 	get_tree().quit(0)
 
@@ -148,7 +153,9 @@ func _verify_archive_and_sequence_progression() -> void:
 	assert(GameState.selected_npc_id == ordered_npc_ids[0])
 	assert(GameState.unlocked_npc_ids.size() == 2)
 	assert(GameState.get_npc_progress(ordered_npc_ids[0]) == first_progress)
-	assert(first_progress.current_dialogue_index == 2)
+	assert(str(first_data.dialogues[first_progress.current_dialogue_index].get(
+		"unlock_key", ""
+	)) == String(first_data.name_unlock_key))
 	assert(first_progress.unlocked_keys.get(String(first_data.name_unlock_key), false))
 	assert(first_progress.revealed_note_keys == [String(first_data.name_unlock_key)])
 	_dispose_main_menu(menu)
@@ -185,6 +192,43 @@ func _verify_archive_and_sequence_progression() -> void:
 	menu = await _create_main_menu()
 	assert(GameState.selected_npc_id == ordered_npc_ids[0])
 	assert(GameState.unlocked_npc_ids.size() == ordered_npc_ids.size())
+	_dispose_main_menu(menu)
+
+
+func _verify_debug_access_without_progress_pollution() -> void:
+	GameState.debug_unlock_all_npcs = true
+	GameState.clear_runtime_state()
+	var menu := await _create_main_menu()
+	var archive: Variant = menu.get_node("%ArchivePanel")
+
+	assert(GameState.unlocked_npc_ids.size() == 1)
+	assert(bool(GameState.unlocked_npc_ids.get(ordered_npc_ids[0], false)))
+	for npc_id: StringName in ordered_npc_ids:
+		assert(GameState.is_npc_unlocked(npc_id))
+		assert(not archive.get_npc_button(npc_id).disabled)
+		assert(archive.get_npc_button(npc_id).text == "???")
+
+	for npc_id: StringName in [
+		ordered_npc_ids[4],
+		ordered_npc_ids[0],
+		ordered_npc_ids[2],
+		ordered_npc_ids[1],
+		ordered_npc_ids[3],
+	]:
+		archive.get_npc_button(npc_id).pressed.emit()
+		assert(GameState.selected_npc_id == npc_id)
+		assert(archive.get_node("%SelectedNPCLabel").text == "???")
+
+	# Even while every NPC is temporarily available, formal completion still records
+	# exactly the next roster entry in unlocked_npc_ids.
+	assert(GameState.mark_memory_completed(ordered_npc_ids[0]))
+	_dispose_main_menu(menu)
+	menu = await _create_main_menu()
+	assert(GameState.unlocked_npc_ids.size() == 2)
+	assert(bool(GameState.unlocked_npc_ids.get(ordered_npc_ids[0], false)))
+	assert(bool(GameState.unlocked_npc_ids.get(ordered_npc_ids[1], false)))
+	for locked_index in range(2, ordered_npc_ids.size()):
+		assert(not bool(GameState.unlocked_npc_ids.get(ordered_npc_ids[locked_index], false)))
 	_dispose_main_menu(menu)
 
 
@@ -299,15 +343,18 @@ func _trigger_name_unlock_through_dialogue(npc_id: StringName) -> NPCProgress:
 
 	var name_unlock_observed := false
 	for _dialogue_index in npc_data.dialogues.size():
-		var dialogue_result := dialogue_manager.advance()
-		assert(dialogue_result["accepted"])
-		var unlock_key := str(dialogue_result["unlock_key"])
+		# NPCBase processes the newly visible dialogue's unlock action before the
+		# player advances away from it. Mirror that order so an intentionally
+		# incomplete final line does not get marked complete by this test helper.
+		var unlock_key := dialogue_manager.get_current_unlock_key()
 		if not unlock_key.is_empty():
 			var unlock_result := unlock_system.request_unlock(unlock_key)
 			assert(unlock_result["accepted"])
 		if unlock_key == String(npc_data.name_unlock_key):
 			name_unlock_observed = true
 			break
+		var dialogue_result := dialogue_manager.advance()
+		assert(dialogue_result["accepted"])
 	assert(name_unlock_observed)
 	assert(progress.unlocked_keys.get(String(npc_data.name_unlock_key), false))
 	return progress

@@ -24,11 +24,13 @@ class StartNavigationProbe:
 		assert(npc_base.npc_data_path == expected_data_path)
 		assert(npc_base.npc_data.source_path == expected_data_path)
 		assert(npc_base.npc_data.npc_id == expected_npc_id)
+		GameState.debug_unlock_all_npcs = true
 		print("MAIN_MENU_SMOKE_TEST: PASS")
 		get_tree().quit(0)
 
 
 func _ready() -> void:
+	GameState.debug_unlock_all_npcs = false
 	GameState.clear_runtime_state()
 	assert(ResourceLoader.exists(SceneRouter.ROUTES[&"lobby"]))
 	assert(SceneRouter.ROUTES[&"npc_base"] == "res://scenes/npc/npc_base.tscn")
