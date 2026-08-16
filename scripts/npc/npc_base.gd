@@ -668,7 +668,11 @@ func _get_visible_speaker_name(dialogue: Dictionary) -> String:
 	var configured_name := str(dialogue.get("speaker_name", "")).strip_edges()
 	if speaker_role == "player":
 		return configured_name if not configured_name.is_empty() else "Me"
-	return npc_data.dialogue_name if _is_name_unlocked() else "???"
+	return (
+		npc_data.dialogue_name
+		if npc_data.dialogue_speaker_known_from_start or _is_name_unlocked()
+		else "???"
+	)
 
 
 func _process_current_dialogue_actions(dialogue: Dictionary) -> void:

@@ -9,6 +9,7 @@ var dialogue_name := ""
 var profile_photo := ""
 var initial_background := ""
 var dialogue_complete_on_end := true
+var dialogue_speaker_known_from_start := false
 var name_unlock_key: StringName = &""
 var dialogues: Array[Dictionary] = []
 var notes: Array[Dictionary] = []
@@ -64,6 +65,11 @@ func _read_and_validate() -> void:
 	profile_photo = _read_optional_string(raw, "profile_photo", "")
 	initial_background = _read_optional_string(raw, "initial_background", "")
 	dialogue_complete_on_end = _read_optional_bool(raw, "dialogue_complete_on_end", true)
+	dialogue_speaker_known_from_start = _read_optional_bool(
+		raw,
+		"dialogue_speaker_known_from_start",
+		false
+	)
 	name_unlock_key = StringName(_read_required_string(raw, "name_unlock_key", true))
 	memory_scene = _read_required_string(raw, "memory_scene")
 	_read_dialogues(raw)

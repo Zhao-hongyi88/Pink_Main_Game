@@ -4,23 +4,75 @@
 	"dialogue_name": "Tom",
 	"portrait": "",
 	"profile_photo": "res://TextureAsset/NPC/Profile/tom_profile.png",
+	"initial_background": "res://TextureAsset/Level1/Tom/tom_loan_01_arrival.png",
+	"dialogue_complete_on_end": true,
+	"dialogue_speaker_known_from_start": true,
 	"name_unlock_key": "basic_info",
 	"dialogues": [
 		{
-			"text": "Placeholder dialogue 01.",
+			"speaker_name": "Tom",
+			"text": "你好。\n又见面了。",
+			"unlock_key": "",
+			"background": "res://TextureAsset/Level1/Tom/tom_loan_02_counter.png"
+		},
+		{
+			"speaker_name": "Me",
+			"speaker_role": "player",
+			"text": "你来了。\n这次还是时间贷款？",
 			"unlock_key": ""
 		},
 		{
-			"text": "Placeholder dialogue 02.",
-			"unlock_key": "basic_info"
+			"speaker_name": "Tom",
+			"text": "是的，我之后应该不会再来了，我决定离开这个地方。",
+			"unlock_key": ""
 		},
 		{
-			"text": "Placeholder dialogue 03.",
-			"unlock_key": "e_extra_info"
+			"speaker_name": "Me",
+			"speaker_role": "player",
+			"text": "（沉默了一会儿）……",
+			"unlock_key": ""
 		},
 		{
-			"text": "Placeholder dialogue 04.",
-			"unlock_key": "e_final_info"
+			"speaker_name": "Me",
+			"speaker_role": "player",
+			"text": "好，申请多少？",
+			"unlock_key": ""
+		},
+		{
+			"speaker_name": "Tom",
+			"text": "一年。",
+			"unlock_key": ""
+		},
+		{
+			"speaker_name": "Me",
+			"speaker_role": "player",
+			"text": "既然决定离开了，为什么还继续帮助别人？",
+			"unlock_key": ""
+		},
+		{
+			"speaker_name": "Tom",
+			"text": "最后一次了，顺便和你告个别。",
+			"unlock_key": ""
+		},
+		{
+			"speaker_name": "Me",
+			"speaker_role": "player",
+			"text": "祝你拥有崭新的生活。",
+			"unlock_key": ""
+		},
+		{
+			"speaker_name": "Tom",
+			"text": "谢谢。",
+			"unlock_key": ""
+		},
+		{
+			"speaker_name": "Tom",
+			"text": "（递交资料）这我们最后一次见面了，这次就走个形式吧。",
+			"unlock_key": "basic_info",
+			"background": "res://TextureAsset/Level1/Tom/tom_loan_03_submit_documents.png",
+			"open_note_key": "basic_info",
+			"after_note_background": "res://TextureAsset/Level1/Tom/tom_loan_04_after_submit.png",
+			"complete_on_note_close": false
 		}
 	],
 	"notes": [

@@ -4,27 +4,63 @@
 	"dialogue_name": "Lisa",
 	"portrait": "",
 	"profile_photo": "res://TextureAsset/NPC/Profile/lisa_profile.png",
+	"initial_background": "res://TextureAsset/Level1/Lisa/lisa_loan_01_arrival.png",
+	"dialogue_complete_on_end": true,
 	"name_unlock_key": "basic_info",
 	"dialogues": [
 		{
-			"text": "Placeholder dialogue 01.",
+			"speaker_name": "Lisa",
+			"text": "你好\n我是代表时间生命公司来办理时间额度贷款的。",
+			"unlock_key": "",
+			"background": "res://TextureAsset/Level1/Lisa/lisa_loan_02_counter.png"
+		},
+		{
+			"speaker_name": "Me",
+			"speaker_role": "player",
+			"text": "好的。\n请问预计申请时间额度是多少？",
 			"unlock_key": ""
 		},
 		{
-			"text": "Placeholder dialogue 02.",
-			"unlock_key": "basic_info"
-		},
-		{
-			"text": "Placeholder dialogue 03.",
+			"speaker_name": "Lisa",
+			"text": "30年。",
 			"unlock_key": ""
 		},
 		{
-			"text": "Placeholder dialogue 04.",
-			"unlock_key": "d_extra_info"
+			"speaker_name": "Me",
+			"speaker_role": "player",
+			"text": "这部分时间额度将用于企业运营？",
+			"unlock_key": ""
 		},
 		{
-			"text": "Placeholder dialogue 05.",
+			"speaker_name": "Lisa",
+			"text": "是。\n主要用于项目扩展和人员调配。",
 			"unlock_key": ""
+		},
+		{
+			"speaker_name": "Me",
+			"speaker_role": "player",
+			"text": "贷款偿还将从企业未来时间收益中扣除。\n您确认了解相关条例？",
+			"unlock_key": ""
+		},
+		{
+			"speaker_name": "Lisa",
+			"text": "我了解。",
+			"unlock_key": ""
+		},
+		{
+			"speaker_name": "Me",
+			"speaker_role": "player",
+			"text": "好的。\n您的企业企业时间贷款申请要求。\n但是我需要通过你的递交的资料进行进一步的审核",
+			"unlock_key": ""
+		},
+		{
+			"speaker_name": "Lisa",
+			"text": "（递交资料）好的，这是我的资料",
+			"unlock_key": "basic_info",
+			"background": "res://TextureAsset/Level1/Lisa/lisa_loan_03_submit_documents.png",
+			"open_note_key": "basic_info",
+			"after_note_background": "res://TextureAsset/Level1/Lisa/lisa_loan_04_after_submit.png",
+			"complete_on_note_close": false
 		}
 	],
 	"notes": [
