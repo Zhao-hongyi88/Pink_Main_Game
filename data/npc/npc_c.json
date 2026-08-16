@@ -4,23 +4,85 @@
 	"dialogue_name": "Mary",
 	"portrait": "",
 	"profile_photo": "res://TextureAsset/NPC/Profile/mary_profile.png",
+	"initial_background": "res://TextureAsset/Level1/Mary/mary_loan_01_arrival.png",
+	"dialogue_complete_on_end": true,
 	"name_unlock_key": "basic_info",
 	"dialogues": [
 		{
-			"text": "Placeholder dialogue 01.",
+			"speaker_name": "Me",
+			"speaker_role": "player",
+			"text": "你好，请问前来办理什么业务",
+			"unlock_key": "",
+			"background": "res://TextureAsset/Level1/Mary/mary_loan_02_counter.png"
+		},
+		{
+			"speaker_name": "Mary",
+			"text": "你好，我想申请生命时间贷款。",
 			"unlock_key": ""
 		},
 		{
-			"text": "Placeholder dialogue 02.",
-			"unlock_key": "basic_info"
+			"speaker_name": "Me",
+			"speaker_role": "player",
+			"text": "好的。\n请问贷款用途是用于本人吗？",
+			"unlock_key": ""
 		},
 		{
-			"text": "Placeholder dialogue 03.",
-			"unlock_key": "c_status_info"
+			"speaker_name": "Mary",
+			"text": "是的。",
+			"unlock_key": ""
 		},
 		{
-			"text": "Placeholder dialogue 04.",
-			"unlock_key": "c_extra_info"
+			"speaker_name": "Me",
+			"speaker_role": "player",
+			"text": "好的，请问您预计申请多少时间额度？",
+			"unlock_key": ""
+		},
+		{
+			"speaker_name": "Mary",
+			"text": "一年吧。",
+			"unlock_key": ""
+		},
+		{
+			"speaker_name": "Me",
+			"speaker_role": "player",
+			"text": "好的，但是我需要提醒您，\n根据规定，若未来无法独立偿还，贷款可能需要家属共同承担。",
+			"unlock_key": ""
+		},
+		{
+			"speaker_name": "Mary",
+			"text": "……",
+			"unlock_key": ""
+		},
+		{
+			"speaker_name": "Mary",
+			"text": "那改成半年吧。",
+			"unlock_key": ""
+		},
+		{
+			"speaker_name": "Me",
+			"speaker_role": "player",
+			"text": "您确定调整申请额度吗？",
+			"unlock_key": ""
+		},
+		{
+			"speaker_name": "Mary",
+			"text": "我确定，半年时间暂时够了。",
+			"unlock_key": ""
+		},
+		{
+			"speaker_name": "Me",
+			"speaker_role": "player",
+			"text": "贷款申请已提交，请递交您的申请资料。\n请等待审核结果。",
+			"unlock_key": ""
+		},
+		{
+			"speaker_name": "Mary",
+			"text": "（递交资料）好的，这是我的资料",
+			"unlock_key": "basic_info",
+			"background": "res://TextureAsset/Level1/Mary/mary_loan_03_submit_documents.png",
+			"open_note_key": "basic_info",
+			"after_note_background": "res://TextureAsset/Level1/Mary/mary_loan_04_after_submit.png",
+			"complete_on_note_close": false
 		}
 	],
 	"notes": [

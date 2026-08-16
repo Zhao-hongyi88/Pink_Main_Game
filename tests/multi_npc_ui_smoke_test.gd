@@ -33,8 +33,8 @@ const NPC_CASES: Array[Dictionary] = [
 		"display_name": "Mary Carter",
 		"dialogue_name": "Mary",
 		"profile_photo": "res://TextureAsset/NPC/Profile/mary_profile.png",
-		"first_speaker_name": "???",
-		"dialogue_count": 4,
+		"first_speaker_name": "Me",
+		"dialogue_count": 13,
 		"note_count": 3,
 		"dialogue_complete_on_end": true,
 	},
@@ -245,6 +245,13 @@ func _verify_all_npcs_use_shared_ui() -> void:
 				continue_button.pressed.emit()
 
 		assert(npc_base.current_dialogue_index == npc_data.dialogues.size() - 1)
+		var final_dialogue: Dictionary = npc_data.dialogues[-1]
+		if (
+			bool(test_case["dialogue_complete_on_end"])
+			and not npc_base.dialogue_completed
+			and not bool(final_dialogue.get("complete_on_note_close", true))
+		):
+			continue_button.pressed.emit()
 		assert(npc_base.npc_progress.revealed_note_keys == expected_revealed_keys)
 		var visible_note_count := 0
 		for note_item: NoteItem in npc_base._note_items:

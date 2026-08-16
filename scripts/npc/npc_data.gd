@@ -140,6 +140,14 @@ func _read_dialogues(raw: Dictionary) -> void:
 					"NPCData: dialogues[%d].%s 必须是 String。" % [index, field]
 				)
 				optional_fields_valid = false
+		if (
+			dialogue.has("complete_on_note_close")
+			and typeof(dialogue["complete_on_note_close"]) != TYPE_BOOL
+		):
+			validation_errors.append(
+				"NPCData: dialogues[%d].complete_on_note_close 必须是 bool。" % index
+			)
+			optional_fields_valid = false
 		if not optional_fields_valid:
 			continue
 		var text := str(dialogue["text"]).strip_edges()
@@ -177,6 +185,10 @@ func _read_dialogues(raw: Dictionary) -> void:
 		).strip_edges()
 		if not after_note_background.is_empty():
 			normalized_dialogue["after_note_background"] = after_note_background
+		if dialogue.has("complete_on_note_close"):
+			normalized_dialogue["complete_on_note_close"] = bool(
+				dialogue["complete_on_note_close"]
+			)
 		dialogues.append(normalized_dialogue)
 
 
@@ -262,4 +274,11 @@ func _validate_unlock_references() -> void:
 		):
 			validation_errors.append(
 				"NPCData: dialogues[%d].after_note_background 需要 open_note_key。" % index
+			)
+		if (
+			dialogues[index].has("complete_on_note_close")
+			and open_note_key.is_empty()
+		):
+			validation_errors.append(
+				"NPCData: dialogues[%d].complete_on_note_close 需要 open_note_key。" % index
 			)
