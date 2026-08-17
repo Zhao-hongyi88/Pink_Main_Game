@@ -1,21 +1,41 @@
-[gd_scene load_steps=9 format=3]
+[gd_scene format=3 uid="uid://diwf16mpfk01b"]
 
 [ext_resource type="PackedScene" path="res://scenes/memory/memory_base.tscn" id="1_base"]
-[ext_resource type="Script" path="res://scripts/memory/npc3_liu_guilan_memory.gd" id="2_memory"]
-[ext_resource type="Script" path="res://scripts/memory/memory_observation_point.gd" id="3_point"]
+[ext_resource type="Script" uid="uid://co1ur7y0k4xdy" path="res://scripts/memory/npc3_liu_guilan_memory.gd" id="2_memory"]
+[ext_resource type="Script" uid="uid://cevu8580mceir" path="res://scripts/memory/memory_observation_point.gd" id="3_point"]
 [ext_resource type="Resource" path="res://data/memory/npc3/employee_overtime_statistics.tres" id="4_data_a"]
 [ext_resource type="Resource" path="res://data/memory/npc3/li_lei_employee_file.tres" id="5_data_b"]
 [ext_resource type="Resource" path="res://data/memory/npc3/project_leader_list.tres" id="6_data_c"]
-[ext_resource type="Texture2D" path="res://TextureAsset/Memory/NPC3/liu_guilan_memory_background.png" id="7_background"]
-[ext_resource type="Texture2D" path="res://TextureAsset/Memory/Common/unexplored_marker.png" id="8_marker"]
+[ext_resource type="Texture2D" uid="uid://b64gkbvnfx5fo" path="res://TextureAsset/Memory/NPC3/liu_guilan_memory_background.png" id="7_background"]
+[ext_resource type="Texture2D" uid="uid://ccl8fxrgmo5hh" path="res://TextureAsset/Memory/Common/unexplored_marker.png" id="8_marker"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_point"]
-size = Vector2(220, 120)
+size = Vector2(67, 70)
 
-[node name="LiuGuilanMemory" instance=ExtResource("1_base")]
+[sub_resource type="Gradient" id="Gradient_ruul5"]
+offsets = PackedFloat32Array(0, 0.268, 1)
+colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 0.956, 1, 1, 1, 0)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_bjqgx"]
+gradient = SubResource("Gradient_ruul5")
+fill = 1
+fill_from = Vector2(0.5086705, 0.47976878)
+fill_to = Vector2(0.88150287, 0.18208092)
+
+[sub_resource type="Gradient" id="Gradient_6tw3n"]
+offsets = PackedFloat32Array(0.948, 1)
+colors = PackedColorArray(1, 1, 1, 0.38056678, 1, 1, 1, 0)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_8jovo"]
+gradient = SubResource("Gradient_6tw3n")
+fill = 1
+fill_to = Vector2(0.7109827, 0.76878613)
+
+[node name="LiuGuilanMemory" unique_id=1476103393 instance=ExtResource("1_base")]
 script = ExtResource("2_memory")
 
-[node name="Background" type="TextureRect" parent="." index="0"]
+[node name="Background" type="TextureRect" parent="." index="0" unique_id=593994635]
+modulate = Color(0.5609549, 0.5609549, 0.5609549, 1)
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -27,7 +47,7 @@ texture = ExtResource("7_background")
 expand_mode = 1
 stretch_mode = 6
 
-[node name="SceneTitle" type="Label" parent="Background"]
+[node name="SceneTitle" type="Label" parent="Background" index="0" unique_id=1609138705]
 visible = false
 layout_mode = 1
 anchors_preset = 10
@@ -36,95 +56,132 @@ offset_top = 82.0
 offset_bottom = 126.0
 grow_horizontal = 2
 theme_override_font_sizes/font_size = 30
-text = "刘桂兰 Memory"
+text = "Liu Guilan Memory"
 horizontal_alignment = 1
-mouse_filter = 2
 
-[node name="ObservationPoints" type="Node2D" parent="." index="1"]
+[node name="ObservationPoints" type="Node2D" parent="." index="1" unique_id=1353027353]
 
-[node name="EmployeeOvertimeStatistics" type="Area2D" parent="ObservationPoints"]
+[node name="EmployeeOvertimeStatistics" type="Area2D" parent="ObservationPoints" index="0" unique_id=2106172196]
 unique_name_in_owner = true
 position = Vector2(106, 188)
 script = ExtResource("3_point")
 observation_data = ExtResource("4_data_a")
 
-[node name="Visual" type="Polygon2D" parent="ObservationPoints/EmployeeOvertimeStatistics"]
+[node name="Visual" type="Polygon2D" parent="ObservationPoints/EmployeeOvertimeStatistics" index="0" unique_id=1972576763]
 visible = false
-polygon = PackedVector2Array(-110, -60, 110, -60, 110, 60, -110, 60)
 color = Color(0.35, 0.58, 0.53, 1)
+polygon = PackedVector2Array(-110, -60, 110, -60, 110, 60, -110, 60)
 
-[node name="Label" type="Label" parent="ObservationPoints/EmployeeOvertimeStatistics"]
+[node name="Label" type="Label" parent="ObservationPoints/EmployeeOvertimeStatistics" index="1" unique_id=2104733150]
 visible = false
 offset_left = -100.0
 offset_top = -18.0
 offset_right = 100.0
 offset_bottom = 18.0
-text = "员工加班统计"
+text = "Employee Overtime Statistics"
 horizontal_alignment = 1
 vertical_alignment = 1
-mouse_filter = 2
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="ObservationPoints/EmployeeOvertimeStatistics"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="ObservationPoints/EmployeeOvertimeStatistics" index="2" unique_id=1814595555]
 shape = SubResource("RectangleShape2D_point")
 
-[node name="UnexploredMarker" type="Sprite2D" parent="ObservationPoints/EmployeeOvertimeStatistics"]
-texture = ExtResource("8_marker")
+[node name="UnexploredMarker" type="Sprite2D" parent="ObservationPoints/EmployeeOvertimeStatistics" index="3" unique_id=26128199]
 scale = Vector2(0.2, 0.2)
+texture = ExtResource("8_marker")
 
-[node name="LiLeiEmployeeFile" type="Area2D" parent="ObservationPoints"]
+[node name="LiLeiEmployeeFile" type="Area2D" parent="ObservationPoints" index="1" unique_id=720223975]
 unique_name_in_owner = true
 position = Vector2(606, 199)
 script = ExtResource("3_point")
 observation_data = ExtResource("5_data_b")
 
-[node name="Visual" type="Polygon2D" parent="ObservationPoints/LiLeiEmployeeFile"]
+[node name="Visual" type="Polygon2D" parent="ObservationPoints/LiLeiEmployeeFile" index="0" unique_id=669511495]
 visible = false
-polygon = PackedVector2Array(-110, -60, 110, -60, 110, 60, -110, 60)
 color = Color(0.43, 0.63, 0.56, 1)
+polygon = PackedVector2Array(-110, -60, 110, -60, 110, 60, -110, 60)
 
-[node name="Label" type="Label" parent="ObservationPoints/LiLeiEmployeeFile"]
+[node name="Label" type="Label" parent="ObservationPoints/LiLeiEmployeeFile" index="1" unique_id=1987081828]
 visible = false
 offset_left = -100.0
 offset_top = -18.0
 offset_right = 100.0
 offset_bottom = 18.0
-text = "李磊员工档案"
+text = "Li Lei Employee File"
 horizontal_alignment = 1
 vertical_alignment = 1
-mouse_filter = 2
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="ObservationPoints/LiLeiEmployeeFile"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="ObservationPoints/LiLeiEmployeeFile" index="2" unique_id=76706250]
+position = Vector2(-2.5, -4)
 shape = SubResource("RectangleShape2D_point")
 
-[node name="UnexploredMarker" type="Sprite2D" parent="ObservationPoints/LiLeiEmployeeFile"]
-texture = ExtResource("8_marker")
+[node name="UnexploredMarker" type="Sprite2D" parent="ObservationPoints/LiLeiEmployeeFile" index="3" unique_id=481586918]
 scale = Vector2(0.2, 0.2)
+texture = ExtResource("8_marker")
 
-[node name="ProjectLeaderList" type="Area2D" parent="ObservationPoints"]
+[node name="ProjectLeaderList" type="Area2D" parent="ObservationPoints" index="2" unique_id=1282589437]
 unique_name_in_owner = true
 position = Vector2(756, 281)
 script = ExtResource("3_point")
 observation_data = ExtResource("6_data_c")
 
-[node name="Visual" type="Polygon2D" parent="ObservationPoints/ProjectLeaderList"]
+[node name="Visual" type="Polygon2D" parent="ObservationPoints/ProjectLeaderList" index="0" unique_id=211494647]
 visible = false
-polygon = PackedVector2Array(-110, -60, 110, -60, 110, 60, -110, 60)
 color = Color(0.28, 0.49, 0.45, 1)
+polygon = PackedVector2Array(-110, -60, 110, -60, 110, 60, -110, 60)
 
-[node name="Label" type="Label" parent="ObservationPoints/ProjectLeaderList"]
+[node name="Label" type="Label" parent="ObservationPoints/ProjectLeaderList" index="1" unique_id=163806411]
 visible = false
 offset_left = -100.0
 offset_top = -18.0
 offset_right = 100.0
 offset_bottom = 18.0
-text = "项目负责人名单"
+text = "Project Leader List"
 horizontal_alignment = 1
 vertical_alignment = 1
-mouse_filter = 2
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="ObservationPoints/ProjectLeaderList"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="ObservationPoints/ProjectLeaderList" index="2" unique_id=703940259]
 shape = SubResource("RectangleShape2D_point")
 
-[node name="UnexploredMarker" type="Sprite2D" parent="ObservationPoints/ProjectLeaderList"]
-texture = ExtResource("8_marker")
+[node name="UnexploredMarker" type="Sprite2D" parent="ObservationPoints/ProjectLeaderList" index="3" unique_id=363113704]
 scale = Vector2(0.2, 0.2)
+texture = ExtResource("8_marker")
+
+[node name="MemoryInfoPanel" parent="MemoryUI" index="3"]
+layout_mode = 3
+
+[node name="DialogueBox" parent="MemoryUI/MemoryInfoPanel" index="1"]
+anchors_preset = 0
+
+[node name="DialogueContinueButton" parent="MemoryUI/MemoryInfoPanel/DialogueBox" index="2"]
+anchor_top = 1.0
+anchor_bottom = 1.0
+grow_vertical = 0
+
+[node name="DialogueCloseButton" parent="MemoryUI/MemoryInfoPanel/DialogueBox" index="3"]
+anchor_top = 1.0
+anchor_bottom = 1.0
+grow_vertical = 0
+
+[node name="ImagePlaceholders" parent="MemoryUI/MemoryInfoPanel/Panel" index="5"]
+anchor_top = 1.0
+
+[node name="DialogueBox2" parent="MemoryUI/MemoryInfoPanel" index="3"]
+anchors_preset = 0
+
+[node name="PointLight2D" type="PointLight2D" parent="." index="3" unique_id=22373072]
+position = Vector2(478, 223)
+color = Color(0.9999985, 0.9997819, 0.7408638, 1)
+energy = 3.88
+texture = SubResource("GradientTexture2D_bjqgx")
+
+[node name="PointLight2D" type="PointLight2D" parent="PointLight2D" index="0" unique_id=2107101493]
+position = Vector2(296, 324)
+color = Color(0.9999985, 0.9997819, 0.7408638, 1)
+energy = 1.1
+texture = SubResource("GradientTexture2D_bjqgx")
+
+[node name="PointLight2D2" type="PointLight2D" parent="." index="4" unique_id=23944632]
+position = Vector2(316, 181.99998)
+scale = Vector2(5.398438, 4.982422)
+energy = 4.19
+texture = SubResource("GradientTexture2D_8jovo")

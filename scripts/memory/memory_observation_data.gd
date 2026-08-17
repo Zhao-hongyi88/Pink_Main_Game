@@ -1,7 +1,7 @@
 class_name MemoryObservationData
 extends Resource
 
-## 单个可调查物品的纯数据资源。
+## Pure data resource for a single observation item.
 
 @export var observation_id: StringName
 @export var title := ""

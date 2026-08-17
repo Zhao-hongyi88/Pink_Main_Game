@@ -1,8 +1,8 @@
 class_name MemoryInfoPanel
 extends Control
 
-## 依序展示“物品信息”与“主角观察”。
-## 只有最后一句点击“完成并关闭”时才发出 observation_completed。
+## Presents Object Info followed by the protagonist's observations.
+## Emits observation_completed only after Complete and Close is pressed at the end.
 
 signal observation_completed(observation_id)
 signal observation_cancelled()
@@ -40,7 +40,7 @@ func _ready() -> void:
 
 func show_observation(data) -> void:
 	if data == null:
-		push_warning("MemoryInfoPanel: 尝试展示空数据。")
+		push_warning("MemoryInfoPanel: Cannot display null data.")
 		return
 
 	_current_data = data
@@ -50,7 +50,7 @@ func show_observation(data) -> void:
 	title_label.text = data.title
 	$Panel.show()
 	dialogue_box.hide()
-	section_label.text = "物品信息"
+	section_label.text = "Object Info"
 	$Panel.show()
 	dialogue_box.hide()
 	_show_object_info(data)
@@ -107,7 +107,7 @@ func _show_dialogue_line() -> void:
 	$Panel.hide()
 	dialogue_box.show()
 	dialogue_continue_button.grab_focus()
-	section_label.text = "主角观察"
+	section_label.text = "Protagonist's Observation"
 	_reset_info_layout()
 	image_placeholders.hide()
 	content_label.show()
@@ -118,9 +118,9 @@ func _show_dialogue_line() -> void:
 	content_label.text = _current_data.dialogue[_dialogue_index]
 	dialogue_content_label.text = _current_data.dialogue[_dialogue_index]
 	if _dialogue_index == _current_data.dialogue.size() - 1:
-		dialogue_continue_button.text = "完成并关闭"
+		dialogue_continue_button.text = "Complete and Close"
 	else:
-		dialogue_continue_button.text = "继续"
+		dialogue_continue_button.text = "Continue"
 
 func _show_object_info(data) -> void:
 	$Panel.show()
@@ -146,7 +146,7 @@ func _show_object_info(data) -> void:
 
 	var item_count = max(data.images.size(), data.image_placeholders.size())
 	for index in item_count:
-		var placeholder_text = "[图片]"
+		var placeholder_text = "[Image]"
 		if index < data.image_placeholders.size():
 			placeholder_text = data.image_placeholders[index]
 
@@ -162,9 +162,9 @@ func _update_info_continue_button() -> void:
 		and _info_page_index == _current_data.info_pages.size() - 1
 	)
 	if is_last_info_page and _current_data.dialogue.is_empty():
-		continue_button.text = "完成并关闭"
+		continue_button.text = "Complete and Close"
 	else:
-		continue_button.text = "继续"
+		continue_button.text = "Continue"
 
 
 func _apply_info_skin(data) -> void:

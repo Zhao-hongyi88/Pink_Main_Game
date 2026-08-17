@@ -1,7 +1,7 @@
 class_name NPC1ZhangYuanMemory
 extends "res://scripts/memory/memory_base.gd"
 
-## 张远 Memory 只声明人物专属调查点，公共流程由 MemoryBase 负责。
+## Zhang Yuan Memory only declares character-specific observation points; MemoryBase owns the shared flow.
 
 @onready var personal_practice_report: MemoryObservationPoint = %PersonalPracticeReport
 @onready var time_loan_application: MemoryObservationPoint = %TimeLoanApplication

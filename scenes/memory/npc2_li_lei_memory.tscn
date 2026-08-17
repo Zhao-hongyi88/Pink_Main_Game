@@ -1,21 +1,31 @@
-[gd_scene load_steps=9 format=3]
+[gd_scene format=3 uid="uid://cqusv7kiyigm1"]
 
 [ext_resource type="PackedScene" path="res://scenes/memory/memory_base.tscn" id="1_base"]
-[ext_resource type="Script" path="res://scripts/memory/npc2_li_lei_memory.gd" id="2_memory"]
-[ext_resource type="Script" path="res://scripts/memory/memory_observation_point.gd" id="3_point"]
+[ext_resource type="Script" uid="uid://diksueq6keu8g" path="res://scripts/memory/npc2_li_lei_memory.gd" id="2_memory"]
+[ext_resource type="Script" uid="uid://cevu8580mceir" path="res://scripts/memory/memory_observation_point.gd" id="3_point"]
 [ext_resource type="Resource" path="res://data/memory/npc2/mother_message.tres" id="4_data_a"]
 [ext_resource type="Resource" path="res://data/memory/npc2/living_expense_record.tres" id="5_data_b"]
 [ext_resource type="Resource" path="res://data/memory/npc2/unfinished_personal_plan.tres" id="6_data_c"]
-[ext_resource type="Texture2D" path="res://TextureAsset/Memory/NPC2/li_lei_memory_background.png" id="7_background"]
-[ext_resource type="Texture2D" path="res://TextureAsset/Memory/Common/unexplored_marker.png" id="8_marker"]
+[ext_resource type="Texture2D" uid="uid://du76hb2tj8h1d" path="res://TextureAsset/Memory/NPC2/li_lei_memory_background.png" id="7_background"]
+[ext_resource type="Texture2D" uid="uid://ccl8fxrgmo5hh" path="res://TextureAsset/Memory/Common/unexplored_marker.png" id="8_marker"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_point"]
-size = Vector2(220, 120)
+size = Vector2(87, 79)
 
-[node name="LiLeiMemory" instance=ExtResource("1_base")]
+[sub_resource type="Gradient" id="Gradient_qqjji"]
+offsets = PackedFloat32Array(0.44, 0.696, 0.984)
+colors = PackedColorArray(1, 1, 1, 1, 0.89104515, 0.89104515, 0.89104515, 0.886598, 0.039215688, 0.039215688, 0.039215688, 0)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_bjqgx"]
+gradient = SubResource("Gradient_qqjji")
+fill = 1
+fill_from = Vector2(0.023121387, 0.02601156)
+
+[node name="LiLeiMemory" unique_id=1904012673 instance=ExtResource("1_base")]
 script = ExtResource("2_memory")
 
-[node name="Background" type="TextureRect" parent="." index="0"]
+[node name="Background" type="TextureRect" parent="." index="0" unique_id=683499006]
+modulate = Color(0.5370119, 0.53701115, 0.5370113, 1)
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -27,7 +37,7 @@ texture = ExtResource("7_background")
 expand_mode = 1
 stretch_mode = 6
 
-[node name="SceneTitle" type="Label" parent="Background"]
+[node name="SceneTitle" type="Label" parent="Background" index="0" unique_id=848790454]
 visible = false
 layout_mode = 1
 anchors_preset = 10
@@ -38,92 +48,119 @@ grow_horizontal = 2
 theme_override_font_sizes/font_size = 30
 text = "Mike Carter · Memory"
 horizontal_alignment = 1
-mouse_filter = 2
 
-[node name="ObservationPoints" type="Node2D" parent="." index="1"]
+[node name="ObservationPoints" type="Node2D" parent="." index="1" unique_id=573925747]
 
-[node name="MotherMessage" type="Area2D" parent="ObservationPoints"]
+[node name="MotherMessage" type="Area2D" parent="ObservationPoints" index="0" unique_id=995799072]
 unique_name_in_owner = true
 position = Vector2(320, 292)
 script = ExtResource("3_point")
 observation_data = ExtResource("4_data_a")
 
-[node name="Visual" type="Polygon2D" parent="ObservationPoints/MotherMessage"]
+[node name="Visual" type="Polygon2D" parent="ObservationPoints/MotherMessage" index="0" unique_id=1517137977]
 visible = false
-polygon = PackedVector2Array(-110, -60, 110, -60, 110, 60, -110, 60)
 color = Color(0.47, 0.42, 0.64, 1)
+polygon = PackedVector2Array(-110, -60, 110, -60, 110, 60, -110, 60)
 
-[node name="Label" type="Label" parent="ObservationPoints/MotherMessage"]
+[node name="Label" type="Label" parent="ObservationPoints/MotherMessage" index="1" unique_id=2012611934]
 visible = false
 offset_left = -100.0
 offset_top = -18.0
 offset_right = 100.0
 offset_bottom = 18.0
-text = "母亲发来的消息"
+text = "Message from Mother"
 horizontal_alignment = 1
 vertical_alignment = 1
-mouse_filter = 2
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="ObservationPoints/MotherMessage"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="ObservationPoints/MotherMessage" index="2" unique_id=946719080]
+position = Vector2(-4.5, -2.5)
 shape = SubResource("RectangleShape2D_point")
 
-[node name="UnexploredMarker" type="Sprite2D" parent="ObservationPoints/MotherMessage"]
-texture = ExtResource("8_marker")
+[node name="UnexploredMarker" type="Sprite2D" parent="ObservationPoints/MotherMessage" index="3" unique_id=1369010553]
 scale = Vector2(0.2, 0.2)
+texture = ExtResource("8_marker")
 
-[node name="LivingExpenseRecord" type="Area2D" parent="ObservationPoints"]
+[node name="LivingExpenseRecord" type="Area2D" parent="ObservationPoints" index="1" unique_id=100541759]
 unique_name_in_owner = true
 position = Vector2(816, 251)
 script = ExtResource("3_point")
 observation_data = ExtResource("5_data_b")
 
-[node name="Visual" type="Polygon2D" parent="ObservationPoints/LivingExpenseRecord"]
+[node name="Visual" type="Polygon2D" parent="ObservationPoints/LivingExpenseRecord" index="0" unique_id=1703971567]
 visible = false
-polygon = PackedVector2Array(-110, -60, 110, -60, 110, 60, -110, 60)
 color = Color(0.55, 0.45, 0.67, 1)
+polygon = PackedVector2Array(-110, -60, 110, -60, 110, 60, -110, 60)
 
-[node name="Label" type="Label" parent="ObservationPoints/LivingExpenseRecord"]
+[node name="Label" type="Label" parent="ObservationPoints/LivingExpenseRecord" index="1" unique_id=1201117816]
 visible = false
 offset_left = -100.0
 offset_top = -18.0
 offset_right = 100.0
 offset_bottom = 18.0
-text = "生活支出记录"
+text = "Living Expense Record"
 horizontal_alignment = 1
 vertical_alignment = 1
-mouse_filter = 2
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="ObservationPoints/LivingExpenseRecord"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="ObservationPoints/LivingExpenseRecord" index="2" unique_id=1012632581]
 shape = SubResource("RectangleShape2D_point")
 
-[node name="UnexploredMarker" type="Sprite2D" parent="ObservationPoints/LivingExpenseRecord"]
-texture = ExtResource("8_marker")
+[node name="UnexploredMarker" type="Sprite2D" parent="ObservationPoints/LivingExpenseRecord" index="3" unique_id=339914440]
 scale = Vector2(0.2, 0.2)
+texture = ExtResource("8_marker")
 
-[node name="UnfinishedPersonalPlan" type="Area2D" parent="ObservationPoints"]
+[node name="UnfinishedPersonalPlan" type="Area2D" parent="ObservationPoints" index="2" unique_id=1132566304]
 unique_name_in_owner = true
 position = Vector2(629, 522)
 script = ExtResource("3_point")
 observation_data = ExtResource("6_data_c")
 
-[node name="Visual" type="Polygon2D" parent="ObservationPoints/UnfinishedPersonalPlan"]
+[node name="Visual" type="Polygon2D" parent="ObservationPoints/UnfinishedPersonalPlan" index="0" unique_id=1096723836]
 visible = false
-polygon = PackedVector2Array(-110, -60, 110, -60, 110, 60, -110, 60)
 color = Color(0.42, 0.36, 0.58, 1)
+polygon = PackedVector2Array(-110, -60, 110, -60, 110, 60, -110, 60)
 
-[node name="Label" type="Label" parent="ObservationPoints/UnfinishedPersonalPlan"]
+[node name="Label" type="Label" parent="ObservationPoints/UnfinishedPersonalPlan" index="1" unique_id=2040881348]
 visible = false
 offset_left = -100.0
 offset_top = -18.0
 offset_right = 100.0
 offset_bottom = 18.0
-text = "未完成的个人计划"
+text = "Unfinished Personal Plan"
 horizontal_alignment = 1
 vertical_alignment = 1
-mouse_filter = 2
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="ObservationPoints/UnfinishedPersonalPlan"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="ObservationPoints/UnfinishedPersonalPlan" index="2" unique_id=1282051597]
 shape = SubResource("RectangleShape2D_point")
-[node name="UnexploredMarker" type="Sprite2D" parent="ObservationPoints/UnfinishedPersonalPlan"]
-texture = ExtResource("8_marker")
+
+[node name="UnexploredMarker" type="Sprite2D" parent="ObservationPoints/UnfinishedPersonalPlan" index="3" unique_id=784654809]
 scale = Vector2(0.2, 0.2)
+texture = ExtResource("8_marker")
+
+[node name="MemoryInfoPanel" parent="MemoryUI" index="3"]
+layout_mode = 3
+
+[node name="DialogueBox" parent="MemoryUI/MemoryInfoPanel" index="1"]
+anchors_preset = 0
+
+[node name="DialogueContinueButton" parent="MemoryUI/MemoryInfoPanel/DialogueBox" index="2"]
+anchor_top = 1.0
+anchor_bottom = 1.0
+grow_vertical = 0
+
+[node name="DialogueCloseButton" parent="MemoryUI/MemoryInfoPanel/DialogueBox" index="3"]
+anchor_top = 1.0
+anchor_bottom = 1.0
+grow_vertical = 0
+
+[node name="ImagePlaceholders" parent="MemoryUI/MemoryInfoPanel/Panel" index="5"]
+anchor_top = 1.0
+
+[node name="DialogueBox2" parent="MemoryUI/MemoryInfoPanel" index="3"]
+anchors_preset = 0
+
+[node name="PointLight2D" type="PointLight2D" parent="." index="3" unique_id=1269177096]
+position = Vector2(563, 237)
+scale = Vector2(5.6431875, 5.3888493)
+color = Color(0.9878239, 0.8925993, 0.7704754, 1)
+energy = 2.99
+texture = SubResource("GradientTexture2D_bjqgx")

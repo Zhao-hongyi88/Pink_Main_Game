@@ -7,7 +7,7 @@
 [resource]
 script = ExtResource("1_observation_data")
 observation_id = &"time_loan_application"
-title = "时间贷款申请书"
+title = "Time Loan Application"
 info = ""
 images = []
 image_placeholders = []

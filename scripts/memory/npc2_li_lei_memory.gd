@@ -1,7 +1,7 @@
 class_name NPC2LiLeiMemory
 extends "res://scripts/memory/memory_base.gd"
 
-## 李磊 Memory 只声明人物专属调查点，公共流程由 MemoryBase 负责。
+## Li Lei Memory only declares character-specific observation points; MemoryBase owns the shared flow.
 
 @onready var mother_message: Area2D = %MotherMessage
 @onready var living_expense_record: Area2D = %LivingExpenseRecord

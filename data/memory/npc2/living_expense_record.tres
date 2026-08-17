@@ -7,7 +7,7 @@
 [resource]
 script = ExtResource("1_observation_data")
 observation_id = &"living_expense_record"
-title = "生活支出记录"
+title = "Living Expense Record"
 info = ""
 images = []
 image_placeholders = []

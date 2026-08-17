@@ -7,7 +7,7 @@
 [resource]
 script = ExtResource("1_observation_data")
 observation_id = &"job_search_record"
-title = "求职记录"
+title = "Job Search Record"
 info = ""
 images = []
 image_placeholders = []

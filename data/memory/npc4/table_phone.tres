@@ -7,7 +7,7 @@
 [resource]
 script = ExtResource("1_observation_data")
 observation_id = &"table_phone"
-title = "桌子上的手机"
+title = "Phone on the Table"
 info = ""
 images = []
 image_placeholders = []

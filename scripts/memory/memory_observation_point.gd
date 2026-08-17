@@ -1,7 +1,7 @@
 class_name MemoryObservationPoint
 extends Area2D
 
-## 处理单个调查物的点击与 hover，不决定展示内容或完成状态。
+## Handles clicking and hover for one observation point without owning presentation or completion state.
 
 signal observation_requested(data)
 
@@ -12,7 +12,7 @@ signal observation_requested(data)
 
 func _ready() -> void:
 	if observation_data == null:
-		push_warning("MemoryObservationPoint: 缺少 observation_data。")
+		push_warning("MemoryObservationPoint: Missing observation_data.")
 
 	input_event.connect(_on_input_event)
 	mouse_entered.connect(_on_mouse_entered)

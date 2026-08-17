@@ -1,7 +1,7 @@
 class_name NPC4SuQingMemory
 extends "res://scripts/memory/memory_base.gd"
 
-## 苏晴 Memory 只声明人物专属调查点，公共流程由 MemoryBase 负责。
+## Su Qing Memory only declares character-specific observation points; MemoryBase owns the shared flow.
 
 @onready var table_phone: Area2D = %TablePhone
 @onready var hospital_boxed_meal: Area2D = %HospitalBoxedMeal

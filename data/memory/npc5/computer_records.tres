@@ -7,10 +7,10 @@
 [resource]
 script = ExtResource("1_observation_data")
 observation_id = &"computer_records"
-title = "张远的求职帖子"
+title = "Zhang Yuan's Job Search Post"
 info = ""
-info_page_titles = PackedStringArray("张远的求职帖子", "刘桂兰重复出现的医疗申请", "论坛草稿")
-info_pages = PackedStringArray("张远的求职帖子", "刘桂兰重复出现的医疗申请", "论坛草稿")
+info_page_titles = PackedStringArray("Zhang Yuan's Job Search Post", "Liu Guilan's Repeated Medical Applications", "Forum Draft")
+info_pages = PackedStringArray("Zhang Yuan's Job Search Post", "Liu Guilan's Repeated Medical Applications", "Forum Draft")
 images = []
 image_placeholders = []
 dialogue = PackedStringArray()

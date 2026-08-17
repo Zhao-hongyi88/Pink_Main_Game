@@ -7,7 +7,7 @@
 [resource]
 script = ExtResource("1_observation_data")
 observation_id = &"hospital_boxed_meal"
-title = "病房里的盒饭"
+title = "Hospital Boxed Meal"
 info = ""
 images = []
 image_placeholders = []

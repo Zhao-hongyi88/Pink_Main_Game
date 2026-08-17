@@ -1,8 +1,8 @@
 class_name MemoryBase
 extends Control
 
-## 所有 Memory 场景共用的调查、导航与运行时状态入口。
-## 人物专属脚本只注册调查点；NPC 身份始终来自 SceneRouter payload。
+## Shared investigation, navigation, and runtime-state entry point for all Memory scenes.
+## Character-specific scripts only register observation points; NPC identity comes from the SceneRouter payload.
 
 signal observation_marked_observed(observation_id: String)
 signal observation_progress_changed(completed_count: int, total_count: int)
@@ -41,7 +41,7 @@ func _ready() -> void:
 func register_observation(observation_id) -> void:
 	var id := str(observation_id).strip_edges()
 	if id.is_empty():
-		push_warning("MemoryBase: 不能注册空 observation_id。")
+		push_warning("MemoryBase: Cannot register an empty observation_id.")
 		return
 	if not observed_points.has(id):
 		observed_points[id] = false
@@ -59,10 +59,10 @@ func register_observations(observation_ids) -> void:
 
 func register_observation_point(point) -> void:
 	if point == null:
-		push_warning("MemoryBase: 不能注册空的调查点。")
+		push_warning("MemoryBase: Cannot register a null observation point.")
 		return
 	if point.observation_data == null:
-		push_warning("MemoryBase: 调查点缺少 observation_data：%s" % point.name)
+		push_warning("MemoryBase: Observation point is missing observation_data: %s" % point.name)
 		return
 
 	register_observation(point.observation_data.observation_id)
@@ -82,21 +82,21 @@ func is_observed(observation_id) -> bool:
 
 
 func get_progress_text() -> String:
-	return "调查进度：%d / %d" % [_get_observed_count(), observed_points.size()]
+	return "Investigation Progress: %d / %d" % [_get_observed_count(), observed_points.size()]
 
 
-## 打开调查时只记录当前对象，绝不在此处标记完成。
+## Opening an investigation only records the active object and never marks it complete.
 func inspect_observation(observation_id, _legacy_observation_data = null) -> bool:
 	var id := str(observation_id).strip_edges()
 	if id.is_empty() or not observed_points.has(id):
-		push_warning("MemoryBase: 未注册的调查点 -> " + id)
+		push_warning("MemoryBase: Unregistered observation point -> " + id)
 		return false
 
 	_current_observation_id = id
 	return true
 
 
-## 仅由 MemoryInfoPanel 的“完成并关闭”信号触发。
+## Triggered only by MemoryInfoPanel's Complete and Close signal.
 func complete_current_observation() -> void:
 	if _current_observation_id.is_empty():
 		return
@@ -105,7 +105,7 @@ func complete_current_observation() -> void:
 	_current_observation_id = ""
 
 
-## ESC 或普通关闭时调用；只清理当前调查状态。
+## Called by Escape or a normal close; only clears the active investigation state.
 func cancel_current_observation() -> void:
 	_current_observation_id = ""
 
@@ -113,7 +113,7 @@ func cancel_current_observation() -> void:
 func set_observed(observation_id) -> void:
 	var id := str(observation_id).strip_edges()
 	if not observed_points.has(id):
-		push_warning("MemoryBase: 未注册的调查点 -> " + id)
+		push_warning("MemoryBase: Unregistered observation point -> " + id)
 		return
 	if bool(observed_points[id]):
 		return
@@ -129,7 +129,7 @@ func _consume_navigation_payload() -> void:
 	return_npc_data_path = str(payload.get("return_npc_data_path", "")).strip_edges()
 	_has_navigation_context = not npc_id.is_empty() and not return_npc_data_path.is_empty()
 	if not _has_navigation_context:
-		push_warning("MemoryBase: 缺少 npc_id 或 return_npc_data_path 导航上下文。")
+		push_warning("MemoryBase: Missing npc_id or return_npc_data_path navigation context.")
 
 
 func _on_observation_requested(data) -> void:
@@ -166,7 +166,7 @@ func _on_complete_pressed() -> void:
 
 func _on_back_pressed() -> void:
 	if not _has_navigation_context:
-		push_error("MemoryBase: 缺少返回上下文，无法返回 NPCBase。")
+		push_error("MemoryBase: Missing return context; cannot return to NPCBase.")
 		return
 	var progress := GameState.get_npc_progress(npc_id)
 	if progress != null and progress.memory_completed:

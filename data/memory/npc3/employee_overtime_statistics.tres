@@ -7,7 +7,7 @@
 [resource]
 script = ExtResource("1_observation_data")
 observation_id = &"employee_overtime_statistics"
-title = "员工加班统计"
+title = "Employee Overtime Statistics"
 info = ""
 images = []
 image_placeholders = []
