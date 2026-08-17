@@ -5,7 +5,10 @@ signal movement_started(target_position: Vector2)
 signal movement_stopped(final_position: Vector2)
 
 const IDLE_ANIMATION: StringName = &"idle"
-const WALK_ANIMATION: StringName = &"walk"
+const WALK_DOWN_ANIMATION: StringName = &"walk_down"
+const WALK_UP_ANIMATION: StringName = &"walk_up"
+const WALK_LEFT_ANIMATION: StringName = &"walk_left"
+const WALK_RIGHT_ANIMATION: StringName = &"walk_right"
 
 @export_range(1.0, 1000.0, 1.0, "or_greater") var move_speed := 180.0
 @export_range(0.0, 100.0, 0.5, "or_greater") var stopping_distance := 6.0
@@ -57,7 +60,7 @@ func _physics_process(_delta: float) -> void:
 		velocity = Vector2.ZERO
 		return
 	velocity = movement_direction * move_speed
-	_update_horizontal_facing()
+	_update_movement_animation(velocity)
 	move_and_slide()
 
 	if global_position.distance_to(_target_global_position) <= stopping_distance:
@@ -67,7 +70,7 @@ func _physics_process(_delta: float) -> void:
 func set_movement_target(target_global_position: Vector2) -> void:
 	_target_global_position = target_global_position
 	_is_moving = true
-	_play_visual_animation(WALK_ANIMATION)
+	_update_movement_animation(global_position.direction_to(_target_global_position))
 	if _navigation_ready:
 		navigation_agent.target_position = _target_global_position
 	movement_started.emit(_target_global_position)
@@ -92,11 +95,17 @@ func _enable_navigation_after_sync() -> void:
 		navigation_agent.target_position = _target_global_position
 
 
-func _update_horizontal_facing() -> void:
-	if velocity.x > 0.0:
-		visual.flip_h = false
-	elif velocity.x < 0.0:
-		visual.flip_h = true
+func _update_movement_animation(movement_velocity: Vector2) -> void:
+	var direction := movement_velocity.normalized()
+	if absf(direction.x) > absf(direction.y):
+		if direction.x > 0.0:
+			_play_visual_animation(WALK_RIGHT_ANIMATION)
+		else:
+			_play_visual_animation(WALK_LEFT_ANIMATION)
+	elif direction.y > 0.0:
+		_play_visual_animation(WALK_DOWN_ANIMATION)
+	else:
+		_play_visual_animation(WALK_UP_ANIMATION)
 
 
 func _play_visual_animation(animation_name: StringName) -> void:
@@ -109,6 +118,6 @@ func _stop_movement() -> void:
 	var was_moving := _is_moving
 	_is_moving = false
 	velocity = Vector2.ZERO
+	_play_visual_animation(IDLE_ANIMATION)
 	if was_moving:
-		_play_visual_animation(IDLE_ANIMATION)
 		movement_stopped.emit(global_position)

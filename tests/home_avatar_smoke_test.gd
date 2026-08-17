@@ -47,10 +47,13 @@ func _verify_navigation_and_movement() -> void:
 	var visual := avatar.get_node("AvatarVisual") as AnimatedSprite2D
 	assert(visual != null)
 	assert(visual.sprite_frames != null)
-	assert(visual.sprite_frames.has_animation(&"idle"))
-	assert(visual.sprite_frames.has_animation(&"walk"))
-	assert(visual.sprite_frames.get_frame_count(&"idle") > 0)
-	assert(visual.sprite_frames.get_frame_count(&"walk") > 0)
+	for animation_name: StringName in [&"idle", &"walk_down", &"walk_up", &"walk_left", &"walk_right"]:
+		assert(visual.sprite_frames.has_animation(animation_name))
+		assert(visual.sprite_frames.get_frame_count(animation_name) > 0)
+	assert(is_equal_approx(visual.sprite_frames.get_animation_speed(&"idle"), 3.0))
+	for animation_name: StringName in [&"walk_down", &"walk_up", &"walk_left", &"walk_right"]:
+		assert(visual.sprite_frames.get_frame_count(animation_name) == 8)
+		assert(is_equal_approx(visual.sprite_frames.get_animation_speed(animation_name), 8.0))
 	var navigation_agent := avatar.get_node("NavigationAgent2D") as NavigationAgent2D
 	assert(navigation_agent != null)
 	assert(navigation_agent.get_navigation_map().is_valid())
@@ -69,10 +72,25 @@ func _verify_navigation_and_movement() -> void:
 	assert(visual.animation == &"idle")
 	assert(visual.is_playing())
 	assert(avatar.scale.is_equal_approx(Vector2.ONE))
-	assert(visual.scale.is_equal_approx(Vector2.ONE))
+	assert(visual.scale.is_equal_approx(Vector2(0.5, 0.5)))
+	assert(visual.position.is_equal_approx(Vector2(0.0, -56.0)))
+	assert(not visual.flip_h)
 	await get_tree().create_timer(0.25).timeout
-	assert(visual.scale.is_equal_approx(Vector2.ONE))
+	assert(visual.scale.is_equal_approx(Vector2(0.5, 0.5)))
 	assert(avatar.scale.is_equal_approx(Vector2.ONE))
+
+	# Every real movement direction selects its own source animation; no horizontal mirroring is used.
+	avatar._update_movement_animation(Vector2.RIGHT)
+	assert(visual.animation == &"walk_right")
+	avatar._update_movement_animation(Vector2.LEFT)
+	assert(visual.animation == &"walk_left")
+	avatar._update_movement_animation(Vector2.DOWN)
+	assert(visual.animation == &"walk_down")
+	avatar._update_movement_animation(Vector2.UP)
+	assert(visual.animation == &"walk_up")
+	avatar.stop_movement()
+	assert(visual.animation == &"idle")
+	assert(not visual.flip_h)
 
 	await get_tree().physics_frame
 	await get_tree().physics_frame
@@ -106,16 +124,16 @@ func _verify_navigation_and_movement() -> void:
 	avatar._unhandled_input(click_event)
 	assert(avatar.get_movement_target().is_equal_approx(target_position))
 	assert(avatar.is_moving())
-	assert(visual.animation == &"walk")
+	assert(visual.animation == &"walk_right")
 	assert(visual.is_playing())
-	assert(visual.scale.is_equal_approx(Vector2.ONE))
+	assert(visual.scale.is_equal_approx(Vector2(0.5, 0.5)))
 
 	# Rapid retargeting keeps the walk animation and does not change visual scale.
 	avatar.set_movement_target(Vector2(820.0, 260.0))
 	avatar.set_movement_target(target_position)
 	assert(avatar.get_movement_target().is_equal_approx(target_position))
-	assert(visual.animation == &"walk")
-	assert(visual.scale.is_equal_approx(Vector2.ONE))
+	assert(visual.animation == &"walk_right")
+	assert(visual.scale.is_equal_approx(Vector2(0.5, 0.5)))
 	await get_tree().physics_frame
 	assert(navigation_agent.target_position.is_equal_approx(target_position))
 
@@ -137,36 +155,37 @@ func _verify_navigation_and_movement() -> void:
 	assert(visual.animation == &"idle")
 	assert(visual.is_playing())
 	await get_tree().create_timer(0.25).timeout
-	assert(visual.scale.is_equal_approx(Vector2.ONE))
+	assert(visual.scale.is_equal_approx(Vector2(0.5, 0.5)))
 	assert(avatar.scale.is_equal_approx(Vector2.ONE))
 
 	# Repeated stop while already idle remains stable.
 	avatar.stop_movement()
 	avatar.stop_movement()
 	assert(visual.animation == &"idle")
-	assert(visual.scale.is_equal_approx(Vector2.ONE))
+	assert(visual.scale.is_equal_approx(Vector2(0.5, 0.5)))
 
 	# A new leftward move preserves facing logic; external stop restores idle.
 	var left_target := Vector2(300.0, 500.0)
 	avatar.set_movement_target(left_target)
-	assert(visual.animation == &"walk")
-	assert(visual.scale.is_equal_approx(Vector2.ONE))
+	assert(visual.animation == &"walk_left")
+	assert(visual.scale.is_equal_approx(Vector2(0.5, 0.5)))
 	var left_facing_observed := false
 	for _frame in 60:
 		await get_tree().physics_frame
-		if avatar.velocity.x < 0.0:
+		if avatar.velocity.x < 0.0 and absf(avatar.velocity.x) > absf(avatar.velocity.y):
 			left_facing_observed = true
-			assert(visual.flip_h)
+			assert(visual.animation == &"walk_left")
+			assert(not visual.flip_h)
 			break
 	assert(left_facing_observed)
 	avatar.stop_movement()
 	assert(not avatar.is_moving())
 	assert(avatar.velocity.is_zero_approx())
 	assert(visual.animation == &"idle")
-	assert(visual.scale.is_equal_approx(Vector2.ONE))
+	assert(visual.scale.is_equal_approx(Vector2(0.5, 0.5)))
 	avatar.stop_movement()
 	assert(visual.animation == &"idle")
-	assert(visual.scale.is_equal_approx(Vector2.ONE))
+	assert(visual.scale.is_equal_approx(Vector2(0.5, 0.5)))
 
 	remove_child(home_world)
 	home_world.free()
@@ -200,7 +219,7 @@ func _verify_main_menu_input_boundaries() -> void:
 	assert(not avatar.get_movement_target().is_equal_approx(previous_movement_target))
 	avatar.stop_movement()
 	assert(not avatar.is_moving())
-	assert(avatar.get_node("AvatarVisual").scale.is_equal_approx(Vector2.ONE))
+	assert(avatar.get_node("AvatarVisual").scale.is_equal_approx(Vector2(0.5, 0.5)))
 
 	menu.get_node("%RuleButton").pressed.emit()
 	assert(menu.get_node("%RulePanel").visible)

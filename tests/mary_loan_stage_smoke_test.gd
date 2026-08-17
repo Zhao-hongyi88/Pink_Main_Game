@@ -18,20 +18,22 @@ const EXPECTED_SPEAKER_DISPLAY := [
 	"???", "???", "Me", "???", "Me", "Mary",
 ]
 const EXPECTED_TEXTS := [
-	"你好，请问前来办理什么业务",
-	"你好，我想申请生命时间贷款。",
-	"好的。\n请问贷款用途是用于本人吗？",
-	"是的。",
-	"好的，请问您预计申请多少时间额度？",
-	"一年吧。",
-	"好的，但是我需要提醒您，\n根据规定，若未来无法独立偿还，贷款可能需要家属共同承担。",
-	"……",
-	"那改成半年吧。",
-	"您确定调整申请额度吗？",
-	"我确定，半年时间暂时够了。",
-	"贷款申请已提交，请递交您的申请资料。\n请等待审核结果。",
-	"（递交资料）好的，这是我的资料",
+	"Hello. What can I help you with today?",
+	"Hello. I'd like to apply for a life-extension time loan.",
+	"Of course.\nWill the loan be for your own use?",
+	"Yes.",
+	"All right. How much time credit would you like to apply for?",
+	"One year, I think.",
+	"All right, but I need to remind you: under the regulations, if you cannot repay the loan on your own in the future, your family may be required to share the obligation.",
+	"...",
+	"Then make it six months.",
+	"Are you sure you want to reduce the amount?",
+	"Yes. Six months should be enough for now.",
+	"Your loan application has been submitted. Please hand over your application documents.\nPlease wait for the review result.",
+	"(Hands over the documents) Of course. Here are my documents.",
 ]
+
+const EXPECTED_BASIC_INFO := "Name: Mary\nAge: 52\nAddress: Pendulum Falls, Westland State\nEmail: Mary@email.com\nTime Credit Rating: C\n\nLoan History:\n• Life Extension Time Loan (Repaid)\n• Current Application: Life Extension Time Loan (18 Months)"
 
 
 func _ready() -> void:
@@ -86,7 +88,7 @@ func _ready() -> void:
 	assert(npc._note_items_by_key["basic_info"].get_node("%NoteHeader").text.is_empty())
 	assert(npc._note_items_by_key["basic_info"].get_node("%NoteContent").text.is_empty())
 	assert(npc.note_detail_popup.visible)
-	assert(npc.note_detail_popup.get_node("%ContentLabel").text == "姓名：Mary Carter")
+	assert(npc.note_detail_popup.get_node("%ContentLabel").text == EXPECTED_BASIC_INFO)
 	assert(npc._auto_note_interaction_locked)
 	assert(continue_button.disabled)
 	assert(not npc.dialogue_completed)
@@ -140,7 +142,7 @@ func _ready() -> void:
 	# Manual review remains available and does not restart the automatic flow.
 	npc._note_items_by_key["basic_info"].pressed.emit()
 	assert(npc.note_detail_popup.visible)
-	assert(npc.note_detail_popup.get_node("%ContentLabel").text == "姓名：Mary Carter")
+	assert(npc.note_detail_popup.get_node("%ContentLabel").text == EXPECTED_BASIC_INFO)
 	npc.note_detail_popup.get_node("%CloseHitArea").pressed.emit()
 	await get_tree().create_timer(0.35).timeout
 	assert(not npc.note_detail_popup.visible)
@@ -209,7 +211,7 @@ func _verify_data_contract() -> void:
 	assert(data.dialogues.size() == 13)
 	assert(data.notes.size() == 3)
 	assert(data.notes[0]["key"] == "basic_info")
-	assert(data.notes[0]["content"] == "姓名：Mary Carter")
+	assert(data.notes[0]["content"] == EXPECTED_BASIC_INFO)
 	assert(data.dialogues[0]["background"] == BACKGROUND_02)
 	assert(data.dialogues[12]["background"] == BACKGROUND_03)
 	assert(data.dialogues[12]["unlock_key"] == "basic_info")

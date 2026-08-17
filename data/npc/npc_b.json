@@ -10,51 +10,51 @@
 		{
 			"speaker_name": "Me",
 			"speaker_role": "player",
-			"text": "你好，请问前来办理什么业务",
+      "text": "Hello. What can I help you with today?",
 			"unlock_key": "",
 			"background": "res://TextureAsset/Level1/Mike/mike_loan_02_counter.png"
 		},
 		{
 			"speaker_name": "Mike",
-			"text": "你好，我想申请一年半的时间贷款用于家庭医疗贷款。",
+      "text": "Hello. I'd like to apply for an eighteen-month family medical time loan.",
 			"unlock_key": ""
 		},
 		{
 			"speaker_name": "Me",
 			"speaker_role": "player",
-			"text": "好的。\n请问贷款用途是用于本人医疗，还是家庭成员？",
+      "text": "Of course.\nIs the loan for your own medical care, or for a family member?",
 			"unlock_key": ""
 		},
 		{
 			"speaker_name": "Mike",
-			"text": "用于我的母亲Mary。",
+      "text": "It's for my mother, Mary.",
 			"unlock_key": ""
 		},
 		{
 			"speaker_name": "Me",
 			"speaker_role": "player",
-			"text": "18个月时间额度。\n用途是长期治疗支持吗？",
+      "text": "Eighteen months of time credit.\nIs it intended to support long-term treatment?",
 			"unlock_key": ""
 		},
 		{
 			"speaker_name": "Mike",
-			"text": "嗯。\n她患有慢性疾病，需要持续维持自己的时间。",
+      "text": "Yes.\nShe has a chronic illness and needs continued support to sustain her time.",
 			"unlock_key": ""
 		},
 		{
 			"speaker_name": "Me",
 			"speaker_role": "player",
-			"text": "好的。\n请确认，贷款时间额度将在未来通过您的劳动时间进行偿还。",
+      "text": "Understood.\nPlease confirm that the time credit will be repaid through your future labor time.",
 			"unlock_key": ""
 		},
 		{
 			"speaker_name": "Mike",
-			"text": "我了解，在来申请贷款之前我已经提前了解了时间偿还规则",
+      "text": "I understand. I reviewed the time-repayment rules before coming here to apply.",
 			"unlock_key": ""
 		},
 		{
 			"speaker_name": "Mike",
-			"text": "（递交资料）这是我的申请资料",
+      "text": "(Hands over the documents) Here are my application documents.",
 			"unlock_key": "basic_info",
 			"background": "res://TextureAsset/Level1/Mike/mike_loan_03_submit_documents.png",
 			"open_note_key": "basic_info",
@@ -63,7 +63,7 @@
 		{
 			"speaker_name": "Me",
 			"speaker_role": "player",
-			"text": "好的。\n资料登记完成。\n请您等待审核。",
+      "text": "All right.\nYour documents have been registered.\nPlease wait for the review.",
 			"unlock_key": ""
 		}
 	],
@@ -71,7 +71,7 @@
 		{
 			"key": "basic_info",
 			"header": "Basic Information",
-			"content": "姓名：Mike Carter"
+			"content": "Name: Mike\nAge: 24\nAddress: Pendulum Falls, Westland State\nEmail: Mike@email.com\nTime Credit Rating: B\n\nLoan History:\n• Medical Time Loan (Ongoing)\n• Current Application: Family Medical Time Loan (12 Months)"
 		},
 		{
 			"key": "b_extra_info",

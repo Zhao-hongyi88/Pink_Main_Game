@@ -10,52 +10,52 @@
 	"dialogues": [
 		{
 			"speaker_name": "Lisa",
-			"text": "你好\n我是代表时间生命公司来办理时间额度贷款的。",
+      "text": "Hello.\nI represent Time Life Corporation. I'm here to apply for a time-credit loan.",
 			"unlock_key": "",
 			"background": "res://TextureAsset/Level1/Lisa/lisa_loan_02_counter.png"
 		},
 		{
 			"speaker_name": "Me",
 			"speaker_role": "player",
-			"text": "好的。\n请问预计申请时间额度是多少？",
+      "text": "Certainly.\nHow much time credit are you seeking?",
 			"unlock_key": ""
 		},
 		{
 			"speaker_name": "Lisa",
-			"text": "30年。",
+      "text": "Thirty years.",
 			"unlock_key": ""
 		},
 		{
 			"speaker_name": "Me",
 			"speaker_role": "player",
-			"text": "这部分时间额度将用于企业运营？",
+      "text": "Will this time credit be used for corporate operations?",
 			"unlock_key": ""
 		},
 		{
 			"speaker_name": "Lisa",
-			"text": "是。\n主要用于项目扩展和人员调配。",
+      "text": "Yes.\nPrimarily for project expansion and personnel allocation.",
 			"unlock_key": ""
 		},
 		{
 			"speaker_name": "Me",
 			"speaker_role": "player",
-			"text": "贷款偿还将从企业未来时间收益中扣除。\n您确认了解相关条例？",
+      "text": "Repayment will be deducted from the company's future time revenue.\nDo you confirm that you understand the relevant terms?",
 			"unlock_key": ""
 		},
 		{
 			"speaker_name": "Lisa",
-			"text": "我了解。",
+      "text": "I understand.",
 			"unlock_key": ""
 		},
 		{
 			"speaker_name": "Me",
 			"speaker_role": "player",
-			"text": "好的。\n您的企业企业时间贷款申请要求。\n但是我需要通过你的递交的资料进行进一步的审核",
+      "text": "All right. Your corporate time-loan application meets the requirements, but I need to review the documents you submit before proceeding.",
 			"unlock_key": ""
 		},
 		{
 			"speaker_name": "Lisa",
-			"text": "（递交资料）好的，这是我的资料",
+      "text": "(Hands over the documents) Of course. Here are my documents.",
 			"unlock_key": "basic_info",
 			"background": "res://TextureAsset/Level1/Lisa/lisa_loan_03_submit_documents.png",
 			"open_note_key": "basic_info",
@@ -67,7 +67,7 @@
 		{
 			"key": "basic_info",
 			"header": "Basic Information",
-			"content": "姓名：Lisa Wilson"
+			"content": "Name: Lisa\nAge: 40\nAddress: Pendulum Falls, Westland State\nEmail: Lisa@email.com\nTime Credit Rating: AA\n\nLoan History:\n• Corporate Time Loan (Approved)\n• Current Application: Corporate Production Time Loan (6 Months)"
 		},
 		{
 			"key": "d_extra_info",

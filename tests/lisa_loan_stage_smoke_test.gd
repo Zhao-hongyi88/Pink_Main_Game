@@ -16,16 +16,18 @@ const EXPECTED_SPEAKER_DISPLAY := [
 	"???", "Me", "???", "Me", "???", "Me", "???", "Me", "Lisa",
 ]
 const EXPECTED_TEXTS := [
-	"你好\n我是代表时间生命公司来办理时间额度贷款的。",
-	"好的。\n请问预计申请时间额度是多少？",
-	"30年。",
-	"这部分时间额度将用于企业运营？",
-	"是。\n主要用于项目扩展和人员调配。",
-	"贷款偿还将从企业未来时间收益中扣除。\n您确认了解相关条例？",
-	"我了解。",
-	"好的。\n您的企业企业时间贷款申请要求。\n但是我需要通过你的递交的资料进行进一步的审核",
-	"（递交资料）好的，这是我的资料",
+	"Hello.\nI represent Time Life Corporation. I'm here to apply for a time-credit loan.",
+	"Certainly.\nHow much time credit are you seeking?",
+	"Thirty years.",
+	"Will this time credit be used for corporate operations?",
+	"Yes.\nPrimarily for project expansion and personnel allocation.",
+	"Repayment will be deducted from the company's future time revenue.\nDo you confirm that you understand the relevant terms?",
+	"I understand.",
+	"All right. Your corporate time-loan application meets the requirements, but I need to review the documents you submit before proceeding.",
+	"(Hands over the documents) Of course. Here are my documents.",
 ]
+
+const EXPECTED_BASIC_INFO := "Name: Lisa\nAge: 40\nAddress: Pendulum Falls, Westland State\nEmail: Lisa@email.com\nTime Credit Rating: AA\n\nLoan History:\n• Corporate Time Loan (Approved)\n• Current Application: Corporate Production Time Loan (6 Months)"
 
 
 func _ready() -> void:
@@ -80,7 +82,7 @@ func _ready() -> void:
 	assert(npc._note_items_by_key["basic_info"].get_node("%NoteHeader").text.is_empty())
 	assert(npc._note_items_by_key["basic_info"].get_node("%NoteContent").text.is_empty())
 	assert(npc.note_detail_popup.visible)
-	assert(npc.note_detail_popup.get_node("%ContentLabel").text == "姓名：Lisa Wilson")
+	assert(npc.note_detail_popup.get_node("%ContentLabel").text == EXPECTED_BASIC_INFO)
 	assert(npc._auto_note_interaction_locked)
 	assert(continue_button.disabled)
 	assert(not npc.dialogue_completed)
@@ -136,7 +138,7 @@ func _ready() -> void:
 	# Manual review remains available and does not restart the automatic flow.
 	npc._note_items_by_key["basic_info"].pressed.emit()
 	assert(npc.note_detail_popup.visible)
-	assert(npc.note_detail_popup.get_node("%ContentLabel").text == "姓名：Lisa Wilson")
+	assert(npc.note_detail_popup.get_node("%ContentLabel").text == EXPECTED_BASIC_INFO)
 	npc.note_detail_popup.get_node("%CloseHitArea").pressed.emit()
 	await get_tree().create_timer(0.35).timeout
 	assert(not npc.note_detail_popup.visible)
@@ -205,7 +207,7 @@ func _verify_data_contract() -> void:
 	assert(data.dialogues.size() == 9)
 	assert(data.notes.size() == 2)
 	assert(data.notes[0]["key"] == "basic_info")
-	assert(data.notes[0]["content"] == "姓名：Lisa Wilson")
+	assert(data.notes[0]["content"] == EXPECTED_BASIC_INFO)
 	assert(data.dialogues[0]["background"] == BACKGROUND_02)
 	assert(data.dialogues[8]["background"] == BACKGROUND_03)
 	assert(data.dialogues[8]["unlock_key"] == "basic_info")
@@ -237,7 +239,7 @@ func _assert_initial_state(npc: NPCBase) -> void:
 	assert(not npc.get_node("%DossierPanel").visible)
 	assert(not npc.get_node("%MemoryButton").visible)
 	assert(npc.get_node("%ProfilePhoto").texture.resource_path == PROFILE_PHOTO_PATH)
-	assert(npc.get_node("%DialogueText").get_theme_font_size(&"font_size") == 22)
+	assert(npc.get_node("%DialogueText").get_theme_font_size(&"font_size") == 20)
 	assert(npc.get_node("%NPCName").get_theme_font_size(&"font_size") == 22)
 	assert(npc.get_node_or_null("CharacterLayer") == null)
 	assert(npc.get_node_or_null("%CharacterPortrait") == null)
