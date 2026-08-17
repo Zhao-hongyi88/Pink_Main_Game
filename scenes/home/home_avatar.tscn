@@ -1,43 +1,16 @@
-[gd_scene load_steps=5 format=3]
+[gd_scene load_steps=3 format=3]
 
 [ext_resource type="Script" path="res://scripts/home/home_avatar.gd" id="1_script"]
-
-[sub_resource type="Gradient" id="Gradient_avatar_placeholder"]
-offsets = PackedFloat32Array(0, 0.55, 1)
-colors = PackedColorArray(1, 0.647059, 0.835294, 1, 0.890196, 0.294118, 0.619608, 1, 0.466667, 0.152941, 0.380392, 1)
-
-[sub_resource type="GradientTexture2D" id="Texture_avatar_placeholder"]
-gradient = SubResource("Gradient_avatar_placeholder")
-width = 56
-height = 72
-fill_from = Vector2(0.5, 0)
-fill_to = Vector2(0.5, 1)
-
-[sub_resource type="SpriteFrames" id="SpriteFrames_avatar_placeholder"]
-animations = [{
-"frames": [{
-"duration": 1.0,
-"texture": SubResource("Texture_avatar_placeholder")
-}],
-"loop": true,
-"name": &"idle",
-"speed": 1.0
-}, {
-"frames": [{
-"duration": 1.0,
-"texture": SubResource("Texture_avatar_placeholder")
-}],
-"loop": true,
-"name": &"walk",
-"speed": 1.0
-}]
+[ext_resource type="SpriteFrames" path="res://TextureAsset/HomeAvatar/home_avatar_frames.tres" id="2_frames"]
 
 [node name="HomeAvatar" type="CharacterBody2D"]
 script = ExtResource("1_script")
 
 [node name="AvatarVisual" type="AnimatedSprite2D" parent="."]
 unique_name_in_owner = true
-sprite_frames = SubResource("SpriteFrames_avatar_placeholder")
+position = Vector2(0, -56)
+scale = Vector2(0.5, 0.5)
+sprite_frames = ExtResource("2_frames")
 animation = &"idle"
 flip_h = false
 

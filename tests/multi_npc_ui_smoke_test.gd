@@ -116,6 +116,14 @@ func _get_expected_speaker_display(
 	return "???"
 
 
+func _contains_cjk(text: String) -> bool:
+	for character_index in text.length():
+		var codepoint := text.unicode_at(character_index)
+		if codepoint >= 0x3400 and codepoint <= 0x9FFF:
+			return true
+	return false
+
+
 func _verify_all_npcs_use_shared_ui() -> void:
 	var progress_by_id: Dictionary = {}
 	var observed_dialogue_counts: Dictionary = {}
@@ -153,7 +161,14 @@ func _verify_all_npcs_use_shared_ui() -> void:
 		assert(profile_photo.mouse_filter == Control.MOUSE_FILTER_IGNORE)
 		assert(npc_base.find_children("ProfileBoard", "Control", true, false).size() == 1)
 		assert(npc_base.find_children("ProfilePhoto", "TextureRect", true, false).size() == 1)
-		assert(npc_base.get_node("%DialogueText").text == npc_data.dialogues[0]["text"])
+		var dialogue_label := npc_base.get_node("%DialogueText") as Label
+		var speaker_label := npc_base.get_node("%SpeakerName") as Label
+		assert(dialogue_label.text == npc_data.dialogues[0]["text"])
+		assert(dialogue_label.get_theme_font_size(&"font_size") == 20)
+		assert(dialogue_label.autowrap_mode == TextServer.AUTOWRAP_WORD_SMART)
+		assert(speaker_label.get_theme_font_size(&"font_size") == 22)
+		assert(not _contains_cjk(dialogue_label.text))
+		assert(not _contains_cjk(speaker_label.text))
 		assert(npc_base.dialogue_manager._dialogues.size() == npc_data.dialogues.size())
 		var note_board_area := npc_base.get_node("%RelatedDataArea") as Control
 		assert(note_board_area != null)
@@ -183,6 +198,7 @@ func _verify_all_npcs_use_shared_ui() -> void:
 			var dialogue: Dictionary = npc_data.dialogues[dialogue_index]
 			assert(npc_base.current_dialogue_index == dialogue_index)
 			assert(npc_base.get_node("%DialogueText").text == dialogue["text"])
+			assert(not _contains_cjk(String(npc_base.get_node("%DialogueText").text)))
 			var expected_speaker := _get_expected_speaker_display(
 				dialogue,
 				npc_data,
@@ -190,6 +206,7 @@ func _verify_all_npcs_use_shared_ui() -> void:
 			)
 			assert(npc_base.get_node("%NPCName").text == expected_speaker)
 			assert(npc_base.get_node("%SpeakerName").text == expected_speaker)
+			assert(not _contains_cjk(String(expected_speaker)))
 			var unlock_key := str(dialogue["unlock_key"])
 			var open_note_key := str(dialogue.get("open_note_key", ""))
 			var newly_revealed_key := ""
@@ -242,6 +259,19 @@ func _verify_all_npcs_use_shared_ui() -> void:
 				assert(detail_popup.visible)
 				assert(detail_popup.get_node("%TitleLabel").text == note_data["header"])
 				assert(detail_popup.get_node("%ContentLabel").text == note_data["content"])
+				if newly_revealed_key == "basic_info":
+					var title_label := detail_popup.get_node("%TitleLabel") as Label
+					var content_label := detail_popup.get_node("%ContentLabel") as Label
+					var paper_background := detail_popup.get_node("%PaperBackground") as Control
+					assert(title_label.text == "Basic Information")
+					assert(not _contains_cjk(title_label.text))
+					assert(not _contains_cjk(content_label.text))
+					assert(paper_background.get_global_rect().encloses(title_label.get_global_rect()))
+					assert(paper_background.get_global_rect().encloses(content_label.get_global_rect()))
+					assert(content_label.autowrap_mode == TextServer.AUTOWRAP_WORD_SMART)
+					await get_tree().process_frame
+					assert(content_label.get_visible_line_count() == content_label.get_line_count())
+					assert(detail_popup.get_node("%CloseHitArea").tooltip_text == "Close")
 				detail_popup.get_node("%CloseHitArea").pressed.emit()
 				assert(detail_popup.visible)
 				await get_tree().create_timer(0.35).timeout

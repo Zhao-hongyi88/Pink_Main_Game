@@ -2,6 +2,14 @@ extends Node
 
 const NPC_BASE_SCENE_PATH := "res://scenes/npc/npc_base.tscn"
 
+const EXPECTED_BASIC_INFO_BY_ID: Dictionary = {
+	"npc_zhang_yuan": "Name: Ryan\nAge: 22\nAddress: Pendulum Falls, Westland State\nEmail: Ryan@email.com\nTime Credit Rating: C\n\nLoan History:\n• No previous loans\n• Current Application: Career Development Time Loan (18 Months)",
+	"npc_li_lei": "Name: Mike\nAge: 24\nAddress: Pendulum Falls, Westland State\nEmail: Mike@email.com\nTime Credit Rating: B\n\nLoan History:\n• Medical Time Loan (Ongoing)\n• Current Application: Family Medical Time Loan (12 Months)",
+	"npc_liu_guilan": "Name: Mary\nAge: 52\nAddress: Pendulum Falls, Westland State\nEmail: Mary@email.com\nTime Credit Rating: C\n\nLoan History:\n• Life Extension Time Loan (Repaid)\n• Current Application: Life Extension Time Loan (18 Months)",
+	"npc_su_qing": "Name: Lisa\nAge: 40\nAddress: Pendulum Falls, Westland State\nEmail: Lisa@email.com\nTime Credit Rating: AA\n\nLoan History:\n• Corporate Time Loan (Approved)\n• Current Application: Corporate Production Time Loan (6 Months)",
+	"npc_wang_jianguo": "Name: Tom\nAge: 30\nAddress: Pendulum Falls, Westland State\nEmail: Tom@email.com\nChrono Credit Rating (CCR): A\n\nLoan History:\n• Personal Time Loan (Repaid)\n• Personal Time Loan (Repaid)\n• Personal Time Loan (Repaid)\n• Personal Time Loan (Repaid)\n• Personal Time Loan (Repaid)\n• Personal Time Loan (Repaid)\n• Personal Time Loan (Repaid)\n• Current Application: Personal Time Loan (1 Months)",
+}
+
 const NPC_CASES: Array[Dictionary] = [
 	{
 		"path": "res://data/npc/npc_a.json",
@@ -71,6 +79,14 @@ const NPC_CASES: Array[Dictionary] = [
 ]
 
 
+func _contains_cjk(text: String) -> bool:
+	for character_index in text.length():
+		var codepoint := text.unicode_at(character_index)
+		if codepoint >= 0x3400 and codepoint <= 0x9FFF:
+			return true
+	return false
+
+
 func _ready() -> void:
 	GameState.clear_runtime_state()
 	assert(ResourceLoader.exists(NPC_BASE_SCENE_PATH, "PackedScene"))
@@ -113,8 +129,18 @@ func _ready() -> void:
 			assert(not note_key.is_empty())
 			assert(not note_keys.has(note_key))
 			note_keys[note_key] = true
+		var basic_info_notes: Array[Dictionary] = npc_data.notes.filter(
+			func(note: Dictionary) -> bool: return note["key"] == "basic_info"
+		)
+		assert(basic_info_notes.size() == 1)
+		assert(basic_info_notes[0]["header"] == "Basic Information")
+		assert(
+			basic_info_notes[0]["content"]
+			== EXPECTED_BASIC_INFO_BY_ID[String(npc_data.npc_id)]
+		)
 
 		for dialogue: Dictionary in npc_data.dialogues:
+			assert(not _contains_cjk(String(dialogue["text"])), "%s contains Chinese dialogue text" % data_path)
 			var unlock_key := str(dialogue["unlock_key"])
 			if not unlock_key.is_empty():
 				assert(note_keys.has(unlock_key), "%s references unknown key: %s" % [data_path, unlock_key])

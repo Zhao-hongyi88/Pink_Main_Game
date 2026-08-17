@@ -16,17 +16,17 @@ const EXPECTED_SPEAKER_DISPLAY := [
 	"Me", "???", "???", "Me", "Ryan",
 ]
 const EXPECTED_TEXTS := [
-	"你好，请问前来办理什么业务",
-	"我想办理小额贷款。",
-	"好的，请提供您的贷款用途。",
-	"培训。\n一家职业认证机构的课程。\n他们说完成培训后，可以提升我的时间价值评级。",
-	"提醒您，培训贷款需要使用未来劳动时间偿还。如果培训没有达到预期，偿还压力可能增加。",
-	"（沉默了一会）我明白。",
-	"你为什么选择这个培训机构？",
-	"因为他们承诺，会帮我提高我的时间价值等级。",
-	"我只是想让我的时间……\n至少有一个被需要的机会。",
-	"贷款申请已提交，请递交您的申请资料。\n请等待审核结果。",
-	"（递交资料）好的，这是我的资料",
+	"Hello. What can I help you with today?",
+	"I'd like to apply for a small loan.",
+	"Of course. What will the loan be used for?",
+	"Training.\nA course offered by a professional certification institute.\nThey said completing it could improve my time-value rating.",
+	"Just a reminder: a training loan must be repaid with your future labor time. If the training falls short of expectations, repayment may become more difficult.",
+	"(After a brief silence) I understand.",
+	"Why did you choose this training provider?",
+	"Because they promised to help raise my time-value rating.",
+	"I just want my time...\nto have at least one chance to be needed.",
+	"Your loan application has been submitted. Please hand over your application documents.\nPlease wait for the review result.",
+	"(Hands over the documents) Of course. Here are my documents.",
 ]
 
 
@@ -179,7 +179,7 @@ func _ready() -> void:
 	assert(npc.background.texture == load(BACKGROUND_01))
 	assert(not npc.get_node("%DialoguePanel").visible)
 	assert(not npc.get_node("%NamePlate").visible)
-	assert(npc.get_node("%DialogueText").get_theme_font_size(&"font_size") == 22)
+	assert(npc.get_node("%DialogueText").get_theme_font_size(&"font_size") == 20)
 	assert(npc.get_node("%NPCName").get_theme_font_size(&"font_size") == 22)
 	assert(npc.get_node("%DialogueText").autowrap_mode == TextServer.AUTOWRAP_WORD_SMART)
 	assert(npc.get_node_or_null("CharacterLayer") == null)

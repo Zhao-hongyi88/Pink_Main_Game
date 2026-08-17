@@ -11,73 +11,73 @@
 		{
 			"speaker_name": "Me",
 			"speaker_role": "player",
-			"text": "你好，请问前来办理什么业务",
+      "text": "Hello. What can I help you with today?",
 			"unlock_key": "",
 			"background": "res://TextureAsset/Level1/Mary/mary_loan_02_counter.png"
 		},
 		{
 			"speaker_name": "Mary",
-			"text": "你好，我想申请生命时间贷款。",
+      "text": "Hello. I'd like to apply for a life-extension time loan.",
 			"unlock_key": ""
 		},
 		{
 			"speaker_name": "Me",
 			"speaker_role": "player",
-			"text": "好的。\n请问贷款用途是用于本人吗？",
+      "text": "Of course.\nWill the loan be for your own use?",
 			"unlock_key": ""
 		},
 		{
 			"speaker_name": "Mary",
-			"text": "是的。",
+      "text": "Yes.",
 			"unlock_key": ""
 		},
 		{
 			"speaker_name": "Me",
 			"speaker_role": "player",
-			"text": "好的，请问您预计申请多少时间额度？",
+      "text": "All right. How much time credit would you like to apply for?",
 			"unlock_key": ""
 		},
 		{
 			"speaker_name": "Mary",
-			"text": "一年吧。",
+      "text": "One year, I think.",
 			"unlock_key": ""
 		},
 		{
 			"speaker_name": "Me",
 			"speaker_role": "player",
-			"text": "好的，但是我需要提醒您，\n根据规定，若未来无法独立偿还，贷款可能需要家属共同承担。",
+      "text": "All right, but I need to remind you: under the regulations, if you cannot repay the loan on your own in the future, your family may be required to share the obligation.",
 			"unlock_key": ""
 		},
 		{
 			"speaker_name": "Mary",
-			"text": "……",
+      "text": "...",
 			"unlock_key": ""
 		},
 		{
 			"speaker_name": "Mary",
-			"text": "那改成半年吧。",
+      "text": "Then make it six months.",
 			"unlock_key": ""
 		},
 		{
 			"speaker_name": "Me",
 			"speaker_role": "player",
-			"text": "您确定调整申请额度吗？",
+      "text": "Are you sure you want to reduce the amount?",
 			"unlock_key": ""
 		},
 		{
 			"speaker_name": "Mary",
-			"text": "我确定，半年时间暂时够了。",
+      "text": "Yes. Six months should be enough for now.",
 			"unlock_key": ""
 		},
 		{
 			"speaker_name": "Me",
 			"speaker_role": "player",
-			"text": "贷款申请已提交，请递交您的申请资料。\n请等待审核结果。",
+      "text": "Your loan application has been submitted. Please hand over your application documents.\nPlease wait for the review result.",
 			"unlock_key": ""
 		},
 		{
 			"speaker_name": "Mary",
-			"text": "（递交资料）好的，这是我的资料",
+      "text": "(Hands over the documents) Of course. Here are my documents.",
 			"unlock_key": "basic_info",
 			"background": "res://TextureAsset/Level1/Mary/mary_loan_03_submit_documents.png",
 			"open_note_key": "basic_info",
@@ -89,7 +89,7 @@
 		{
 			"key": "basic_info",
 			"header": "Basic Information",
-			"content": "姓名：Mary Carter"
+			"content": "Name: Mary\nAge: 52\nAddress: Pendulum Falls, Westland State\nEmail: Mary@email.com\nTime Credit Rating: C\n\nLoan History:\n• Life Extension Time Loan (Repaid)\n• Current Application: Life Extension Time Loan (18 Months)"
 		},
 		{
 			"key": "c_status_info",

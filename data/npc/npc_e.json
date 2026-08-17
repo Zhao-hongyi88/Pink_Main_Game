@@ -11,63 +11,63 @@
 	"dialogues": [
 		{
 			"speaker_name": "Tom",
-			"text": "你好。\n又见面了。",
+      "text": "Hello.\nWe meet again.",
 			"unlock_key": "",
 			"background": "res://TextureAsset/Level1/Tom/tom_loan_02_counter.png"
 		},
 		{
 			"speaker_name": "Me",
 			"speaker_role": "player",
-			"text": "你来了。\n这次还是时间贷款？",
+      "text": "You're here.\nAnother time loan?",
 			"unlock_key": ""
 		},
 		{
 			"speaker_name": "Tom",
-			"text": "是的，我之后应该不会再来了，我决定离开这个地方。",
+      "text": "Yes. I probably won't be coming back. I've decided to leave this place.",
 			"unlock_key": ""
 		},
 		{
 			"speaker_name": "Me",
 			"speaker_role": "player",
-			"text": "（沉默了一会儿）……",
+      "text": "(After a brief silence) ...",
 			"unlock_key": ""
 		},
 		{
 			"speaker_name": "Me",
 			"speaker_role": "player",
-			"text": "好，申请多少？",
+      "text": "All right. How much are you applying for?",
 			"unlock_key": ""
 		},
 		{
 			"speaker_name": "Tom",
-			"text": "一年。",
+      "text": "One year.",
 			"unlock_key": ""
 		},
 		{
 			"speaker_name": "Me",
 			"speaker_role": "player",
-			"text": "既然决定离开了，为什么还继续帮助别人？",
+      "text": "If you've decided to leave, why keep helping others?",
 			"unlock_key": ""
 		},
 		{
 			"speaker_name": "Tom",
-			"text": "最后一次了，顺便和你告个别。",
+      "text": "One last time. And I wanted to say goodbye while I was here.",
 			"unlock_key": ""
 		},
 		{
 			"speaker_name": "Me",
 			"speaker_role": "player",
-			"text": "祝你拥有崭新的生活。",
+      "text": "I hope you find a fresh start.",
 			"unlock_key": ""
 		},
 		{
 			"speaker_name": "Tom",
-			"text": "谢谢。",
+      "text": "Thank you.",
 			"unlock_key": ""
 		},
 		{
 			"speaker_name": "Tom",
-			"text": "（递交资料）这我们最后一次见面了，这次就走个形式吧。",
+      "text": "(Hands over the documents) This will be the last time we see each other. Let's just go through the formalities.",
 			"unlock_key": "basic_info",
 			"background": "res://TextureAsset/Level1/Tom/tom_loan_03_submit_documents.png",
 			"open_note_key": "basic_info",
@@ -79,7 +79,7 @@
 		{
 			"key": "basic_info",
 			"header": "Basic Information",
-			"content": "姓名：Tom Brown"
+			"content": "Name: Tom\nAge: 30\nAddress: Pendulum Falls, Westland State\nEmail: Tom@email.com\nChrono Credit Rating (CCR): A\n\nLoan History:\n• Personal Time Loan (Repaid)\n• Personal Time Loan (Repaid)\n• Personal Time Loan (Repaid)\n• Personal Time Loan (Repaid)\n• Personal Time Loan (Repaid)\n• Personal Time Loan (Repaid)\n• Personal Time Loan (Repaid)\n• Current Application: Personal Time Loan (1 Months)"
 		},
 		{
 			"key": "e_extra_info",

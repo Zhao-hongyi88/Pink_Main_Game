@@ -10,62 +10,62 @@
 		{
 			"speaker_name": "Me",
 			"speaker_role": "player",
-			"text": "你好，请问前来办理什么业务",
+	  "text": "Hello. What can I help you with today?",
 			"unlock_key": "",
 			"background": "res://TextureAsset/Level1/Ryan/ryan_loan_02_counter.png"
 		},
 		{
 			"speaker_name": "Ryan",
-			"text": "我想办理小额贷款。",
+	  "text": "I'd like to apply for a small loan.",
 			"unlock_key": ""
 		},
 		{
 			"speaker_name": "Me",
 			"speaker_role": "player",
-			"text": "好的，请提供您的贷款用途。",
+	  "text": "Of course. What will the loan be used for?",
 			"unlock_key": ""
 		},
 		{
 			"speaker_name": "Ryan",
-			"text": "培训。\n一家职业认证机构的课程。\n他们说完成培训后，可以提升我的时间价值评级。",
+	  "text": "Training.\nA course offered by a professional certification institute.\nThey said completing it could improve my time-value rating.",
 			"unlock_key": ""
 		},
 		{
 			"speaker_name": "Me",
 			"speaker_role": "player",
-			"text": "提醒您，培训贷款需要使用未来劳动时间偿还。如果培训没有达到预期，偿还压力可能增加。",
+	  "text": "Just a reminder: a training loan must be repaid with your future labor time. If the training falls short of expectations, repayment may become more difficult.",
 			"unlock_key": ""
 		},
 		{
 			"speaker_name": "Ryan",
-			"text": "（沉默了一会）我明白。",
+	  "text": "(After a brief silence) I understand.",
 			"unlock_key": ""
 		},
 		{
 			"speaker_name": "Me",
 			"speaker_role": "player",
-			"text": "你为什么选择这个培训机构？",
+	  "text": "Why did you choose this training provider?",
 			"unlock_key": ""
 		},
 		{
 			"speaker_name": "Ryan",
-			"text": "因为他们承诺，会帮我提高我的时间价值等级。",
+	  "text": "Because they promised to help raise my time-value rating.",
 			"unlock_key": ""
 		},
 		{
 			"speaker_name": "Ryan",
-			"text": "我只是想让我的时间……\n至少有一个被需要的机会。",
+	  "text": "I just want my time...\nto have at least one chance to be needed.",
 			"unlock_key": ""
 		},
 		{
 			"speaker_name": "Me",
 			"speaker_role": "player",
-			"text": "贷款申请已提交，请递交您的申请资料。\n请等待审核结果。",
+	  "text": "Your loan application has been submitted. Please hand over your application documents.\nPlease wait for the review result.",
 			"unlock_key": ""
 		},
 		{
 			"speaker_name": "Ryan",
-			"text": "（递交资料）好的，这是我的资料",
+	  "text": "(Hands over the documents) Of course. Here are my documents.",
 			"unlock_key": "basic_info",
 			"background": "res://TextureAsset/Level1/Ryan/ryan_loan_03_submit_documents.png",
 			"open_note_key": "basic_info",
@@ -75,8 +75,8 @@
 	"notes": [
 		{
 			"key": "basic_info",
-			"header": "基本信息",
-			"content": "姓名：Ryan Miller"
+			"header": "Basic Information",
+			"content": "Name: Ryan\nAge: 22\nAddress: Pendulum Falls, Westland State\nEmail: Ryan@email.com\nTime Credit Rating: C\n\nLoan History:\n• No previous loans\n• Current Application: Career Development Time Loan (18 Months)"
 		},
 		{
 			"key": "additional_info",

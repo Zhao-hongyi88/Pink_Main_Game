@@ -155,7 +155,7 @@ theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_colors/font_outline_color = Color(0.05, 0.05, 0.05, 0.65)
 theme_override_constants/outline_size = 1
 theme_override_fonts/font = SubResource("SystemFont_dialogue_bold")
-theme_override_font_sizes/font_size = 22
+theme_override_font_sizes/font_size = 20
 text = "DIALOGUE"
 vertical_alignment = 1
 autowrap_mode = 3
@@ -281,7 +281,7 @@ offset_right = 245.0
 offset_bottom = 305.0
 theme_override_colors/font_color = Color(0.96, 0.92, 0.84, 1)
 theme_override_font_sizes/font_size = 24
-text = "相关资料"
+text = "Related Data"
 
 [node name="RelatedDataArea" type="Control" parent="DossierPanel" unique_id=1783266462]
 unique_name_in_owner = true
