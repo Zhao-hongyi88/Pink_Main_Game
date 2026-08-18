@@ -1,15 +1,16 @@
-[gd_scene format=3 uid="uid://tjo84x4epeh"]
+[gd_scene format=3 uid="uid://4ptwc8dt3e25"]
 
 [ext_resource type="Script" uid="uid://0mtv0vflgfg" path="res://scripts/npc/npc_base.gd" id="1_script"]
 [ext_resource type="PackedScene" path="res://scenes/ui/npc/note_detail_popup.tscn" id="2_note_detail_popup"]
-[ext_resource type="Texture2D" uid="uid://4o4oher8lnsw" path="res://TextureAsset/Levevl2/Rectangle 2990.png" id="4_hahxb"]
 [ext_resource type="Texture2D" uid="uid://c70oy44n802yl" path="res://TextureAsset/Levevl2/57ab66bf12bdf1ab10778dd18c8951a7.png" id="4_kdpw7"]
-[ext_resource type="Texture2D" uid="uid://b7rmw8wqb3mwf" path="res://TextureAsset/Levevl2/名字框.png" id="5_pimgl"]
+[ext_resource type="Texture2D" uid="uid://3q8x5a5rwdou" path="res://TextureAsset/Level1/d3c8a568-8476-4a0b-a806-c654c3982394.png" id="5_kdpw7"]
 [ext_resource type="Texture2D" uid="uid://cdmnnnct5bgsa" path="res://TextureAsset/Levevl2/便利贴1.png" id="6_kdpw7"]
+[ext_resource type="Texture2D" uid="uid://dmcb8dag8yei0" path="res://TextureAsset/Level1/7a07b5f6-2a7e-4891-bc39-4d89771c33a0.png" id="6_qhhuu"]
 [ext_resource type="Texture2D" uid="uid://cdo38kug00vr4" path="res://TextureAsset/Levevl2/回忆按钮.png" id="7_qhhuu"]
 [ext_resource type="Texture2D" uid="uid://cwthv8regohyn" path="res://TextureAsset/Levevl2/便利贴2.png" id="8_note_02"]
 [ext_resource type="Texture2D" uid="uid://dgmu3m83x227w" path="res://TextureAsset/Levevl2/便利贴3.png" id="9_note_03"]
 [ext_resource type="Script" uid="uid://bdlyw32qwdsqx" path="res://scripts/ui/hover_effect.gd" id="10_hover"]
+[ext_resource type="Texture2D" uid="uid://bymcj5nfx2ndt" path="res://TextureAsset/Levevl2/屏幕截图 2026-08-18 004444.png" id="10_kdpw7"]
 
 [sub_resource type="SystemFont" id="SystemFont_dialogue_bold"]
 font_names = PackedStringArray("Microsoft YaHei", "Noto Sans CJK SC", "SimHei")
@@ -78,14 +79,39 @@ fill_to = Vector2(1, 1)
 
 [sub_resource type="StyleBoxEmpty" id="StyleBox_exit_transparent"]
 
-[sub_resource type="Gradient" id="Gradient_exit_placeholder"]
-colors = PackedColorArray(0.95, 0.78, 0.88, 0.95, 0.48, 0.2, 0.38, 0.95)
+[sub_resource type="Gradient" id="Gradient_kdpw7"]
+offsets = PackedFloat32Array(0, 0.24448898, 0.4308617, 0.50701404, 0.64128256, 0.7274549, 1)
+colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 1, 0.99062794, 0.99062794, 0.99062794, 1, 0.9799599, 0.9799599, 0.9799599, 1, 0.9825738, 0.9825738, 0.9825738, 1, 0.049194813, 0.049194813, 0.049194813, 1, 0, 0, 0, 1)
 
-[sub_resource type="GradientTexture2D" id="Texture_exit_placeholder"]
-gradient = SubResource("Gradient_exit_placeholder")
-width = 48
-height = 48
-fill_to = Vector2(1, 1)
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_7xecm"]
+gradient = SubResource("Gradient_kdpw7")
+fill = 1
+fill_from = Vector2(0.4871795, 0.5185185)
+
+[sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_kdpw7"]
+polygon = PackedVector2Array(-4.491234, -6.3920097, -4.59568, -5.1136093, -4.804573, -3.835205, -5.1179123, -2.5568047, -6.162384, 0.74573517, -7.520195, 3.4090729, -8.355774, 4.9005394, -8.98246, 5.7528076, -21.51612, 24.183102, -26.111794, 30.468578, -50.552425, 30.788181, -27.782944, 19.602165, -3.655655, -12.570953, 8.46022, -12.144819, 27.260712, 32.492718, 20.471642, 30.575115, 8.669113, 6.2854767, 6.9979553, 2.5568047, 5.535698, -1.5980034, 4.8045654, -5.1136093, 4.8045654, -6.1789436, 3.9689865, -6.605076, 2.715622, -6.924679, 1.357811, -7.031212, -0.7311325, -7.031212, -1.7756042, -6.924679, -3.2378616, -6.711609)
+
+[sub_resource type="Gradient" id="Gradient_qhhuu"]
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_5r6o3"]
+gradient = SubResource("Gradient_qhhuu")
+fill = 1
+fill_to = Vector2(0.03133903, 0.037037037)
+
+[sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_vgg7b"]
+polygon = PackedVector2Array(-32, 29.746475, -30.586746, 27.042252, -29.779175, 26.591553, -28.769714, 25.23944, -27.35646, 25.69014, -25.33754, 22.535217, -24.328072, 22.084503, -22.712929, 23.436615, -21.905365, 23.88733, -20.895897, 22.535217, -19.886436, 22.985916, -19.078865, 23.88733, -16.85804, 25.69014, -16.252365, 26.591553, -15.848579, 28.394363, -15.242905, 29.746475, -14.839119, 31.098587, 20.290215, 31.549301, 21.299675, 27.943665, 22.309135, 26.140839, 23.924278, 24.788727, 26.145103, 23.436615, 27.558357, 24.788727, 28.164024, 24.788727, 29.981056, 23.88733, 30.990532, 24.338028, 31.192421, 25.23944, 31.596199, 25.23944, 31.999992, 25.69014, 32.605675, 27.042252, 34.018913, 27.492966, 33.615135, 36.95775, -35.02839, 36.95775)
+
+[sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_aemu6"]
+polygon = PackedVector2Array(-31.798103, 28.394363, -30.586746, -30.647903, -29.779175, -31.549301, 29.779167, -31.098602, 30.38485, -29.74649, 31.39431, 24.788727, 33.817024, 28.394363, 32.605675, -32.901413, 30.788628, -36.50705, -30.990532, -36.957764, -33.00946, -30.647903, -34.422707, 36.507034)
+
+[sub_resource type="Gradient" id="Gradient_vgg7b"]
+colors = PackedColorArray(1, 1, 1, 1, 0, 0, 0, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_62dcl"]
+gradient = SubResource("Gradient_vgg7b")
+fill = 1
+fill_from = Vector2(0.5014245, 0.51282054)
+fill_to = Vector2(0.8262108, 0.14814815)
 
 [node name="NPCBase" type="Control" unique_id=1302377562]
 layout_mode = 3
@@ -128,7 +154,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-texture = ExtResource("4_hahxb")
+texture = ExtResource("5_kdpw7")
 expand_mode = 1
 stretch_mode = 6
 
@@ -190,7 +216,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-texture = ExtResource("5_pimgl")
+texture = ExtResource("6_qhhuu")
 expand_mode = 1
 stretch_mode = 6
 
@@ -447,7 +473,7 @@ offset_top = 5.0
 offset_right = 53.0
 offset_bottom = 53.0
 mouse_filter = 2
-texture = SubResource("Texture_exit_placeholder")
+texture = ExtResource("10_kdpw7")
 expand_mode = 1
 stretch_mode = 5
 
@@ -461,3 +487,44 @@ pressed_rebound_scale = 1.0
 
 [node name="NoteDetailPopup" parent="." unique_id=1245895994 instance=ExtResource("2_note_detail_popup")]
 layout_mode = 1
+
+[node name="Node2D" type="Node2D" parent="." unique_id=1208833069]
+
+[node name="PointLight2D" type="PointLight2D" parent="Node2D" unique_id=1148297926]
+position = Vector2(1020, 384)
+scale = Vector2(9.57422, 9.386719)
+color = Color(0.36122763, 0.16841662, 0.030116182, 1)
+energy = 1.23
+shadow_enabled = true
+shadow_filter = 2
+shadow_filter_smooth = 11.6
+texture = SubResource("GradientTexture2D_7xecm")
+
+[node name="LightOccluder2D" type="LightOccluder2D" parent="Node2D/PointLight2D" unique_id=948870481]
+occluder = SubResource("OccluderPolygon2D_kdpw7")
+
+[node name="PointLight2D2" type="PointLight2D" parent="Node2D" unique_id=93185874]
+position = Vector2(569.5, 500)
+scale = Vector2(4.953126, 2.2187495)
+color = Color(0.8188383, 0.88830686, 0.95171934, 1)
+energy = 0.5
+shadow_enabled = true
+texture = SubResource("GradientTexture2D_5r6o3")
+
+[node name="LightOccluder2D" type="LightOccluder2D" parent="Node2D/PointLight2D2" unique_id=877172563]
+occluder = SubResource("OccluderPolygon2D_vgg7b")
+
+[node name="LightOccluder2D" type="LightOccluder2D" parent="Node2D/PointLight2D2/LightOccluder2D" unique_id=1098257112]
+occluder = SubResource("OccluderPolygon2D_aemu6")
+
+[node name="DirectionalLight2D" type="DirectionalLight2D" parent="Node2D" unique_id=1698026305]
+energy = 0.3
+blend_mode = 1
+
+[node name="PointLight2D3" type="PointLight2D" parent="Node2D" unique_id=1771244405]
+position = Vector2(575, 258.625)
+scale = Vector2(4.2187495, 5.3554688)
+color = Color(0.8305135, 0.7352944, 0.6305545, 1)
+energy = 0.51
+shadow_enabled = true
+texture = SubResource("GradientTexture2D_62dcl")

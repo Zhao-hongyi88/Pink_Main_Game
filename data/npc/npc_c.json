@@ -102,5 +102,22 @@
 			"content": "Mary Carter placeholder additional information."
 		}
 	],
-	"memory_scene": "res://scenes/memory/npc3_liu_guilan_memory.tscn"
+	"memory_scene": "res://scenes/memory/npc3_liu_guilan_memory.tscn",
+	"dossier_photos": [
+		"res://TextureAsset/NPC/DossierPhotos/文字7.png",
+		"res://TextureAsset/NPC/DossierPhotos/文字8.png",
+		"res://TextureAsset/NPC/DossierPhotos/文字9.png"
+	],
+	"contract_content_texture": "res://TextureAsset/Contract/mary_carter_contract.png",
+	"final_dialogues": [
+		{"speaker_name": "Me", "speaker_role": "player", "text": "After reviewing your documents, we've approved your loan application."},
+		{"speaker_name": "Mary", "speaker_role": "npc", "text": "(She nods gently and gathers the rest of her documents.) Thank you."},
+		{"speaker_name": "Mary", "speaker_role": "npc", "text": "This... is enough."},
+		{"speaker_name": "Mary", "speaker_role": "npc", "text": "(She stands and turns to leave.)"},
+		{"speaker_name": "Me", "speaker_role": "player", "text": "Wait."},
+		{"speaker_name": "Me", "speaker_role": "player", "text": "..."},
+		{"speaker_name": "Me", "speaker_role": "player", "text": "I hope you recover soon."},
+		{"speaker_name": "Mary", "speaker_role": "npc", "text": "(Turning back to look at me.) Thank you."},
+		{"speaker_name": "Me", "speaker_role": "player", "text": "(I lower my gaze to the two files on the desk: Mike. Mary.)"}
+	]
 }

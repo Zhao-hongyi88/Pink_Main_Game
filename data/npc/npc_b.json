@@ -79,5 +79,21 @@
 			"content": "Mike Carter placeholder additional information."
 		}
 	],
-	"memory_scene": "res://scenes/memory/npc2_li_lei_memory.tscn"
+	"memory_scene": "res://scenes/memory/npc2_li_lei_memory.tscn",
+	"dossier_photos": [
+		"res://TextureAsset/NPC/DossierPhotos/文字4.png",
+		"res://TextureAsset/NPC/DossierPhotos/文字5.png",
+		"res://TextureAsset/NPC/DossierPhotos/文字6.png"
+	],
+	"contract_content_texture": "res://TextureAsset/Contract/mike_carter_contract.png",
+	"final_dialogues": [
+		{"speaker_name": "Mike", "speaker_role": "npc", "text": "Was it approved?"},
+		{"speaker_name": "Me", "speaker_role": "player", "text": "After reviewing your documents, we've approved your loan application."},
+		{"speaker_name": "Mike", "speaker_role": "npc", "text": "Good. Thank you."},
+		{"speaker_name": "Me", "speaker_role": "player", "text": "Please keep track of the repayment schedule."},
+		{"speaker_name": "Mike", "speaker_role": "npc", "text": "I will. Thank you for the reminder."},
+		{"speaker_name": "Mike", "speaker_role": "npc", "text": "At least... I won't have to worry for a while."},
+		{"speaker_name": "Me", "speaker_role": "player", "text": "I hope your mother recovers soon."},
+		{"speaker_name": "Mike", "speaker_role": "npc", "text": "Thank you. I should go. I need to get back to the company this afternoon."}
+	]
 }

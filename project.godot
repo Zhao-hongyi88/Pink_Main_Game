@@ -21,6 +21,7 @@ SaveService="*res://core/save/save_service.gd"
 SceneRouter="*res://core/navigation/scene_router.gd"
 GameState="*res://autoload/game_state.gd"
 MainAxisService="*res://systems/main_axis/main_axis_service.gd"
+MusicManager="*uid://bhnppsuqa0s7g"
 
 [display]
 

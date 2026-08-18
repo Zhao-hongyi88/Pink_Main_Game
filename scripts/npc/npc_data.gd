@@ -13,7 +13,10 @@ var dialogue_speaker_known_from_start := false
 var name_unlock_key: StringName = &""
 var dialogues: Array[Dictionary] = []
 var notes: Array[Dictionary] = []
+var dossier_photos: Array[String] = []
 var memory_scene := ""
+var contract_content_texture := ""
+var final_dialogues: Array[Dictionary] = []
 var source_path := ""
 var validation_errors: PackedStringArray = []
 
@@ -72,8 +75,11 @@ func _read_and_validate() -> void:
 	)
 	name_unlock_key = StringName(_read_required_string(raw, "name_unlock_key", true))
 	memory_scene = _read_required_string(raw, "memory_scene")
+	contract_content_texture = _read_optional_string(raw, "contract_content_texture", "")
 	_read_dialogues(raw)
 	_read_notes(raw)
+	_read_dossier_photos(raw)
+	_read_final_dialogues(raw)
 	_validate_resource_paths()
 	_validate_unlock_references()
 
@@ -222,6 +228,83 @@ func _read_notes(raw: Dictionary) -> void:
 		notes.append(normalized_note)
 
 
+func _read_dossier_photos(raw: Dictionary) -> void:
+	if not raw.has("dossier_photos") or typeof(raw["dossier_photos"]) != TYPE_ARRAY:
+		validation_errors.append("NPCData: dossier_photos 必须是包含 3 张图片的 Array。")
+		return
+	var raw_photos: Array = raw["dossier_photos"]
+	if raw_photos.size() != 3:
+		validation_errors.append("NPCData: dossier_photos 必须恰好包含 3 张图片。")
+		return
+	for index in raw_photos.size():
+		if typeof(raw_photos[index]) != TYPE_STRING:
+			validation_errors.append("NPCData: dossier_photos[%d] 必须是 String。" % index)
+			continue
+		var photo_path := str(raw_photos[index]).strip_edges()
+		if photo_path.is_empty():
+			validation_errors.append("NPCData: dossier_photos[%d] 不能为空。" % index)
+			continue
+		dossier_photos.append(photo_path)
+
+
+func _read_final_dialogues(raw: Dictionary) -> void:
+	if not raw.has("final_dialogues"):
+		return
+	if typeof(raw["final_dialogues"]) != TYPE_ARRAY:
+		validation_errors.append("NPCData: 字段 'final_dialogues' 必须是 Array。")
+		return
+
+	var raw_final_dialogues: Array = raw["final_dialogues"]
+	for index in raw_final_dialogues.size():
+		var entry: Variant = raw_final_dialogues[index]
+		if typeof(entry) != TYPE_DICTIONARY:
+			validation_errors.append(
+				"NPCData: final_dialogues[%d] 必须是 Dictionary。" % index
+			)
+			continue
+		var dialogue: Dictionary = entry
+		if not dialogue.has("text") or typeof(dialogue["text"]) != TYPE_STRING:
+			validation_errors.append(
+				"NPCData: final_dialogues[%d].text 必须是 String。" % index
+			)
+			continue
+		var text := str(dialogue["text"]).strip_edges()
+		if text.is_empty():
+			validation_errors.append(
+				"NPCData: final_dialogues[%d].text 不能为空。" % index
+			)
+			continue
+
+		var normalized_dialogue := {
+			"text": text,
+			"unlock_key": "",
+		}
+		for field: String in ["speaker_name", "speaker_role"]:
+			if dialogue.has(field) and typeof(dialogue[field]) != TYPE_STRING:
+				validation_errors.append(
+					"NPCData: final_dialogues[%d].%s 必须是 String。" % [index, field]
+				)
+				continue
+		var final_speaker_name := str(dialogue.get("speaker_name", "")).strip_edges()
+		var final_speaker_role := str(
+			dialogue.get("speaker_role", "npc")
+		).strip_edges().to_lower()
+		if final_speaker_role not in ["player", "npc"]:
+			validation_errors.append(
+				"NPCData: final_dialogues[%d].speaker_role 必须是 'player' 或 'npc'。" % index
+			)
+			continue
+		if final_speaker_role == "player" and final_speaker_name.is_empty():
+			validation_errors.append(
+				"NPCData: final_dialogues[%d] 的 player speaker_role 需要 speaker_name。" % index
+			)
+			continue
+		if not final_speaker_name.is_empty():
+			normalized_dialogue["speaker_name"] = final_speaker_name
+		normalized_dialogue["speaker_role"] = final_speaker_role
+		final_dialogues.append(normalized_dialogue)
+
+
 func _normalize_note(note: Dictionary, index: int) -> Dictionary:
 	for field in ["key", "header", "content"]:
 		if not note.has(field) or typeof(note[field]) != TYPE_STRING:
@@ -252,6 +335,23 @@ func _validate_resource_paths() -> void:
 		)
 	if not memory_scene.is_empty() and not ResourceLoader.exists(memory_scene, "PackedScene"):
 		validation_errors.append("NPCData: memory_scene 不是有效的场景路径：%s" % memory_scene)
+	if (
+		not contract_content_texture.is_empty()
+		and not ResourceLoader.exists(contract_content_texture, "Texture2D")
+	):
+		validation_errors.append(
+			"NPCData: contract_content_texture 不是有效的图片路径：%s"
+			% contract_content_texture
+		)
+	for photo_path in dossier_photos:
+		if not ResourceLoader.exists(photo_path, "Texture2D"):
+			validation_errors.append(
+				"NPCData: dossier_photos 不是有效的图片路径：%s" % photo_path
+			)
+	if not contract_content_texture.is_empty() and final_dialogues.is_empty():
+		validation_errors.append("NPCData: 合同流程需要至少一条 final_dialogues。")
+	if contract_content_texture.is_empty() and not final_dialogues.is_empty():
+		validation_errors.append("NPCData: final_dialogues 需要 contract_content_texture。")
 
 
 func _validate_unlock_references() -> void:

@@ -92,5 +92,40 @@
 			"content": "Tom Brown placeholder final information."
 		}
 	],
-	"memory_scene": "res://scenes/memory/npc5_wang_jianguo_memory.tscn"
+	"memory_scene": "res://scenes/memory/npc5_wang_jianguo_memory.tscn",
+	"dossier_photos": [
+		"res://TextureAsset/NPC/DossierPhotos/文字13.png",
+		"res://TextureAsset/NPC/DossierPhotos/文字14.png",
+		"res://TextureAsset/NPC/DossierPhotos/文字15.png"
+	],
+	"contract_content_texture": "res://TextureAsset/Contract/tom_brown_contract.png",
+	"final_dialogues": [
+		{"speaker_name": "Tom", "speaker_role": "npc", "text": "You seem quieter than usual today."},
+		{"speaker_name": "Me", "speaker_role": "player", "text": "Do I?"},
+		{"speaker_name": "Tom", "speaker_role": "npc", "text": "You do. When I came before, you'd always ask, 'Who is it this time?'"},
+		{"speaker_name": "Me", "speaker_role": "player", "text": "Because you always had a new reason."},
+		{"speaker_name": "Tom", "speaker_role": "npc", "text": "Yeah."},
+		{"speaker_name": "Me", "speaker_role": "player", "text": "Are you really leaving for good? Have you truly decided this time?"},
+		{"speaker_name": "Tom", "speaker_role": "npc", "text": "Yeah. This time, I really am leaving."},
+		{"speaker_name": "Me", "speaker_role": "player", "text": "You've said things like that before."},
+		{"speaker_name": "Tom", "speaker_role": "npc", "text": "Before, I always had a clear goal."},
+		{"speaker_name": "Me", "speaker_role": "player", "text": "And now you don't?"},
+		{"speaker_name": "Tom", "speaker_role": "npc", "text": "Whenever I helped each of them, I thought they were only short of a little time."},
+		{"speaker_name": "Tom", "speaker_role": "npc", "text": "I wanted to fill that gap with my own, as much as I could. I thought it would make their lives better."},
+		{"speaker_name": "Tom", "speaker_role": "npc", "text": "Ryan was just short of enough time to step into a new life. Mike was just short of enough time to support his family. Mary was just short of enough time to stay alive."},
+		{"speaker_name": "Tom", "speaker_role": "npc", "text": "Sometimes I even thought Lisa was only short of enough time to overturn this company's system. If I were stronger, if I could rise high enough..."},
+		{"speaker_name": "Tom", "speaker_role": "npc", "text": "Could I overturn the company's decision? Could I make it so no one had to work overtime anymore?"},
+		{"speaker_name": "Me", "speaker_role": "player", "text": "But you did help them. Ryan, Mike, and Mary's lives have improved."},
+		{"speaker_name": "Tom", "speaker_role": "npc", "text": "But what was the outcome?"},
+		{"speaker_name": "Me", "speaker_role": "player", "text": "..."},
+		{"speaker_name": "Tom", "speaker_role": "npc", "text": "I used to think this world simply needed more people willing to lend a hand."},
+		{"speaker_name": "Tom", "speaker_role": "npc", "text": "Later, I realized it might not be that no one reaches out."},
+		{"speaker_name": "Tom", "speaker_role": "npc", "text": "Under a system like this, everyone is stuck in the mire."},
+		{"speaker_name": "Me", "speaker_role": "player", "text": "So you won't help anyone anymore?"},
+		{"speaker_name": "Tom", "speaker_role": "npc", "text": "..."},
+		{"speaker_name": "Tom", "speaker_role": "npc", "text": "I don't know."},
+		{"speaker_name": "Tom", "speaker_role": "npc", "text": "But for now, I've decided to leave."},
+		{"speaker_name": "Tom", "speaker_role": "npc", "text": "My parents told me they do not have much time left either. I want to go back and see them."},
+		{"speaker_name": "Tom", "speaker_role": "npc", "text": "I wish you all the best, Brooks."}
+	]
 }

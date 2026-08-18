@@ -28,6 +28,19 @@ const EXPECTED_TEXTS := [
 	"Your loan application has been submitted. Please hand over your application documents.\nPlease wait for the review result.",
 	"(Hands over the documents) Of course. Here are my documents.",
 ]
+const EXPECTED_FINAL_SPEAKERS := [
+	"Me", "Ryan", "Ryan", "Me", "Ryan", "Ryan", "Me", "Ryan",
+]
+const EXPECTED_FINAL_TEXTS := [
+	"After reviewing your documents, we've approved your loan application.",
+	"Really... it was approved? Thank you.",
+	"I hope I can finally find a job this time.",
+	"I wish you the best.",
+	"By the way...\nA friend of mine has been thinking about applying for a time loan too.",
+	"His situation is a little more complicated than mine. But I think the people here... at least take the time to properly review every application.",
+	"Thank you for your trust. If he meets the requirements, he's welcome to apply.",
+	"He should be coming by in the next couple of days. Thank you.",
+]
 
 
 class RyanExitRoundTripProbe:
@@ -94,13 +107,72 @@ class RyanExitRoundTripProbe:
 		var complete_button := memory_scene.get_node("%CompleteButton") as Button
 		assert(complete_button.visible and not complete_button.disabled)
 		complete_button.pressed.emit()
-		await _wait_for_scene(&"MainMenu")
+		await _wait_for_scene(&"NPCBase")
 		assert(progress.memory_completed)
+		var contract_npc := get_tree().current_scene as NPCBase
+		assert(contract_npc != null)
+		assert(contract_npc.background.texture == load(BACKGROUND_04))
+		var contract_book := contract_npc.get_node(
+			"DossierPanel/TimeLoanContractButton"
+		) as TextureButton
+		assert(contract_book != null and contract_book.visible and not contract_book.disabled)
+		assert(contract_book.texture_normal == load(
+			"res://TextureAsset/Contract/time_loan_contract_book.png"
+		))
+		assert(not contract_npc.get_node("%MemoryButton").visible)
+		await _capture_viewport("user://ryan_contract_book.png")
+
+		contract_book.pressed.emit()
+		var overlay := contract_npc.get_node("LoanContractOverlay") as LoanContractOverlay
+		assert(overlay != null and overlay.visible)
+		assert(overlay.contract_texture.texture == load(
+			"res://TextureAsset/Contract/ryan_miller_contract.png"
+		))
+		assert(overlay.approval_stamp.texture == load(
+			"res://TextureAsset/Contract/lifetime_repository_approved_stamp.png"
+		))
+		await _wait_for_contract_stamp(progress)
+		assert(overlay.was_stamp_animation_played())
+		assert(overlay.was_shake_played())
+		assert(overlay.approval_stamp.visible)
+		await _capture_viewport("user://ryan_contract_stamped.png")
+
+		overlay.close_button.pressed.emit()
+		assert(not overlay.visible)
+		assert(progress.contract_reviewed)
+		assert(contract_npc._final_dialogue_active)
+		assert(contract_npc.get_node("%NPCName").text == EXPECTED_FINAL_SPEAKERS[0])
+		assert(contract_npc.get_node("%DialogueText").text == EXPECTED_FINAL_TEXTS[0])
+		var final_continue := contract_npc.get_node("%ContinueButton") as Button
+		for final_index in range(1, EXPECTED_FINAL_TEXTS.size()):
+			final_continue.pressed.emit()
+			assert(progress.final_dialogue_index == final_index)
+			assert(
+				contract_npc.get_node("%NPCName").text
+				== EXPECTED_FINAL_SPEAKERS[final_index]
+			)
+			assert(
+				contract_npc.get_node("%DialogueText").text
+				== EXPECTED_FINAL_TEXTS[final_index]
+			)
+		await _capture_viewport("user://ryan_final_dialogue_last.png")
+		final_continue.pressed.emit()
+		await _wait_for_scene(&"MainMenu")
+		assert(progress.final_dialogue_completed)
 		assert(GameState.is_npc_unlocked(&"npc_li_lei"))
 
 		GameState.debug_unlock_all_npcs = true
 		print("RYAN_LOAN_STAGE_SMOKE_TEST: PASS")
 		get_tree().quit(0)
+
+
+	func _wait_for_contract_stamp(progress: NPCProgress) -> void:
+		var timeout_at := Time.get_ticks_msec() + 3000
+		while Time.get_ticks_msec() < timeout_at:
+			if progress.contract_stamped:
+				return
+			await get_tree().process_frame
+		assert(false, "Contract stamp animation did not finish.")
 
 
 	func _wait_for_scene(expected_scene_name: StringName) -> void:

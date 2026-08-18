@@ -5,7 +5,6 @@ class MemoryIntegrationProbe:
 	extends Node
 
 	const NPC_BASE_SCENE_PATH := "res://scenes/npc/npc_base.tscn"
-	const HOME_SCENE_PATH := "res://scenes/main/main_menu.tscn"
 	const CASES: Array[Dictionary] = [
 		{
 			"npc_id": &"npc_zhang_yuan",
@@ -103,7 +102,12 @@ class MemoryIntegrationProbe:
 		complete_button.pressed.emit()
 		await _wait_for_navigation()
 
-		assert(get_tree().current_scene.scene_file_path == HOME_SCENE_PATH)
+		assert(get_tree().current_scene.scene_file_path == NPC_BASE_SCENE_PATH)
+		assert(str(get_tree().current_scene.get("npc_data_path")) == test_case["data_path"])
+		var contract_book := get_tree().current_scene.get_node(
+			"DossierPanel/TimeLoanContractButton"
+		) as TextureButton
+		assert(contract_book != null and contract_book.visible)
 		var progress := GameState.get_npc_progress(test_case["npc_id"])
 		assert(progress != null)
 		assert(progress.memory_completed)
@@ -167,7 +171,6 @@ class MemoryIntegrationProbe:
 				return
 			await get_tree().process_frame
 		assert(false, "NPCBase dialogue input did not unblock in time.")
-
 
 	func _complete_observation(memory_scene: Node, point_name: StringName) -> void:
 		var point := memory_scene.get_node("%%%s" % point_name)

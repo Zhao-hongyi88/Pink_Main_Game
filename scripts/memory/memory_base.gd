@@ -16,6 +16,7 @@ var completion_status := false
 var _current_observation_id := ""
 var _memory_completed_emitted := false
 var _has_navigation_context := false
+var _return_to_npc_on_complete := false
 
 @onready var _memory_info_panel: Control = %MemoryInfoPanel
 @onready var _progress_label: Label = %ProgressLabel
@@ -127,6 +128,7 @@ func _consume_navigation_payload() -> void:
 	var payload := SceneRouter.take_payload()
 	npc_id = StringName(str(payload.get("npc_id", "")).strip_edges())
 	return_npc_data_path = str(payload.get("return_npc_data_path", "")).strip_edges()
+	_return_to_npc_on_complete = bool(payload.get("return_to_npc_on_complete", false))
 	_has_navigation_context = not npc_id.is_empty() and not return_npc_data_path.is_empty()
 	if not _has_navigation_context:
 		push_warning("MemoryBase: 缺少 npc_id 或 return_npc_data_path 导航上下文。")
@@ -161,7 +163,7 @@ func _on_complete_pressed() -> void:
 		return
 	if GameState.mark_memory_completed(npc_id):
 		_complete_button.disabled = true
-		SceneRouter.go_to(&"home")
+		_return_after_completed_memory()
 
 
 func _on_back_pressed() -> void:
@@ -170,11 +172,20 @@ func _on_back_pressed() -> void:
 		return
 	var progress := GameState.get_npc_progress(npc_id)
 	if progress != null and progress.memory_completed:
-		SceneRouter.go_to(&"home")
+		_return_after_completed_memory()
 		return
 	SceneRouter.go_to(&"npc_base", {
 		"npc_data_path": return_npc_data_path,
 	})
+
+
+func _return_after_completed_memory() -> void:
+	if _return_to_npc_on_complete:
+		SceneRouter.go_to(&"npc_base", {
+			"npc_data_path": return_npc_data_path,
+		})
+		return
+	SceneRouter.go_to(&"home")
 
 
 func _get_observed_count() -> int:
