@@ -1,4 +1,4 @@
-[gd_scene format=3 uid="uid://d7qmn4lt5336"]
+[gd_scene format=3 uid="uid://b0rtsahwi0a7k"]
 
 [ext_resource type="PackedScene" path="res://scenes/memory/memory_base.tscn" id="1_base"]
 [ext_resource type="Script" uid="uid://bpj5khltnyrjh" path="res://scripts/memory/npc1_zhang_yuan_memory.gd" id="2_memory"]
@@ -169,42 +169,7 @@ anchor_top = 1.0
 [node name="PointLight2D" type="PointLight2D" parent="." index="3" unique_id=440011278]
 position = Vector2(525, 249)
 color = Color(1, 1, 0.7294118, 1)
-energy = 5.1
-texture = SubResource("GradientTexture2D_jre5i")
-texture_scale = 0.69
-
-[node name="PointLight2D" type="PointLight2D" parent="PointLight2D" index="0" unique_id=1714371627]
-position = Vector2(-19, 99)
-color = Color(1, 1, 0.7294118, 1)
-energy = 5.1
-texture = SubResource("GradientTexture2D_jre5i")
-texture_scale = 0.69
-
-[node name="PointLight2D" type="PointLight2D" parent="PointLight2D/PointLight2D" index="0" unique_id=329709448]
-position = Vector2(21, -25)
-color = Color(1, 1, 0.7294118, 1)
-energy = 5.1
-texture = SubResource("GradientTexture2D_jre5i")
-texture_scale = 0.69
-
-[node name="PointLight2D" type="PointLight2D" parent="PointLight2D/PointLight2D/PointLight2D" index="0" unique_id=1576544620]
-position = Vector2(-58, 73)
-color = Color(1, 1, 0.7294118, 1)
-energy = 5.1
-texture = SubResource("GradientTexture2D_jre5i")
-texture_scale = 0.69
-
-[node name="PointLight2D" type="PointLight2D" parent="PointLight2D/PointLight2D/PointLight2D/PointLight2D" index="0" unique_id=150464238]
-position = Vector2(58, 17)
-color = Color(1, 1, 0.7294118, 1)
-energy = 5.1
-texture = SubResource("GradientTexture2D_jre5i")
-texture_scale = 0.69
-
-[node name="PointLight2D" type="PointLight2D" parent="PointLight2D/PointLight2D/PointLight2D/PointLight2D/PointLight2D" index="0" unique_id=1748277185]
-position = Vector2(-14, -53)
-color = Color(1, 1, 0.7294118, 1)
-energy = 5.1
+energy = 1.79
 texture = SubResource("GradientTexture2D_jre5i")
 texture_scale = 0.69
 
