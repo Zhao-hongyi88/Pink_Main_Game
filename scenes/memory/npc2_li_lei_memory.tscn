@@ -13,6 +13,12 @@
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_point"]
 size = Vector2(87, 79)
 
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_secondary_marker"]
+light_mode = 1
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_secondary_marker"]
+radius = 18.027756
+
 [sub_resource type="Gradient" id="Gradient_qqjji"]
 offsets = PackedFloat32Array(0.44, 0.696, 0.984)
 colors = PackedColorArray(1, 1, 1, 1, 0.89104515, 0.89104515, 0.89104515, 0.886598, 0.039215688, 0.039215688, 0.039215688, 0)
@@ -22,12 +28,6 @@ gradient = SubResource("Gradient_qqjji")
 fill = 1
 fill_from = Vector2(0.4884393, 0.4768786)
 fill_to = Vector2(0.8526012, 0.13583815)
-
-[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_secondary_marker"]
-light_mode = 1
-
-[sub_resource type="CircleShape2D" id="CircleShape2D_secondary_marker"]
-radius = 24.0
 
 [node name="LiLeiMemory" unique_id=1904012673 instance=ExtResource("1_base")]
 script = ExtResource("2_memory")
@@ -166,31 +166,33 @@ anchor_top = 1.0
 [node name="DialogueBox2" parent="MemoryUI/MemoryInfoPanel" index="4"]
 anchors_preset = 0
 
-[node name="SecondaryMarkers" type="Node2D" parent="." index="3"]
+[node name="SecondaryMarkers" type="Node2D" parent="." index="3" unique_id=842520964]
 z_index = 5
 
-[node name="MedicalCheckupReportMarker" type="Area2D" parent="SecondaryMarkers" index="0"]
+[node name="MedicalCheckupReportMarker" type="Area2D" parent="SecondaryMarkers" index="0" unique_id=1406223540]
 unique_name_in_owner = true
 position = Vector2(801, 121)
 
-[node name="MarkerVisual" type="Sprite2D" parent="SecondaryMarkers/MedicalCheckupReportMarker" index="0"]
+[node name="MarkerVisual" type="Sprite2D" parent="SecondaryMarkers/MedicalCheckupReportMarker" index="0" unique_id=1774866948]
 material = SubResource("CanvasItemMaterial_secondary_marker")
 scale = Vector2(0.28, 0.28)
 texture = ExtResource("9_secondary_marker")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="SecondaryMarkers/MedicalCheckupReportMarker" index="1"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="SecondaryMarkers/MedicalCheckupReportMarker" index="1" unique_id=100431306]
 shape = SubResource("CircleShape2D_secondary_marker")
 
-[node name="UnusedTreatmentAppointmentMarker" type="Area2D" parent="SecondaryMarkers" index="1"]
+[node name="UnusedTreatmentAppointmentMarker" type="Area2D" parent="SecondaryMarkers" index="1" unique_id=1965656252]
 unique_name_in_owner = true
 position = Vector2(353, 413)
 
-[node name="MarkerVisual" type="Sprite2D" parent="SecondaryMarkers/UnusedTreatmentAppointmentMarker" index="0"]
+[node name="MarkerVisual" type="Sprite2D" parent="SecondaryMarkers/UnusedTreatmentAppointmentMarker" index="0" unique_id=1047771610]
 material = SubResource("CanvasItemMaterial_secondary_marker")
-scale = Vector2(0.28, 0.28)
+position = Vector2(-21.079998, -44.08001)
+scale = Vector2(0.27888894, 0.26499987)
 texture = ExtResource("9_secondary_marker")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="SecondaryMarkers/UnusedTreatmentAppointmentMarker" index="1"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="SecondaryMarkers/UnusedTreatmentAppointmentMarker" index="1" unique_id=1745095273]
+position = Vector2(-21, -44)
 shape = SubResource("CircleShape2D_secondary_marker")
 
 [node name="PointLight2D" type="PointLight2D" parent="." index="4" unique_id=1269177096]
@@ -222,7 +224,7 @@ energy = 2.99
 texture = SubResource("GradientTexture2D_bjqgx")
 
 [node name="PointLight2D3" type="PointLight2D" parent="PointLight2D" index="2" unique_id=1510824202]
-position = Vector2(16.65725, 15.031042)
+position = Vector2(20.73296, 10.020691)
 scale = Vector2(1.4884186, 1.2140284)
 color = Color(0.9878239, 0.8925993, 0.7704754, 1)
 energy = 2.99
