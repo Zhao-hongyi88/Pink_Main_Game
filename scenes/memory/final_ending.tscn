@@ -1,0 +1,41 @@
+[gd_scene format=3]
+
+[ext_resource type="Texture2D" path="res://TextureAsset/Memory/Common/ending_background.png" id="1_ending_background"]
+[ext_resource type="Script" path="res://scripts/memory/ending_presentation.gd" id="2_ending_presentation"]
+
+[node name="FinalEnding" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("2_ending_presentation")
+
+[node name="EndingBackground" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("1_ending_background")
+expand_mode = 1
+stretch_mode = 6
+
+[node name="EndingText" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -70.0
+offset_bottom = 70.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.94, 0.94, 0.94, 1)
+theme_override_font_sizes/font_size = 24
+text = "看完这一切\n\n你还会在选择做银行职员吗？"
+horizontal_alignment = 1
+vertical_alignment = 1

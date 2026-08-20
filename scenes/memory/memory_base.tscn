@@ -1,0 +1,301 @@
+[gd_scene load_steps=6 format=3 uid="uid://memory_base_001"]
+
+[ext_resource type="Script" path="res://scripts/memory/memory_base.gd" id="1_memory_base"]
+[ext_resource type="Script" path="res://scripts/memory/memory_info_panel.gd" id="2_info_panel"]
+[ext_resource type="Texture2D" path="res://TextureAsset/Memory/Common/protagonist_thought_dialogue_box_v3.png" id="3_dialogue_box"]
+[ext_resource type="FontFile" path="res://TextureAsset/Fonts/msyh.ttc" id="4_cjk_font"]
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_dialogue_box"]
+light_mode = 1
+
+[node name="MemoryBase" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("1_memory_base")
+
+[node name="MemoryUI" type="CanvasLayer" parent="."]
+layer = 10
+
+[node name="ProgressLabel" type="Label" parent="MemoryUI"]
+unique_name_in_owner = true
+offset_left = 32.0
+offset_top = 24.0
+offset_right = 300.0
+offset_bottom = 54.0
+theme_override_colors/font_color = Color(0.84, 0.9, 1, 1)
+theme_override_font_sizes/font_size = 18
+text = "Investigation Progress: 0 / 0"
+
+[node name="BackButton" type="Button" parent="MemoryUI"]
+unique_name_in_owner = true
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -168.0
+offset_top = 20.0
+offset_right = -28.0
+offset_bottom = 62.0
+grow_horizontal = 0
+text = "Exit Memory"
+
+[node name="CompleteButton" type="Button" parent="MemoryUI"]
+unique_name_in_owner = true
+visible = false
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -112.0
+offset_top = -78.0
+offset_right = 112.0
+offset_bottom = -26.0
+grow_horizontal = 2
+grow_vertical = 0
+text = "Complete Memory"
+
+[node name="MemoryInfoPanel" type="Control" parent="MemoryUI"]
+unique_name_in_owner = true
+visible = false
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 1
+script = ExtResource("2_info_panel")
+
+[node name="Dimmer" type="ColorRect" parent="MemoryUI/MemoryInfoPanel"]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0, 0, 0, 0.58)
+
+[node name="IconPreview" type="TextureRect" parent="MemoryUI/MemoryInfoPanel"]
+visible = false
+z_index = 1
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -180.0
+offset_top = -180.0
+offset_right = 180.0
+offset_bottom = 180.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_default_cursor_shape = 2
+expand_mode = 1
+stretch_mode = 5
+tooltip_text = "Open report"
+
+[node name="DialogueBox" type="Control" parent="MemoryUI/MemoryInfoPanel"]
+visible = false
+layout_mode = 0
+anchors_preset = 12
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -380.0
+offset_top = -198.0
+offset_right = 380.0
+offset_bottom = -48.0
+grow_horizontal = 2
+grow_vertical = 0
+mouse_filter = 1
+
+[node name="Frame" type="TextureRect" parent="MemoryUI/MemoryInfoPanel/DialogueBox"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+material = SubResource("CanvasItemMaterial_dialogue_box")
+texture = ExtResource("3_dialogue_box")
+modulate = Color(1, 1, 1, 1)
+expand_mode = 1
+stretch_mode = 6
+
+[node name="DialogueContentLabel" type="Label" parent="MemoryUI/MemoryInfoPanel/DialogueBox"]
+z_index = 1
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 42.0
+offset_top = 20.0
+offset_right = -42.0
+offset_bottom = -54.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(0.95, 0.95, 0.95, 1)
+theme_override_fonts/font = ExtResource("4_cjk_font")
+theme_override_font_sizes/font_size = 20
+vertical_alignment = 1
+autowrap_mode = 2
+mouse_filter = 2
+
+[node name="DialogueContinueButton" type="Button" parent="MemoryUI/MemoryInfoPanel/DialogueBox"]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -248.0
+offset_top = 104.0
+offset_right = -126.0
+offset_bottom = 140.0
+grow_horizontal = 0
+text = "Continue"
+
+[node name="DialogueCloseButton" type="Button" parent="MemoryUI/MemoryInfoPanel/DialogueBox"]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -116.0
+offset_top = 104.0
+offset_right = -8.0
+offset_bottom = 140.0
+grow_horizontal = 0
+text = "Close"
+
+[node name="Panel" type="Panel" parent="MemoryUI/MemoryInfoPanel"]
+layout_mode = 1
+clip_contents = true
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -320.0
+offset_top = -250.0
+offset_right = 320.0
+offset_bottom = 250.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="CustomInfoBackground" type="TextureRect" parent="MemoryUI/MemoryInfoPanel/Panel"]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 6
+
+[node name="CustomInfoIcon" type="TextureRect" parent="MemoryUI/MemoryInfoPanel/Panel"]
+visible = false
+layout_mode = 0
+offset_left = -58.0
+offset_top = -44.0
+offset_right = 92.0
+offset_bottom = 106.0
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="TitleLabel" type="Label" parent="MemoryUI/MemoryInfoPanel/Panel"]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_left = 28.0
+offset_top = 20.0
+offset_right = -28.0
+offset_bottom = 54.0
+grow_horizontal = 2
+theme_override_font_sizes/font_size = 24
+theme_override_fonts/font = ExtResource("4_cjk_font")
+text = "Investigation File"
+horizontal_alignment = 1
+
+[node name="SectionLabel" type="Label" parent="MemoryUI/MemoryInfoPanel/Panel"]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_left = 38.0
+offset_top = 64.0
+offset_right = -38.0
+offset_bottom = 92.0
+grow_horizontal = 2
+theme_override_font_sizes/font_size = 18
+theme_override_fonts/font = ExtResource("4_cjk_font")
+text = "Object Info"
+
+[node name="ContentLabel" type="Label" parent="MemoryUI/MemoryInfoPanel/Panel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 38.0
+offset_top = 102.0
+offset_right = -38.0
+offset_bottom = -92.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 18
+theme_override_fonts/font = ExtResource("4_cjk_font")
+text = "File Content"
+vertical_alignment = 1
+autowrap_mode = 2
+
+[node name="ImagePlaceholders" type="HBoxContainer" parent="MemoryUI/MemoryInfoPanel/Panel"]
+layout_mode = 1
+anchors_preset = 12
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 38.0
+offset_top = -186.0
+offset_right = -38.0
+offset_bottom = -82.0
+grow_horizontal = 2
+grow_vertical = 0
+alignment = 1
+
+[node name="ContinueButton" type="Button" parent="MemoryUI/MemoryInfoPanel/Panel"]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -146.0
+offset_top = -62.0
+offset_right = -10.0
+offset_bottom = -20.0
+grow_horizontal = 2
+grow_vertical = 0
+text = "Continue"
+
+[node name="CloseButton" type="Button" parent="MemoryUI/MemoryInfoPanel/Panel"]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = 10.0
+offset_top = -62.0
+offset_right = 146.0
+offset_bottom = -20.0
+grow_horizontal = 2
+grow_vertical = 0
+text = "Close"
+

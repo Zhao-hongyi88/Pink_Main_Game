@@ -1,0 +1,51 @@
+[gd_scene format=3]
+
+[ext_resource type="Texture2D" path="res://TextureAsset/Memory/Common/ending_background.png" id="1_ending_background"]
+[ext_resource type="Texture2D" path="res://TextureAsset/Memory/NPC3/Ending/liu_guilan_office_crop.png" id="2_scene_crop"]
+[ext_resource type="Script" path="res://scripts/memory/ending_presentation.gd" id="3_ending_presentation"]
+
+[node name="LiuGuilanEnding" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("3_ending_presentation")
+next_scene_path = "res://scenes/memory/npc4_su_qing_ending.tscn"
+
+[node name="EndingBackground" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("1_ending_background")
+expand_mode = 1
+stretch_mode = 6
+
+[node name="SceneThumbnail" type="TextureRect" parent="."]
+layout_mode = 0
+offset_left = 142.0
+offset_top = 248.0
+offset_right = 482.0
+offset_bottom = 520.0
+mouse_filter = 2
+texture = ExtResource("2_scene_crop")
+expand_mode = 1
+stretch_mode = 6
+
+[node name="EndingText" type="RichTextLabel" parent="."]
+layout_mode = 0
+offset_left = 548.0
+offset_top = 246.0
+offset_right = 1018.0
+offset_bottom = 522.0
+mouse_filter = 2
+theme_override_colors/default_color = Color(0.94, 0.94, 0.94, 1)
+theme_override_font_sizes/normal_font_size = 18
+bbcode_enabled = true
+fit_content = false
+text = "After Ryan and Mike left, Lisa remained in the company.\n\nThe department continued operating, and the company achieved the results it wanted.\nOn paper, Lisa succeeded.\n\nBut after Mike's departure, she slowly realized that some things could not be measured by efficiency.\n\nThe years her employees had given to the company, the relationships they built, and the time they lost — none of them could be recovered.\n\nAt the same time, Lisa's relationship with her daughter Emma began to change.\n\nLisa loved her daughter deeply. Emma knew that too.\nShe knew her mother worked so hard because she wanted to give her a better future.\n\nBut as time passed, Emma no longer knew what to talk about with her mother.\n\nOne night, Emma finally told Lisa:\n\n\"I don't need those expensive classes if it means I can spend more time with you.\"\n\n\"I don't need a perfect future. I just want my mom to be here.\"\n\nLisa was silent.\n\nShe had always believed that adapting to this system and helping Emma reach the top of society was the best way to protect her.\n\nBut for the first time, she began to question:\n\nWas this really the life she wanted for her daughter?\n\nLisa kept everything she had fought for.\nHer position.\nHer career.\nHer stability.\n\nBut she started wondering what she had lost along the way."

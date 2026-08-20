@@ -1,0 +1,51 @@
+[gd_scene format=3]
+
+[ext_resource type="Texture2D" path="res://TextureAsset/Memory/Common/ending_background.png" id="1_ending_background"]
+[ext_resource type="Texture2D" path="res://TextureAsset/Memory/NPC4/Ending/su_qing_hospital_crop.png" id="2_scene_crop"]
+[ext_resource type="Script" path="res://scripts/memory/ending_presentation.gd" id="3_ending_presentation"]
+
+[node name="SuQingEnding" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("3_ending_presentation")
+next_scene_path = "res://scenes/memory/final_ending.tscn"
+
+[node name="EndingBackground" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("1_ending_background")
+expand_mode = 1
+stretch_mode = 6
+
+[node name="SceneThumbnail" type="TextureRect" parent="."]
+layout_mode = 0
+offset_left = 142.0
+offset_top = 248.0
+offset_right = 482.0
+offset_bottom = 520.0
+mouse_filter = 2
+texture = ExtResource("2_scene_crop")
+expand_mode = 1
+stretch_mode = 6
+
+[node name="EndingText" type="RichTextLabel" parent="."]
+layout_mode = 0
+offset_left = 548.0
+offset_top = 246.0
+offset_right = 1018.0
+offset_bottom = 522.0
+mouse_filter = 2
+theme_override_colors/default_color = Color(0.94, 0.94, 0.94, 1)
+theme_override_font_sizes/normal_font_size = 18
+bbcode_enabled = true
+fit_content = false
+text = "After Mike lost his job, Mary's treatment was no longer fully guaranteed.\n\nAt first, Mike had more time to stay with his mother. But to maintain her treatment, he soon returned to working long hours. Without his previous income, and with his health continuing to decline, Mike could no longer provide the same support as before.\n\nSeeing her son struggle, Mary began hiding the truth. She told Mike that her condition was improving and that she needed less medication. In reality, she had asked her doctor to change her treatment plan on her own.\n\nThe new treatment was unstable, and Mary eventually faced a life-threatening situation. Her secret could no longer be hidden.\n\nAfter learning the truth, Tom, Ryan, and even Lisa offered their remaining time to help Mary.\n\nBut Tom was already reaching his own limit. Mary reminded him that he also needed to spend time with his family.\n\nEven with everyone's help, the burden of supporting the family still fell back on Mary and Mike.\n\nMary no longer worried about how much time she had left.\n\nThe only thing she hoped for was that, after she was gone, Mike could take care of himself."

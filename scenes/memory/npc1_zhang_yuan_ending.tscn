@@ -1,0 +1,51 @@
+[gd_scene format=3]
+
+[ext_resource type="Texture2D" path="res://TextureAsset/Memory/Common/ending_background.png" id="1_ending_background"]
+[ext_resource type="Texture2D" path="res://TextureAsset/Memory/NPC1/Ending/zhang_yuan_room_crop.png" id="2_scene_crop"]
+[ext_resource type="Script" path="res://scripts/memory/ending_presentation.gd" id="3_ending_presentation"]
+
+[node name="ZhangYuanEnding" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("3_ending_presentation")
+next_scene_path = "res://scenes/memory/npc2_li_lei_ending.tscn"
+
+[node name="EndingBackground" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("1_ending_background")
+expand_mode = 1
+stretch_mode = 6
+
+[node name="SceneThumbnail" type="TextureRect" parent="."]
+layout_mode = 0
+offset_left = 142.0
+offset_top = 248.0
+offset_right = 482.0
+offset_bottom = 520.0
+mouse_filter = 2
+texture = ExtResource("2_scene_crop")
+expand_mode = 1
+stretch_mode = 6
+
+[node name="EndingText" type="RichTextLabel" parent="."]
+layout_mode = 0
+offset_left = 548.0
+offset_top = 246.0
+offset_right = 1018.0
+offset_bottom = 522.0
+mouse_filter = 2
+theme_override_colors/default_color = Color(0.94, 0.94, 0.94, 1)
+theme_override_font_sizes/normal_font_size = 18
+bbcode_enabled = true
+fit_content = false
+text = "Ryan successfully passed his probation period and believed he had finally found a stable future.\n\nHowever, after the company's production expansion, management began restructuring the department. Due to his high replaceability, Ryan was eventually included in the layoff list.\n\nThe decision was a heavy blow. After years of believing that hard work would lead to opportunities, Ryan began to question his own abilities.\n\nFor a long time, he stayed in Clock Town, taking temporary jobs while struggling to find a new direction.\n\nEventually, Ryan joined a small local company. It was not the career he once imagined, but he learned to move forward again.\n\nRyan did not get the future he expected, but he found the courage to start over."

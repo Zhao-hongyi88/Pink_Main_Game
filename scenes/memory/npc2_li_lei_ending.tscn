@@ -1,0 +1,51 @@
+[gd_scene format=3]
+
+[ext_resource type="Texture2D" path="res://TextureAsset/Memory/Common/ending_background.png" id="1_ending_background"]
+[ext_resource type="Texture2D" path="res://TextureAsset/Memory/NPC2/Ending/li_lei_room_crop.png" id="2_scene_crop"]
+[ext_resource type="Script" path="res://scripts/memory/ending_presentation.gd" id="3_ending_presentation"]
+
+[node name="LiLeiEnding" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("3_ending_presentation")
+next_scene_path = "res://scenes/memory/npc3_liu_guilan_ending.tscn"
+
+[node name="EndingBackground" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("1_ending_background")
+expand_mode = 1
+stretch_mode = 6
+
+[node name="SceneThumbnail" type="TextureRect" parent="."]
+layout_mode = 0
+offset_left = 142.0
+offset_top = 248.0
+offset_right = 482.0
+offset_bottom = 520.0
+mouse_filter = 2
+texture = ExtResource("2_scene_crop")
+expand_mode = 1
+stretch_mode = 6
+
+[node name="EndingText" type="RichTextLabel" parent="."]
+layout_mode = 0
+offset_left = 548.0
+offset_top = 246.0
+offset_right = 1018.0
+offset_bottom = 522.0
+mouse_filter = 2
+theme_override_colors/default_color = Color(0.94, 0.94, 0.94, 1)
+theme_override_font_sizes/normal_font_size = 18
+bbcode_enabled = true
+fit_content = false
+text = "Mike's health eventually began to affect his work.\n\nHis absences became more frequent, his efficiency declined, and mistakes started to appear.\n\nThe thing he had always feared finally happened — his name was added to the layoff list.\n\nHe went to Lisa and asked to keep his position. Lisa knew about Mary's condition, and she knew how much Mike had endured over the years.\n\nAfter a long silence, she only said:\n\n\"I'll try.\"\n\nBut in the end, Mike still lost his job.\n\nAfter leaving the company, Mike continued searching for work while maintaining his mother's treatment.\n\nHe remained in Clock Town, taking temporary jobs and checking his remaining time every day.\n\nNo one knew what would happen next.\nPerhaps he would find another job.\nPerhaps he would continue like this.\n\nFor Mike, tomorrow was simply another day he had to afford."
