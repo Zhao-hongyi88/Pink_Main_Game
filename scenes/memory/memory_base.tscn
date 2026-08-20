@@ -1,8 +1,12 @@
-[gd_scene load_steps=4 format=3 uid="uid://memory_base_001"]
+[gd_scene load_steps=6 format=3 uid="uid://memory_base_001"]
 
 [ext_resource type="Script" path="res://scripts/memory/memory_base.gd" id="1_memory_base"]
 [ext_resource type="Script" path="res://scripts/memory/memory_info_panel.gd" id="2_info_panel"]
-[ext_resource type="Texture2D" path="res://TextureAsset/Memory/Common/protagonist_thought_dialogue_box.png" id="3_dialogue_box"]
+[ext_resource type="Texture2D" path="res://TextureAsset/Memory/Common/protagonist_thought_dialogue_box_v3.png" id="3_dialogue_box"]
+[ext_resource type="FontFile" path="res://TextureAsset/Fonts/msyh.ttc" id="4_cjk_font"]
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_dialogue_box"]
+light_mode = 1
 
 [node name="MemoryBase" type="Control"]
 layout_mode = 3
@@ -77,6 +81,26 @@ grow_vertical = 2
 mouse_filter = 2
 color = Color(0, 0, 0, 0.58)
 
+[node name="IconPreview" type="TextureRect" parent="MemoryUI/MemoryInfoPanel"]
+visible = false
+z_index = 1
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -180.0
+offset_top = -180.0
+offset_right = 180.0
+offset_bottom = 180.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_default_cursor_shape = 2
+expand_mode = 1
+stretch_mode = 5
+tooltip_text = "Open report"
+
 [node name="DialogueBox" type="Control" parent="MemoryUI/MemoryInfoPanel"]
 visible = false
 layout_mode = 0
@@ -101,11 +125,14 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
+material = SubResource("CanvasItemMaterial_dialogue_box")
 texture = ExtResource("3_dialogue_box")
+modulate = Color(1, 1, 1, 1)
 expand_mode = 1
 stretch_mode = 6
 
 [node name="DialogueContentLabel" type="Label" parent="MemoryUI/MemoryInfoPanel/DialogueBox"]
+z_index = 1
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -117,6 +144,7 @@ offset_bottom = -54.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_colors/font_color = Color(0.95, 0.95, 0.95, 1)
+theme_override_fonts/font = ExtResource("4_cjk_font")
 theme_override_font_sizes/font_size = 20
 vertical_alignment = 1
 autowrap_mode = 2
@@ -193,6 +221,7 @@ offset_right = -28.0
 offset_bottom = 54.0
 grow_horizontal = 2
 theme_override_font_sizes/font_size = 24
+theme_override_fonts/font = ExtResource("4_cjk_font")
 text = "Investigation File"
 horizontal_alignment = 1
 
@@ -206,6 +235,7 @@ offset_right = -38.0
 offset_bottom = 92.0
 grow_horizontal = 2
 theme_override_font_sizes/font_size = 18
+theme_override_fonts/font = ExtResource("4_cjk_font")
 text = "Object Info"
 
 [node name="ContentLabel" type="Label" parent="MemoryUI/MemoryInfoPanel/Panel"]
@@ -220,6 +250,7 @@ offset_bottom = -92.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_font_sizes/font_size = 18
+theme_override_fonts/font = ExtResource("4_cjk_font")
 text = "File Content"
 vertical_alignment = 1
 autowrap_mode = 2
@@ -267,76 +298,3 @@ grow_horizontal = 2
 grow_vertical = 0
 text = "Close"
 
-[node name="DialogueBox" type="Control" parent="MemoryUI/MemoryInfoPanel"]
-visible = false
-layout_mode = 0
-anchor_left = 0.5
-anchor_top = 1.0
-anchor_right = 0.5
-anchor_bottom = 1.0
-offset_left = -380.0
-offset_top = -198.0
-offset_right = 380.0
-offset_bottom = -48.0
-grow_horizontal = 2
-grow_vertical = 0
-mouse_filter = 1
-
-[node name="Frame" type="TextureRect" parent="MemoryUI/MemoryInfoPanel/DialogueBox"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 2
-texture = ExtResource("3_dialogue_box")
-expand_mode = 1
-stretch_mode = 6
-
-[node name="DialogueContentLabel" type="Label" parent="MemoryUI/MemoryInfoPanel/DialogueBox"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = 42.0
-offset_top = 22.0
-offset_right = -42.0
-offset_bottom = -52.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_colors/font_color = Color(0.94, 0.92, 0.85, 1)
-theme_override_font_sizes/font_size = 20
-text = "Protagonist's Observation"
-vertical_alignment = 1
-autowrap_mode = 2
-
-[node name="DialogueContinueButton" type="Button" parent="MemoryUI/MemoryInfoPanel/DialogueBox"]
-layout_mode = 1
-anchors_preset = 7
-anchor_left = 0.5
-anchor_top = 1.0
-anchor_right = 0.5
-anchor_bottom = 1.0
-offset_left = 8.0
-offset_top = -46.0
-offset_right = 126.0
-offset_bottom = -12.0
-grow_horizontal = 2
-grow_vertical = 0
-text = "Continue"
-
-[node name="DialogueCloseButton" type="Button" parent="MemoryUI/MemoryInfoPanel/DialogueBox"]
-layout_mode = 1
-anchors_preset = 7
-anchor_left = 0.5
-anchor_top = 1.0
-anchor_right = 0.5
-anchor_bottom = 1.0
-offset_left = -126.0
-offset_top = -46.0
-offset_right = -8.0
-offset_bottom = -12.0
-grow_horizontal = 2
-grow_vertical = 0
-text = "Close"

@@ -14,8 +14,8 @@ colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 0.956, 1, 1, 1, 0)
 [sub_resource type="GradientTexture2D" id="GradientTexture2D_6gcru"]
 gradient = SubResource("Gradient_xcu0c")
 fill = 1
-fill_from = Vector2(0.5086705, 0.47976878)
-fill_to = Vector2(0.8352601, 0.216763)
+fill_from = Vector2(0.517341, 0.44508672)
+fill_to = Vector2(0.76878613, 0.12427746)
 
 [sub_resource type="Gradient" id="Gradient_dy16a"]
 offsets = PackedFloat32Array(0.44, 0.696, 0.984)
@@ -33,7 +33,7 @@ size = Vector2(91, 86)
 script = ExtResource("2_memory")
 
 [node name="Background" type="TextureRect" parent="." index="0" unique_id=624963818]
-modulate = Color(0.63648045, 0.63648045, 0.63648045, 1)
+modulate = Color(0.5866536, 0.5101578, 0.5190255, 1)
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -58,17 +58,24 @@ text = "Wang Jianguo Memory"
 horizontal_alignment = 1
 
 [node name="PointLight2D" type="PointLight2D" parent="Background" index="1" unique_id=123200667]
-position = Vector2(359.5, 272)
-scale = Vector2(1.171875, 1.1875)
+position = Vector2(353, 289.00003)
+scale = Vector2(1.1367185, 1.1518748)
 color = Color(0.9999985, 0.9997819, 0.7408638, 1)
-energy = 3.88
+energy = 9.83
+texture = SubResource("GradientTexture2D_6gcru")
+
+[node name="PointLight2D" type="PointLight2D" parent="Background/PointLight2D" index="0" unique_id=75513807]
+position = Vector2(25.512054, -3.4726257)
+scale = Vector2(1.1367185, 1.1518748)
+color = Color(0.9999985, 0.9997819, 0.7408638, 1)
+energy = 9.83
 texture = SubResource("GradientTexture2D_6gcru")
 
 [node name="PointLight2D2" type="PointLight2D" parent="Background" index="2" unique_id=511567585]
-position = Vector2(304.20898, 212.22159)
+position = Vector2(278, 223)
 scale = Vector2(5.6497183, 5.4444246)
 color = Color(0.9878239, 0.8925993, 0.7704754, 1)
-energy = 2.99
+energy = 7.26
 texture = SubResource("GradientTexture2D_somjt")
 
 [node name="ObservationPoints" type="Node2D" parent="." index="1" unique_id=1795621507]
@@ -105,7 +112,7 @@ texture = ExtResource("6_marker")
 [node name="MemoryInfoPanel" parent="MemoryUI" index="3"]
 layout_mode = 3
 
-[node name="DialogueBox" parent="MemoryUI/MemoryInfoPanel" index="1"]
+[node name="DialogueBox" parent="MemoryUI/MemoryInfoPanel" index="2"]
 anchors_preset = 0
 
 [node name="DialogueContinueButton" parent="MemoryUI/MemoryInfoPanel/DialogueBox" index="2"]
@@ -121,5 +128,5 @@ grow_vertical = 0
 [node name="ImagePlaceholders" parent="MemoryUI/MemoryInfoPanel/Panel" index="5"]
 anchor_top = 1.0
 
-[node name="DialogueBox2" parent="MemoryUI/MemoryInfoPanel" index="3"]
+[node name="DialogueBox2" parent="MemoryUI/MemoryInfoPanel" index="4"]
 anchors_preset = 0

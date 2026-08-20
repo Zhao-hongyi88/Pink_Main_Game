@@ -3,14 +3,18 @@
 [ext_resource type="Script" path="res://scripts/memory/memory_observation_data.gd" id="1_observation_data"]
 [ext_resource type="Texture2D" path="res://TextureAsset/Memory/NPC1/JobSearchRecord/info_panel_background.png" id="2_panel_background"]
 [ext_resource type="Texture2D" path="res://TextureAsset/Memory/NPC4/TablePhone/phone_icon.png" id="3_phone_icon"]
+[ext_resource type="Texture2D" path="res://TextureAsset/Memory/NPC4/TablePhone/table_phone_message_icon.png" id="4_message_icon"]
 
 [resource]
 script = ExtResource("1_observation_data")
 observation_id = &"table_phone"
 title = "Phone on the Table"
 info = ""
-images = []
-image_placeholders = []
-dialogue = PackedStringArray()
+info_page_titles = PackedStringArray("Messages  1 / 3", "Messages  2 / 3", "Messages  3 / 3")
+info_pages = PackedStringArray("Mike:\nMom, don't worry about the treatment costs.\nI've got it covered.", "Mary:\nYou always say that.\nI'm more worried about you.\nYou've been working too much lately. Make sure you're taking care of yourself too.", "Mike:\nI'm fine, Mom.\nDon't worry about me. Just focus on getting better.\n\nMike:\nI know you're trying to help.\nBut I'm okay. I don't want you wearing yourself out because of me.")
+images = Array[Texture2D]([])
+image_placeholders = PackedStringArray()
+dialogue = PackedStringArray("In the chat history, Liu Guilan keeps asking about her son's work and rarely brings up her own treatment.", "She seems more worried that her illness will affect Li Lei's life.")
 info_panel_background = ExtResource("2_panel_background")
-info_icon = ExtResource("3_phone_icon")
+info_icon = ExtResource("4_message_icon")
+open_with_icon_preview = true

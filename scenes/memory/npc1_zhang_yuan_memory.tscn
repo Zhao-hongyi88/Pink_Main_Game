@@ -3,33 +3,41 @@
 [ext_resource type="PackedScene" path="res://scenes/memory/memory_base.tscn" id="1_base"]
 [ext_resource type="Script" uid="uid://bpj5khltnyrjh" path="res://scripts/memory/npc1_zhang_yuan_memory.gd" id="2_memory"]
 [ext_resource type="Script" uid="uid://cevu8580mceir" path="res://scripts/memory/memory_observation_point.gd" id="3_point"]
-[ext_resource type="Resource" path="res://data/memory/npc1/personal_practice_report.tres" id="4_data_a"]
-[ext_resource type="Resource" path="res://data/memory/npc1/time_loan_application.tres" id="5_data_b"]
-[ext_resource type="Resource" path="res://data/memory/npc1/job_search_record.tres" id="6_data_c"]
+[ext_resource type="Resource" uid="uid://mc20lpf2imd6" path="res://data/memory/npc1/personal_practice_report.tres" id="4_data_a"]
+[ext_resource type="Resource" uid="uid://cftfry83pj1up" path="res://data/memory/npc1/time_loan_application.tres" id="5_data_b"]
+[ext_resource type="Resource" uid="uid://u1r6c4b1uemo" path="res://data/memory/npc1/job_search_record.tres" id="6_data_c"]
 [ext_resource type="Texture2D" uid="uid://dsmcvhps74fqv" path="res://TextureAsset/Memory/NPC1/zhang_yuan_memory_background.png" id="7_background"]
 [ext_resource type="Texture2D" uid="uid://ccl8fxrgmo5hh" path="res://TextureAsset/Memory/Common/unexplored_marker.png" id="8_unexplored_marker"]
+[ext_resource type="Texture2D" uid="uid://dtpxorrbhcnu0" path="res://TextureAsset/Memory/NPC1/secondary_location_marker.png" id="9_secondary_marker"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_point"]
 size = Vector2(82, 86)
 
-[sub_resource type="Gradient" id="Gradient_nigd1"]
+[sub_resource type="Gradient" id="Gradient_5k3ok"]
 offsets = PackedFloat32Array(0.484, 1)
 colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 0)
 
 [sub_resource type="GradientTexture2D" id="GradientTexture2D_jre5i"]
-gradient = SubResource("Gradient_nigd1")
+gradient = SubResource("Gradient_5k3ok")
 width = 512
 height = 512
 fill = 1
 fill_from = Vector2(0.5, 0.5)
 fill_to = Vector2(1, 0.5)
 metadata/_snap_enabled = true
+metadata/_snap_count = 62
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_secondary_marker"]
+light_mode = 1
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_secondary_marker"]
+radius = 24.0
 
 [node name="ZhangYuanMemory" unique_id=1660919922 instance=ExtResource("1_base")]
 script = ExtResource("2_memory")
 
 [node name="Background" type="TextureRect" parent="." index="0" unique_id=924215150]
-modulate = Color(0.468777, 0.46877706, 0.468777, 1)
+modulate = Color(0.48700923, 0.48700923, 0.4870091, 1)
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -142,7 +150,7 @@ texture = ExtResource("8_unexplored_marker")
 [node name="MemoryInfoPanel" parent="MemoryUI" index="3"]
 layout_mode = 3
 
-[node name="DialogueBox" parent="MemoryUI/MemoryInfoPanel" index="1"]
+[node name="DialogueBox" parent="MemoryUI/MemoryInfoPanel" index="2"]
 anchors_preset = 0
 
 [node name="DialogueContinueButton" parent="MemoryUI/MemoryInfoPanel/DialogueBox" index="2"]
@@ -158,12 +166,74 @@ grow_vertical = 0
 [node name="ImagePlaceholders" parent="MemoryUI/MemoryInfoPanel/Panel" index="5"]
 anchor_top = 1.0
 
-[node name="DialogueBox2" parent="MemoryUI/MemoryInfoPanel" index="3"]
+[node name="DialogueBox2" parent="MemoryUI/MemoryInfoPanel" index="4"]
 anchors_preset = 0
 
 [node name="PointLight2D" type="PointLight2D" parent="." index="3" unique_id=440011278]
-position = Vector2(512, 207)
+position = Vector2(525, 249)
 color = Color(1, 1, 0.7294118, 1)
 energy = 5.1
 texture = SubResource("GradientTexture2D_jre5i")
 texture_scale = 0.69
+
+[node name="PointLight2D" type="PointLight2D" parent="PointLight2D" index="0" unique_id=1714371627]
+position = Vector2(-19, 99)
+color = Color(1, 1, 0.7294118, 1)
+energy = 5.1
+texture = SubResource("GradientTexture2D_jre5i")
+texture_scale = 0.69
+
+[node name="PointLight2D" type="PointLight2D" parent="PointLight2D/PointLight2D" index="0" unique_id=329709448]
+position = Vector2(21, -25)
+color = Color(1, 1, 0.7294118, 1)
+energy = 5.1
+texture = SubResource("GradientTexture2D_jre5i")
+texture_scale = 0.69
+
+[node name="PointLight2D" type="PointLight2D" parent="PointLight2D/PointLight2D/PointLight2D" index="0" unique_id=1576544620]
+position = Vector2(-58, 73)
+color = Color(1, 1, 0.7294118, 1)
+energy = 5.1
+texture = SubResource("GradientTexture2D_jre5i")
+texture_scale = 0.69
+
+[node name="PointLight2D" type="PointLight2D" parent="PointLight2D/PointLight2D/PointLight2D/PointLight2D" index="0" unique_id=150464238]
+position = Vector2(58, 17)
+color = Color(1, 1, 0.7294118, 1)
+energy = 5.1
+texture = SubResource("GradientTexture2D_jre5i")
+texture_scale = 0.69
+
+[node name="PointLight2D" type="PointLight2D" parent="PointLight2D/PointLight2D/PointLight2D/PointLight2D/PointLight2D" index="0" unique_id=1748277185]
+position = Vector2(-14, -53)
+color = Color(1, 1, 0.7294118, 1)
+energy = 5.1
+texture = SubResource("GradientTexture2D_jre5i")
+texture_scale = 0.69
+
+[node name="SecondaryMarkers" type="Node2D" parent="." index="4" unique_id=1015317670]
+z_index = 5
+
+[node name="GraduationCertificateMarker" type="Area2D" parent="SecondaryMarkers" index="0" unique_id=477480458]
+unique_name_in_owner = true
+position = Vector2(480, 205)
+
+[node name="MarkerVisual" type="Sprite2D" parent="SecondaryMarkers/GraduationCertificateMarker" index="0" unique_id=327679268]
+material = SubResource("CanvasItemMaterial_secondary_marker")
+scale = Vector2(0.28, 0.28)
+texture = ExtResource("9_secondary_marker")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="SecondaryMarkers/GraduationCertificateMarker" index="1" unique_id=1616966177]
+shape = SubResource("CircleShape2D_secondary_marker")
+
+[node name="AwardCertificateMarker" type="Area2D" parent="SecondaryMarkers" index="1" unique_id=1594123895]
+unique_name_in_owner = true
+position = Vector2(1047, 199)
+
+[node name="MarkerVisual" type="Sprite2D" parent="SecondaryMarkers/AwardCertificateMarker" index="0" unique_id=1227278947]
+material = SubResource("CanvasItemMaterial_secondary_marker")
+scale = Vector2(0.28, 0.28)
+texture = ExtResource("9_secondary_marker")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="SecondaryMarkers/AwardCertificateMarker" index="1" unique_id=490186867]
+shape = SubResource("CircleShape2D_secondary_marker")

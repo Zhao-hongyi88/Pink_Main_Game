@@ -1,16 +1,20 @@
-[gd_resource type="Resource" script_class="MemoryObservationData" load_steps=4 format=3]
+[gd_resource type="Resource" script_class="MemoryObservationData" format=3 uid="uid://gn1tb4gv4njm"]
 
-[ext_resource type="Script" path="res://scripts/memory/memory_observation_data.gd" id="1_observation_data"]
-[ext_resource type="Texture2D" path="res://TextureAsset/Memory/NPC1/JobSearchRecord/info_panel_background.png" id="2_panel_background"]
-[ext_resource type="Texture2D" path="res://TextureAsset/Memory/NPC3/EmployeeOvertimeStatistics/statistics_icon.png" id="3_statistics_icon"]
+[ext_resource type="Script" uid="uid://hrlf8lmpg2qq" path="res://scripts/memory/memory_observation_data.gd" id="1_observation_data"]
+[ext_resource type="Texture2D" uid="uid://dyan80tkmyssn" path="res://TextureAsset/Memory/NPC1/JobSearchRecord/info_panel_background.png" id="2_panel_background"]
+[ext_resource type="Texture2D" uid="uid://dc4sjtw42mtg2" path="res://TextureAsset/Memory/NPC3/EmployeeOvertimeStatistics/statistics_icon.png" id="3_statistics_icon"]
 
 [resource]
 script = ExtResource("1_observation_data")
 observation_id = &"employee_overtime_statistics"
-title = "Employee Overtime Statistics"
+title = "Business Operation Report"
 info = ""
-images = []
-image_placeholders = []
-dialogue = PackedStringArray()
+info_page_titles = PackedStringArray("Business Operation Report  1 / 5", "Business Operation Report  2 / 5", "Business Operation Report  3 / 5", "Business Operation Report  4 / 5", "Business Operation Report  5 / 5")
+info_pages = PackedStringArray("Strategic Transition Summary\n\nCompany: TimeLife Manufacturing Co.\nReport Period: Q2 224\n\nCurrent Business Status\nThe company is currently undergoing operational transition due to changes in market demand and production requirements.\n\nCurrent production capacity is insufficient to support planned business growth.", "Strategic Options\n\nOption 1: Maintain Current Capacity\nContinue operating with existing resources.\n\nExpected Result:\n• Reduced production output\n• Workforce adjustment required\n• Increased operational pressure", "Option 2: Expand Production Capacity\n\nIncrease production capability through external time financing.\n\nRequired Measures:\n• Apply for corporate time loan\n• Increase available production hours\n• Extend employee working schedules during expansion period", "Expected Result:\n• Maintain workforce stability\n• Support business growth\n• Increase long-term production capacity", "Management Statement\n\nThe company must make a strategic decision between short-term stability and long-term expansion.\n\nAdditional time resources are required to achieve production growth targets.")
+images = Array[Texture2D]([])
+image_placeholders = PackedStringArray()
+dialogue = PackedStringArray("The report shows that the company is facing operational pressure.", "Workforce adjustments were not a sudden decision, but the result of changes across multiple indicators.", "Within this system, managers also need to take responsibility for the company's future.")
 info_panel_background = ExtResource("2_panel_background")
 info_icon = ExtResource("3_statistics_icon")
+open_with_icon_preview = true
+open_with_icon_preview = true

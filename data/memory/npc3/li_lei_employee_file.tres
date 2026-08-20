@@ -1,16 +1,20 @@
-[gd_resource type="Resource" script_class="MemoryObservationData" load_steps=4 format=3]
+[gd_resource type="Resource" script_class="MemoryObservationData" format=3 uid="uid://dxc3p48clfc3t"]
 
-[ext_resource type="Script" path="res://scripts/memory/memory_observation_data.gd" id="1_observation_data"]
-[ext_resource type="Texture2D" path="res://TextureAsset/Memory/NPC1/JobSearchRecord/info_panel_background.png" id="2_panel_background"]
-[ext_resource type="Texture2D" path="res://TextureAsset/Memory/NPC3/LiLeiEmployeeFile/employee_file_icon.png" id="3_employee_file_icon"]
+[ext_resource type="Script" uid="uid://hrlf8lmpg2qq" path="res://scripts/memory/memory_observation_data.gd" id="1_observation_data"]
+[ext_resource type="Texture2D" uid="uid://dyan80tkmyssn" path="res://TextureAsset/Memory/NPC1/JobSearchRecord/info_panel_background.png" id="2_panel_background"]
+[ext_resource type="Texture2D" uid="uid://6ljba8jdqmvc" path="res://TextureAsset/Memory/NPC3/LiLeiEmployeeFile/employee_file_icon.png" id="3_employee_file_icon"]
 
 [resource]
 script = ExtResource("1_observation_data")
 observation_id = &"li_lei_employee_file"
-title = "Li Lei Employee File"
+title = "Layoff File"
 info = ""
-images = []
-image_placeholders = []
-dialogue = PackedStringArray()
+info_page_titles = PackedStringArray("Layoff File  1 / 6", "Layoff File  2 / 6", "Employee Adjustment List  3 / 6", "Employee Adjustment List  4 / 6", "Employee Adjustment List  5 / 6", "Management Review Note  6 / 6")
+info_pages = PackedStringArray("Preliminary Team Reduction Assessment\n\nCompany: TimeLife Manufacturing Co.\nDepartment: Operations Department\nDepartment Manager: Lisa\nPrepared For: Senior Management Review\n\nDepartment Overview\nDepartment Size: 32 Employees\nPotential Reduction: 8 Employees", "This assessment was prepared according to senior management's request to evaluate potential workforce adjustments under reduced production capacity conditions.\n\nPreliminary Employee Adjustment List", "Mike — Operations Specialist\nReason: Production capacity adjustment\n\nRyan — Junior Operations Associate\nReason: Production capacity adjustment\n\nEmily — Operations Coordinator\nReason: Position consolidation", "Daniel — Operations Assistant\nReason: Production capacity adjustment\n\nSophia — Quality Control Assistant\nReason: Production capacity adjustment\n\nJason — Process Support Specialist\nReason: Position consolidation", "Olivia — Operations Assistant\nReason: Workflow optimization\n\nHenry — Production Support Associate\nReason: Production capacity adjustment", "The listed employees were identified based on current production requirements, department structure, and operational efficiency considerations.\n\nThis document represents a preliminary adjustment assessment and does not constitute final termination decisions.\n\nFinal workforce actions will depend on production expansion approval and resource allocation.")
+images = Array[Texture2D]([])
+image_placeholders = PackedStringArray()
+dialogue = PackedStringArray("Several of the names on this list look very familiar.", "For the company, layoffs are only a resource adjustment.")
 info_panel_background = ExtResource("2_panel_background")
 info_icon = ExtResource("3_employee_file_icon")
+open_with_icon_preview = true
+open_with_icon_preview = true

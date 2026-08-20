@@ -6,11 +6,19 @@
 [ext_resource type="Resource" path="res://data/memory/npc4/table_phone.tres" id="4_data_a"]
 [ext_resource type="Resource" path="res://data/memory/npc4/hospital_boxed_meal.tres" id="5_data_b"]
 [ext_resource type="Resource" path="res://data/memory/npc4/hospital_care_record.tres" id="6_data_c"]
-[ext_resource type="Texture2D" uid="uid://rlj24wgneirr" path="res://TextureAsset/Memory/NPC4/su_qing_memory_background.png" id="7_background"]
+[ext_resource type="Texture2D" path="res://TextureAsset/Memory/NPC4/su_qing_hospital_scene.png" id="7_background"]
 [ext_resource type="Texture2D" uid="uid://ccl8fxrgmo5hh" path="res://TextureAsset/Memory/Common/unexplored_marker.png" id="8_marker"]
+[ext_resource type="Texture2D" path="res://TextureAsset/Memory/NPC1/secondary_location_marker.png" id="9_dialogue_marker"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_point"]
 size = Vector2(80, 70)
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_dialogue_marker"]
+light_mode = 1
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_dialogue_marker"]
+radius = 24.0
+
 
 [node name="SuQingMemory" unique_id=1043829086 instance=ExtResource("1_base")]
 script = ExtResource("2_memory")
@@ -69,37 +77,9 @@ shape = SubResource("RectangleShape2D_point")
 scale = Vector2(0.2, 0.2)
 texture = ExtResource("8_marker")
 
-[node name="HospitalBoxedMeal" type="Area2D" parent="ObservationPoints" index="1" unique_id=1654572754]
+[node name="HospitalCareRecord" type="Area2D" parent="ObservationPoints" index="1" unique_id=1804419003]
 unique_name_in_owner = true
-position = Vector2(559, 560)
-script = ExtResource("3_point")
-observation_data = ExtResource("5_data_b")
-
-[node name="Visual" type="Polygon2D" parent="ObservationPoints/HospitalBoxedMeal" index="0" unique_id=2147363417]
-visible = false
-color = Color(0.72, 0.43, 0.58, 1)
-polygon = PackedVector2Array(-110, -60, 110, -60, 110, 60, -110, 60)
-
-[node name="Label" type="Label" parent="ObservationPoints/HospitalBoxedMeal" index="1" unique_id=220366701]
-visible = false
-offset_left = -100.0
-offset_top = -18.0
-offset_right = 100.0
-offset_bottom = 18.0
-text = "Hospital Boxed Meal"
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="ObservationPoints/HospitalBoxedMeal" index="2" unique_id=856388979]
-shape = SubResource("RectangleShape2D_point")
-
-[node name="UnexploredMarker" type="Sprite2D" parent="ObservationPoints/HospitalBoxedMeal" index="3" unique_id=980587513]
-scale = Vector2(0.2, 0.2)
-texture = ExtResource("8_marker")
-
-[node name="HospitalCareRecord" type="Area2D" parent="ObservationPoints" index="2" unique_id=1804419003]
-unique_name_in_owner = true
-position = Vector2(1025, 151)
+position = Vector2(346, 415)
 script = ExtResource("3_point")
 observation_data = ExtResource("6_data_c")
 
@@ -128,7 +108,7 @@ texture = ExtResource("8_marker")
 [node name="MemoryInfoPanel" parent="MemoryUI" index="3"]
 layout_mode = 3
 
-[node name="DialogueBox" parent="MemoryUI/MemoryInfoPanel" index="1"]
+[node name="DialogueBox" parent="MemoryUI/MemoryInfoPanel" index="2"]
 anchors_preset = 0
 
 [node name="DialogueContinueButton" parent="MemoryUI/MemoryInfoPanel/DialogueBox" index="2"]
@@ -144,5 +124,19 @@ grow_vertical = 0
 [node name="ImagePlaceholders" parent="MemoryUI/MemoryInfoPanel/Panel" index="5"]
 anchor_top = 1.0
 
-[node name="DialogueBox2" parent="MemoryUI/MemoryInfoPanel" index="3"]
+[node name="DialogueBox2" parent="MemoryUI/MemoryInfoPanel" index="4"]
 anchors_preset = 0
+
+[node name="DialogueMarker" type="Area2D" parent="." index="4"]
+unique_name_in_owner = true
+z_index = 5
+
+[node name="GoldRing" type="Sprite2D" parent="DialogueMarker" index="0"]
+material = SubResource("CanvasItemMaterial_dialogue_marker")
+position = Vector2(756, 399)
+scale = Vector2(0.28, 0.28)
+texture = ExtResource("9_dialogue_marker")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="DialogueMarker" index="1"]
+position = Vector2(756, 399)
+shape = SubResource("CircleShape2D_dialogue_marker")

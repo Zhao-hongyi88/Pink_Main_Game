@@ -3,14 +3,16 @@
 [ext_resource type="Script" path="res://scripts/memory/memory_observation_data.gd" id="1_observation_data"]
 [ext_resource type="Texture2D" path="res://TextureAsset/Memory/NPC1/JobSearchRecord/info_panel_background.png" id="2_panel_background"]
 [ext_resource type="Texture2D" path="res://TextureAsset/Memory/NPC4/HospitalCareRecord/care_record_icon.png" id="3_care_record_icon"]
+[ext_resource type="Texture2D" path="res://TextureAsset/Memory/NPC4/HospitalCareRecord/hospital_care_record_icon.png" id="4_hospital_care_icon"]
 
 [resource]
 script = ExtResource("1_observation_data")
 observation_id = &"hospital_care_record"
 title = "Hospital Care Record"
-info = ""
-images = []
-image_placeholders = []
-dialogue = PackedStringArray()
+info = "Date | Caregiver | Relationship | Time\n\n02/11/255 | MIKE | Son | 08:40 AM–12:25 PM\n03/05/255 | MIKE | Son | 09:10 AM–01:05 PM\n04/18/255 | TOM | Family Friend | 08:55 AM–02:15 PM\n05/09/255 | MIKE | Son | 10:20 AM–12:45 PM\n06/22/255 | MIKE | Son | 08:35 AM–03:10 PM\n07/14/255 | TOM | Family Friend | 09:05 AM–01:30 PM"
+images = Array[Texture2D]([])
+image_placeholders = PackedStringArray()
+dialogue = PackedStringArray("The records show that when Li Lei could not be there, Tom took on part of the caregiving work.", "He is not Liu Guilan's family, yet he devoted his own time to helping this family.")
 info_panel_background = ExtResource("2_panel_background")
-info_icon = ExtResource("3_care_record_icon")
+info_icon = ExtResource("4_hospital_care_icon")
+open_with_icon_preview = true

@@ -1,16 +1,19 @@
-[gd_resource type="Resource" script_class="MemoryObservationData" load_steps=4 format=3]
+[gd_resource type="Resource" script_class="MemoryObservationData" format=3 uid="uid://mc20lpf2imd6"]
 
-[ext_resource type="Script" path="res://scripts/memory/memory_observation_data.gd" id="1_observation_data"]
-[ext_resource type="Texture2D" path="res://TextureAsset/Memory/NPC1/JobSearchRecord/info_panel_background.png" id="2_panel_background"]
-[ext_resource type="Texture2D" path="res://TextureAsset/Memory/NPC1/PersonalTimeReport/report_icon.png" id="3_report_icon"]
+[ext_resource type="Script" uid="uid://hrlf8lmpg2qq" path="res://scripts/memory/memory_observation_data.gd" id="1_observation_data"]
+[ext_resource type="Texture2D" uid="uid://dyan80tkmyssn" path="res://TextureAsset/Memory/NPC1/JobSearchRecord/info_panel_background.png" id="2_panel_background"]
+[ext_resource type="Texture2D" uid="uid://lhou62ax5o6v" path="res://TextureAsset/Memory/NPC1/PersonalTimeReport/report_icon.png" id="3_report_icon"]
 
 [resource]
 script = ExtResource("1_observation_data")
 observation_id = &"personal_practice_report"
 title = "Personal Time Report"
 info = ""
-images = []
-image_placeholders = []
-dialogue = PackedStringArray()
+info_page_titles = PackedStringArray("Personal Time Value Report  1 / 3", "Evaluation Criteria  2 / 3", "Assessment Summary  3 / 3")
+info_pages = PackedStringArray("Personal Information\nName: Zhang Yuan\nAge: 22\nEducation: Clock University\nDegree: Bachelor of Business Administration\nEmployment Status: Temporarily Unemployed\n\nPersonal Time Value Rating\nRating: C", "Category                                      Rating\n\nEducation Background                  B\nLearning Ability                            A\nProfessional Experience            D\nPractical Skills                               C\nEmployment Stability                  D\nFuture Growth Potential            B", "The candidate has completed professional education at Clock University and demonstrates strong learning ability.\n\nHowever, the candidate is currently unemployed and lacks sufficient professional experience, resulting in limited current time value.\n\nFurther training and practical experience are recommended to improve employment competitiveness.")
+images = Array[Texture2D]([])
+image_placeholders = PackedStringArray()
+dialogue = PackedStringArray("The report turns a person’s future into a value that can be calculated.", "His potential has been recorded, but that does not increase the opportunities available to him in reality.", "What I need to confirm is whether he has the ability to repay, not whether his choice was the right one.")
 info_panel_background = ExtResource("2_panel_background")
 info_icon = ExtResource("3_report_icon")
+open_with_icon_preview = true

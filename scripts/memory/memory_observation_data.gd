@@ -13,3 +13,5 @@ extends Resource
 @export var dialogue: PackedStringArray = []
 @export var info_panel_background: Texture2D
 @export var info_icon: Texture2D
+@export var open_with_icon_preview := false
+@export var dialogue_box_texture: Texture2D

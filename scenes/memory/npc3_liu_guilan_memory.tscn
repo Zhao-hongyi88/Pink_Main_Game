@@ -8,6 +8,7 @@
 [ext_resource type="Resource" path="res://data/memory/npc3/project_leader_list.tres" id="6_data_c"]
 [ext_resource type="Texture2D" uid="uid://b64gkbvnfx5fo" path="res://TextureAsset/Memory/NPC3/liu_guilan_memory_background.png" id="7_background"]
 [ext_resource type="Texture2D" uid="uid://ccl8fxrgmo5hh" path="res://TextureAsset/Memory/Common/unexplored_marker.png" id="8_marker"]
+[ext_resource type="Texture2D" uid="uid://dtpxorrbhcnu0" path="res://TextureAsset/Memory/NPC1/secondary_location_marker.png" id="9_secondary_marker"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_point"]
 size = Vector2(67, 70)
@@ -23,13 +24,20 @@ fill_from = Vector2(0.5086705, 0.47976878)
 fill_to = Vector2(0.88150287, 0.18208092)
 
 [sub_resource type="Gradient" id="Gradient_6tw3n"]
-offsets = PackedFloat32Array(0.948, 1)
+offsets = PackedFloat32Array(0.392, 1)
 colors = PackedColorArray(1, 1, 1, 0.38056678, 1, 1, 1, 0)
 
 [sub_resource type="GradientTexture2D" id="GradientTexture2D_8jovo"]
 gradient = SubResource("Gradient_6tw3n")
 fill = 1
-fill_to = Vector2(0.7109827, 0.76878613)
+fill_from = Vector2(0.50289017, 0.49421966)
+fill_to = Vector2(0.6416185, 0.89017344)
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_secondary_marker"]
+light_mode = 1
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_secondary_marker"]
+radius = 24.0
 
 [node name="LiuGuilanMemory" unique_id=1476103393 instance=ExtResource("1_base")]
 script = ExtResource("2_memory")
@@ -78,7 +86,7 @@ offset_left = -100.0
 offset_top = -18.0
 offset_right = 100.0
 offset_bottom = 18.0
-text = "Employee Overtime Statistics"
+text = "Business Operation Report"
 horizontal_alignment = 1
 vertical_alignment = 1
 
@@ -106,7 +114,7 @@ offset_left = -100.0
 offset_top = -18.0
 offset_right = 100.0
 offset_bottom = 18.0
-text = "Li Lei Employee File"
+text = "Layoff File"
 horizontal_alignment = 1
 vertical_alignment = 1
 
@@ -135,7 +143,7 @@ offset_left = -100.0
 offset_top = -18.0
 offset_right = 100.0
 offset_bottom = 18.0
-text = "Project Leader List"
+text = "Ryan's Probation Review"
 horizontal_alignment = 1
 vertical_alignment = 1
 
@@ -149,7 +157,7 @@ texture = ExtResource("8_marker")
 [node name="MemoryInfoPanel" parent="MemoryUI" index="3"]
 layout_mode = 3
 
-[node name="DialogueBox" parent="MemoryUI/MemoryInfoPanel" index="1"]
+[node name="DialogueBox" parent="MemoryUI/MemoryInfoPanel" index="2"]
 anchors_preset = 0
 
 [node name="DialogueContinueButton" parent="MemoryUI/MemoryInfoPanel/DialogueBox" index="2"]
@@ -165,7 +173,7 @@ grow_vertical = 0
 [node name="ImagePlaceholders" parent="MemoryUI/MemoryInfoPanel/Panel" index="5"]
 anchor_top = 1.0
 
-[node name="DialogueBox2" parent="MemoryUI/MemoryInfoPanel" index="3"]
+[node name="DialogueBox2" parent="MemoryUI/MemoryInfoPanel" index="4"]
 anchors_preset = 0
 
 [node name="PointLight2D" type="PointLight2D" parent="." index="3" unique_id=22373072]
@@ -181,7 +189,34 @@ energy = 1.1
 texture = SubResource("GradientTexture2D_bjqgx")
 
 [node name="PointLight2D2" type="PointLight2D" parent="." index="4" unique_id=23944632]
-position = Vector2(316, 181.99998)
+position = Vector2(285, 184)
 scale = Vector2(5.398438, 4.982422)
 energy = 4.19
 texture = SubResource("GradientTexture2D_8jovo")
+
+[node name="SecondaryMarkers" type="Node2D" parent="." index="5" unique_id=30597125]
+z_index = 5
+
+[node name="DaughterMessageMarker" type="Area2D" parent="SecondaryMarkers" index="0" unique_id=2043399065]
+unique_name_in_owner = true
+position = Vector2(681, 319)
+
+[node name="MarkerVisual" type="Sprite2D" parent="SecondaryMarkers/DaughterMessageMarker" index="0" unique_id=1832816074]
+material = SubResource("CanvasItemMaterial_secondary_marker")
+scale = Vector2(0.28, 0.28)
+texture = ExtResource("9_secondary_marker")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="SecondaryMarkers/DaughterMessageMarker" index="1" unique_id=1281050836]
+shape = SubResource("CircleShape2D_secondary_marker")
+
+[node name="ParentChildInvitationMarker" type="Area2D" parent="SecondaryMarkers" index="1" unique_id=299340307]
+unique_name_in_owner = true
+position = Vector2(909, 216)
+
+[node name="MarkerVisual" type="Sprite2D" parent="SecondaryMarkers/ParentChildInvitationMarker" index="0" unique_id=1341300423]
+material = SubResource("CanvasItemMaterial_secondary_marker")
+scale = Vector2(0.28, 0.28)
+texture = ExtResource("9_secondary_marker")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="SecondaryMarkers/ParentChildInvitationMarker" index="1" unique_id=614369326]
+shape = SubResource("CircleShape2D_secondary_marker")
