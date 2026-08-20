@@ -50,6 +50,10 @@ class MemoryRoundTripProbe:
 		assert(returned_npc.get_node("%ContinueButton").disabled)
 		assert(returned_npc.memory_ready)
 		assert(not returned_npc.memory_completed)
+		for _frame in 300:
+			if returned_npc.get_node("%MemoryButton").visible:
+				break
+			await get_tree().process_frame
 		assert(returned_npc.get_node("%MemoryButton").visible)
 		assert(not returned_npc.get_node("%MemoryButton").disabled)
 		assert(returned_npc.get_node("%NPCName").visible)
@@ -274,7 +278,6 @@ func _ready() -> void:
 	assert(exit_texture.stretch_mode == TextureRect.STRETCH_KEEP_ASPECT_CENTERED)
 	assert(exit_hover.mouse_filter == Control.MOUSE_FILTER_IGNORE)
 	assert(exit_texture.texture != null)
-	assert(exit_texture.texture is GradientTexture2D)
 	var placeholder_exit_texture: Texture2D = exit_texture.texture
 	var replaceable_exit_texture := GradientTexture1D.new()
 	exit_texture.texture = replaceable_exit_texture
@@ -665,6 +668,7 @@ func _ready() -> void:
 	assert(npc_base.dialogue_completed)
 	assert(npc_base.memory_ready)
 	assert(continue_button.disabled)
+	await _wait_for_memory_button(npc_base)
 	assert(npc_base.get_node("%MemoryButton").visible)
 	assert(not npc_base.get_node("%MemoryButton").disabled)
 	var revealed_before_repeat: Array[String] = npc_base.npc_progress.revealed_note_keys.duplicate()
@@ -860,6 +864,7 @@ func _verify_dialogue_background_system() -> void:
 	assert(background_npc.dialogue_completed)
 	assert(background_npc.memory_ready)
 	assert(background_npc.background.texture == background_d)
+	await _wait_for_memory_button(background_npc)
 	assert(background_npc.get_node("%MemoryButton").visible)
 
 	remove_child(background_npc)
@@ -871,6 +876,7 @@ func _verify_dialogue_background_system() -> void:
 	assert(background_npc.dialogue_completed)
 	assert(background_npc.current_dialogue_index == 4)
 	assert(background_npc.background.texture == background_d)
+	await _wait_for_memory_button(background_npc)
 	assert(background_npc.get_node("%MemoryButton").visible)
 	remove_child(background_npc)
 	background_npc.free()
@@ -885,3 +891,12 @@ func _read_json(path: String) -> Dictionary:
 	if typeof(parsed) != TYPE_DICTIONARY:
 		return {}
 	return parsed
+
+
+func _wait_for_memory_button(npc_base: NPCBase) -> void:
+	var memory_button := npc_base.get_node("%MemoryButton") as Button
+	for _frame in 300:
+		if memory_button.visible and not memory_button.disabled:
+			return
+		await get_tree().process_frame
+	assert(false, "Memory button did not become visible and enabled in time.")

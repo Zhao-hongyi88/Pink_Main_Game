@@ -19,5 +19,10 @@
 		{"key": "experience_summary", "header": "经历摘要", "content": "这里是测试资料文本04。"},
 		{"key": "extra_info", "header": "补充资料", "content": "这里是测试资料文本05。"}
 	],
-	"memory_scene": "res://scenes/memory/npc1_zhang_yuan_memory.tscn"
+	"memory_scene": "res://scenes/memory/npc1_zhang_yuan_memory.tscn",
+	"dossier_photos": [
+		"res://TextureAsset/NPC/DossierPhotos/文字.png",
+		"res://TextureAsset/NPC/DossierPhotos/文字2.png",
+		"res://TextureAsset/NPC/DossierPhotos/文字3.png"
+	]
 }

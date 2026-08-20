@@ -39,6 +39,21 @@ func _ready() -> void:
 
 func _run_e2e() -> void:
 	print("CHAPTER_ONE_E2E: PROJECT_STARTED")
+	var intro := await _wait_for_scene(&"IntroSequence") as Control
+	if not _check(intro != null, "Intro did not load."):
+		return
+	var intro_start := intro.get_node("%StartButton") as TextureButton
+	if not _check(intro_start != null and not intro_start.disabled, "Intro START is unavailable."):
+		return
+	intro_start.pressed.emit()
+	for _frame in 180:
+		if bool(intro.get("_is_playing_story")):
+			break
+		await get_tree().process_frame
+	if not _check(bool(intro.get("_is_playing_story")), "Intro story did not start."):
+		return
+	intro.get_node("%VideoPlayer").finished.emit()
+	print("CHAPTER_ONE_E2E: INTRO_OK")
 	var main_menu := await _wait_for_scene(&"MainMenu") as Control
 	if not _check(main_menu != null, "Main Menu did not load."):
 		return
@@ -119,6 +134,8 @@ func _run_e2e() -> void:
 	await _capture("04_ryan_ready_for_memory.png")
 
 	var memory_button := npc.get_node("%MemoryButton") as Button
+	if not await _wait_for_button_ready(memory_button):
+		return
 	if not _check(memory_button.visible and not memory_button.disabled, "Enter Memory is unavailable."):
 		return
 	memory_button.pressed.emit()
@@ -129,9 +146,9 @@ func _run_e2e() -> void:
 	await _capture("05_ryan_memory.png")
 
 	for point_path in [
-		"ObservationPoints/StudyRecord",
-		"ObservationPoints/DegreeCertificate",
-		"ObservationPoints/InterviewResult",
+		"ObservationPoints/PersonalPracticeReport",
+		"ObservationPoints/TimeLoanApplication",
+		"ObservationPoints/JobSearchRecord",
 	]:
 		if not await _complete_observation(memory_scene, point_path):
 			return
@@ -235,6 +252,12 @@ func _complete_observation(memory_scene: Node, point_path: String) -> bool:
 	await get_tree().process_frame
 	if not _check(info_panel.visible, "Memory point did not open: " + point_path):
 		return false
+	if info_panel.icon_preview.visible:
+		var preview_click := InputEventMouseButton.new()
+		preview_click.button_index = MOUSE_BUTTON_LEFT
+		preview_click.pressed = true
+		info_panel.icon_preview.gui_input.emit(preview_click)
+		await get_tree().process_frame
 
 	var step_count := 0
 	while info_panel.visible and step_count < 20:
@@ -318,6 +341,16 @@ func _wait_for_control_hidden(control: Control) -> bool:
 	return false
 
 
+func _wait_for_button_ready(button: Button) -> bool:
+	var timeout_at := Time.get_ticks_msec() + TIMEOUT_MS
+	while Time.get_ticks_msec() < timeout_at:
+		if button != null and button.visible and not button.disabled:
+			return true
+		await get_tree().process_frame
+	_fail("Expected button did not become visible and enabled.")
+	return false
+
+
 func _wait_for_intro_finished(npc: NPCBase) -> bool:
 	var timeout_at := Time.get_ticks_msec() + TIMEOUT_MS
 	while Time.get_ticks_msec() < timeout_at:
@@ -358,7 +391,7 @@ func _capture(file_name: String) -> void:
 	if DisplayServer.get_name() == "headless":
 		_fail("E2E capture requires a non-headless display.")
 		return
-	var artifact_dir := ProjectSettings.globalize_path("res://e2e_artifacts")
+	var artifact_dir := ProjectSettings.globalize_path("res://.godot/e2e_artifacts")
 	var dir_error := DirAccess.make_dir_recursive_absolute(artifact_dir)
 	if dir_error != OK and dir_error != ERR_ALREADY_EXISTS:
 		_fail("Could not create E2E artifact directory.")

@@ -306,6 +306,7 @@ func _verify_all_npcs_use_shared_ui() -> void:
 		if bool(test_case["dialogue_complete_on_end"]):
 			assert(npc_base.dialogue_completed)
 			assert(npc_base.memory_ready)
+			await _wait_for_memory_button(npc_base)
 			assert(npc_base.get_node("%MemoryButton").visible)
 			assert(not npc_base.get_node("%MemoryButton").disabled)
 		else:
@@ -424,6 +425,7 @@ func _verify_npc_progress_isolation() -> void:
 	npc_b_reloaded_continue.pressed.emit()
 	assert(npc_b_reloaded.dialogue_completed)
 	assert(npc_b_reloaded.memory_ready)
+	await _wait_for_memory_button(npc_b_reloaded)
 	assert(npc_b_reloaded.get_node("%MemoryButton").visible)
 	assert(GameState.mark_memory_completed(&"npc_li_lei"))
 	assert(npc_b_reloaded.memory_completed)
@@ -468,3 +470,12 @@ func _instantiate_npc(data_path: String) -> NPCBase:
 func _dispose_npc(npc_base: NPCBase) -> void:
 	remove_child(npc_base)
 	npc_base.free()
+
+
+func _wait_for_memory_button(npc_base: NPCBase) -> void:
+	var memory_button := npc_base.get_node("%MemoryButton") as Button
+	for _frame in 300:
+		if memory_button.visible and not memory_button.disabled:
+			return
+		await get_tree().process_frame
+	assert(false, "Memory button did not become visible and enabled in time.")
