@@ -38,5 +38,10 @@
 		{"key": "basic_info", "header": "基本信息", "content": "背景切换测试 NPC"},
 		{"key": "work_info", "header": "职业信息", "content": "测试背景切换逻辑"}
 	],
-	"memory_scene": "res://scenes/memory/npc1_zhang_yuan_memory.tscn"
+	"memory_scene": "res://scenes/memory/npc1_zhang_yuan_memory.tscn",
+	"dossier_photos": [
+		"res://TextureAsset/NPC/DossierPhotos/文字.png",
+		"res://TextureAsset/NPC/DossierPhotos/文字2.png",
+		"res://TextureAsset/NPC/DossierPhotos/文字3.png"
+	]
 }

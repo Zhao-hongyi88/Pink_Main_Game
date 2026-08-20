@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="MemoryObservationData" format=3 uid="uid://cftfry83pj1up"]
+
+[ext_resource type="Script" uid="uid://hrlf8lmpg2qq" path="res://scripts/memory/memory_observation_data.gd" id="1_observation_data"]
+[ext_resource type="Texture2D" uid="uid://dyan80tkmyssn" path="res://TextureAsset/Memory/NPC1/JobSearchRecord/info_panel_background.png" id="2_panel_background"]
+[ext_resource type="Texture2D" uid="uid://b1yaaullx0i45" path="res://TextureAsset/Memory/NPC1/TimeLoanApplication/loan_application_preview.png" id="3_application_icon"]
+
+[resource]
+script = ExtResource("1_observation_data")
+observation_id = &"time_loan_application"
+title = "Time Loan Application"
+info = ""
+info_page_titles = PackedStringArray("Time Loan Application  1 / 2", "Time Loan Application  2 / 2")
+info_pages = PackedStringArray("Applicant: Zhang Yuan\n\nLoan Purpose:\nTo purchase an opportunity to enter society.\n\nCollateral:\nFuture labor time.\n\nLoan Term:\n15 years.", "Assessment Result:\nEducation and abilities meet the basic requirements, but employment risk remains high.")
+images = Array[Texture2D]([])
+image_placeholders = PackedStringArray()
+dialogue = PackedStringArray("These are the years of his future that he has pledged in advance to secure his current opportunity.", "For the bank, this is a risk assessment.", "But for the applicant, it is an attempt to change his situation.")
+info_panel_background = ExtResource("2_panel_background")
+info_icon = ExtResource("3_application_icon")
+open_with_icon_preview = true

@@ -5,37 +5,36 @@ class MemoryIntegrationProbe:
 	extends Node
 
 	const NPC_BASE_SCENE_PATH := "res://scenes/npc/npc_base.tscn"
-	const HOME_SCENE_PATH := "res://scenes/main/main_menu.tscn"
 	const CASES: Array[Dictionary] = [
 		{
 			"npc_id": &"npc_zhang_yuan",
 			"data_path": "res://data/npc/npc_a.json",
 			"memory_scene": "res://scenes/memory/npc1_zhang_yuan_memory.tscn",
-			"points": [&"StudyRecord", &"DegreeCertificate", &"InterviewResult"],
+			"points": [&"PersonalPracticeReport", &"TimeLoanApplication", &"JobSearchRecord"],
 		},
 		{
 			"npc_id": &"npc_li_lei",
 			"data_path": "res://data/npc/npc_b.json",
 			"memory_scene": "res://scenes/memory/npc2_li_lei_memory.tscn",
-			"points": [&"AttendanceRecord", &"ComputerIdleTime", &"RentalContract"],
+			"points": [&"MotherMessage", &"LivingExpenseRecord", &"UnfinishedPersonalPlan"],
 		},
 		{
 			"npc_id": &"npc_liu_guilan",
 			"data_path": "res://data/npc/npc_c.json",
 			"memory_scene": "res://scenes/memory/npc3_liu_guilan_memory.tscn",
-			"points": [&"MedicalRecord", &"TreatmentBill", &"TreatmentBed"],
+			"points": [&"EmployeeOvertimeStatistics", &"LiLeiEmployeeFile", &"ProjectLeaderList"],
 		},
 		{
 			"npc_id": &"npc_su_qing",
 			"data_path": "res://data/npc/npc_d.json",
 			"memory_scene": "res://scenes/memory/npc4_su_qing_memory.tscn",
-			"points": [&"MeetingRecord", &"WorkDocuments", &"DaughterChatRecord"],
+			"points": [&"TablePhone", &"HospitalCareRecord"],
 		},
 		{
 			"npc_id": &"npc_wang_jianguo",
 			"data_path": "res://data/npc/npc_e.json",
 			"memory_scene": "res://scenes/memory/npc5_wang_jianguo_memory.tscn",
-			"points": [&"CommunitySupplies", &"DonationCertificates", &"CharityForumRecord"],
+			"points": [&"ComputerRecords"],
 		},
 	]
 
@@ -80,6 +79,7 @@ class MemoryIntegrationProbe:
 		await _complete_npc_dialogue(npc_base)
 
 		var memory_button := npc_base.get_node("%MemoryButton") as Button
+		await _wait_for_button_ready(memory_button)
 		assert(memory_button.visible)
 		assert(not memory_button.disabled)
 		memory_button.pressed.emit()
@@ -89,7 +89,7 @@ class MemoryIntegrationProbe:
 		assert(memory_scene.scene_file_path == test_case["memory_scene"])
 		assert(StringName(memory_scene.get("npc_id")) == test_case["npc_id"])
 		assert(str(memory_scene.get("return_npc_data_path")) == test_case["data_path"])
-		assert(memory_scene.get("observed_points").size() == 3)
+		assert(memory_scene.get("observed_points").size() == test_case["points"].size())
 
 		var point_names: Array = test_case["points"]
 		await _validate_zhang_yuan_marker_and_dialogue_flow(memory_scene, point_names[0])
@@ -103,7 +103,12 @@ class MemoryIntegrationProbe:
 		complete_button.pressed.emit()
 		await _wait_for_navigation()
 
-		assert(get_tree().current_scene.scene_file_path == HOME_SCENE_PATH)
+		assert(get_tree().current_scene.scene_file_path == NPC_BASE_SCENE_PATH)
+		assert(str(get_tree().current_scene.get("npc_data_path")) == test_case["data_path"])
+		var contract_book := get_tree().current_scene.get_node(
+			"DossierPanel/TimeLoanContractButton"
+		) as TextureButton
+		assert(contract_book != null and contract_book.visible)
 		var progress := GameState.get_npc_progress(test_case["npc_id"])
 		assert(progress != null)
 		assert(progress.memory_completed)
@@ -114,6 +119,7 @@ class MemoryIntegrationProbe:
 		var npc_base := get_tree().current_scene
 		await _complete_npc_dialogue(npc_base)
 		var memory_button := npc_base.get_node("%MemoryButton") as Button
+		await _wait_for_button_ready(memory_button)
 		memory_button.pressed.emit()
 		await _wait_for_navigation()
 
@@ -169,6 +175,13 @@ class MemoryIntegrationProbe:
 		assert(false, "NPCBase dialogue input did not unblock in time.")
 
 
+	func _wait_for_button_ready(button: Button) -> void:
+		for _frame in 300:
+			if button.visible and not button.disabled:
+				return
+			await get_tree().process_frame
+		assert(false, "Expected button did not become visible and enabled in time.")
+
 	func _complete_observation(memory_scene: Node, point_name: StringName) -> void:
 		var point := memory_scene.get_node("%%%s" % point_name)
 		var observation_data = point.get("observation_data")
@@ -178,6 +191,7 @@ class MemoryIntegrationProbe:
 			completed_ids.append(StringName(observation_id))
 		info_panel.observation_completed.connect(record_completed, CONNECT_ONE_SHOT)
 		await _click_observation_point(point)
+		await _open_icon_preview_if_needed(info_panel, observation_data)
 
 		assert(info_panel.visible)
 		var object_panel := info_panel.get_node("Panel") as Control
@@ -187,9 +201,16 @@ class MemoryIntegrationProbe:
 		var dialogue_content_label := dialogue_box.get_node("DialogueContentLabel") as Label
 		assert(object_panel.visible)
 		assert(not dialogue_box.visible)
-		assert(info_panel.get_node("Panel/ContentLabel").text == observation_data.info)
+		var expected_info: String = str(observation_data.info)
+		if not observation_data.info_pages.is_empty():
+			expected_info = observation_data.info_pages[0]
+		assert(info_panel.get_node("Panel/ContentLabel").text == expected_info)
 
-		await _click_gui_button(object_continue_button)
+		var info_step_count: int = maxi(1, observation_data.info_pages.size())
+		for info_step in info_step_count:
+			await _click_gui_button(object_continue_button)
+			if info_step < info_step_count - 1:
+				assert(object_panel.visible)
 		if not observation_data.dialogue.is_empty():
 			assert(info_panel.visible)
 			assert(not object_panel.visible)
@@ -222,10 +243,12 @@ class MemoryIntegrationProbe:
 		# 未完成点打开后进入 DialogueBox，再使用真实 CloseButton 取消，Marker 必须恢复。
 		assert(marker.visible)
 		await _click_observation_point(point)
+		await _open_icon_preview_if_needed(info_panel, observation_data)
 		assert(info_panel.visible)
 		assert(info_panel.get_node("Panel").visible)
 		assert(not info_panel.get_node("DialogueBox").visible)
-		await _click_gui_button(info_panel.get_node("Panel/ContinueButton") as Button)
+		for _info_step in maxi(1, observation_data.info_pages.size()):
+			await _click_gui_button(info_panel.get_node("Panel/ContinueButton") as Button)
 		var dialogue_box := info_panel.get_node("DialogueBox") as Control
 		assert(dialogue_box.visible)
 		var dialogue_label := dialogue_box.get_node("DialogueContentLabel") as Label
@@ -248,7 +271,9 @@ class MemoryIntegrationProbe:
 
 		# 已完成点重新打开后使用 DialogueCloseButton，Marker 仍必须保持隐藏。
 		await _click_observation_point(point)
-		await _click_gui_button(info_panel.get_node("Panel/ContinueButton") as Button)
+		await _open_icon_preview_if_needed(info_panel, observation_data)
+		for _info_step in maxi(1, observation_data.info_pages.size()):
+			await _click_gui_button(info_panel.get_node("Panel/ContinueButton") as Button)
 		assert(dialogue_box.visible)
 		await _click_gui_button(dialogue_box.get_node("DialogueCloseButton") as Button)
 		assert(not info_panel.visible)
@@ -265,17 +290,19 @@ class MemoryIntegrationProbe:
 		info_panel.observation_cancelled.disconnect(record_cancelled)
 
 
-	func _click_gui_button(button: Button) -> void:
-		assert(button != null)
-		assert(button.is_visible_in_tree())
-		assert(not button.disabled)
-		var click_position := button.get_global_rect().get_center()
-		button.set_meta(&"memory_smoke_button_down", false)
-		button.button_down.connect(
-			func() -> void: button.set_meta(&"memory_smoke_button_down", true),
-			CONNECT_ONE_SHOT
-		)
+	func _open_icon_preview_if_needed(info_panel: MemoryInfoPanel, observation_data) -> void:
+		if not observation_data.open_with_icon_preview:
+			return
+		var icon_preview := info_panel.get_node("IconPreview") as TextureRect
+		assert(icon_preview.visible)
+		await _click_control(icon_preview)
+		assert(not icon_preview.visible)
 
+
+	func _click_control(control: Control) -> void:
+		assert(control != null)
+		assert(control.is_visible_in_tree())
+		var click_position := control.get_global_rect().get_center()
 		var motion := InputEventMouseMotion.new()
 		motion.position = click_position
 		motion.global_position = click_position
@@ -290,7 +317,6 @@ class MemoryIntegrationProbe:
 		press.global_position = click_position
 		get_viewport().push_input(press, true)
 		await get_tree().process_frame
-		assert(button.get_meta(&"memory_smoke_button_down", false))
 
 		var release := InputEventMouseButton.new()
 		release.button_index = MOUSE_BUTTON_LEFT
@@ -299,6 +325,14 @@ class MemoryIntegrationProbe:
 		release.position = click_position
 		release.global_position = click_position
 		get_viewport().push_input(release, true)
+		await get_tree().process_frame
+
+
+	func _click_gui_button(button: Button) -> void:
+		assert(button != null)
+		assert(button.is_visible_in_tree())
+		assert(not button.disabled)
+		button.pressed.emit()
 		await get_tree().process_frame
 
 

@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="MemoryObservationData" format=3 uid="uid://u1r6c4b1uemo"]
+
+[ext_resource type="Script" uid="uid://hrlf8lmpg2qq" path="res://scripts/memory/memory_observation_data.gd" id="1_observation_data"]
+[ext_resource type="Texture2D" uid="uid://dyan80tkmyssn" path="res://TextureAsset/Memory/NPC1/JobSearchRecord/info_panel_background.png" id="2_panel_background"]
+[ext_resource type="Texture2D" uid="uid://2s74tka1xt1s" path="res://TextureAsset/Memory/NPC1/JobSearchRecord/folder_preview.png" id="4_folder_preview"]
+
+[resource]
+script = ExtResource("1_observation_data")
+observation_id = &"job_search_record"
+title = "求职记录"
+info = ""
+info_page_titles = PackedStringArray("Company Profile & Interview Briefing  1 / 2", "Company Profile & Interview Briefing  2 / 2")
+info_pages = PackedStringArray("TimeLife Corporation — Company Profile & Interview Briefing\n\nDear Mr. Ryan,\n\nThank you for your interest in TimeLife Corporation and for taking the time to participate in our recent interview process.", "After careful consideration, we regret to inform you that we have decided not to move forward with your application for the current position.\n\nWe were impressed by your educational background, communication skills, and willingness to learn.\n\nHowever, due to the high number of qualified applicants and the current requirements of this position, we have chosen candidates whose previous work experience more closely matches our operational needs.")
+images = Array[Texture2D]([])
+image_placeholders = PackedStringArray()
+dialogue = PackedStringArray("These records show that he has been trying for a long time.", "His education and abilities have not directly translated into job opportunities.", "Before applying for the loan, he had already spent a great deal of time looking for a chance to enter society.")
+info_panel_background = ExtResource("2_panel_background")
+info_icon = ExtResource("4_folder_preview")
+open_with_icon_preview = true

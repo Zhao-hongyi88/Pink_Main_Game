@@ -10,6 +10,10 @@ var unlocked_keys: Dictionary = {}
 var revealed_note_keys: Array[String] = []
 var memory_ready := false
 var memory_completed := false
+var contract_stamped := false
+var contract_reviewed := false
+var final_dialogue_index := 0
+var final_dialogue_completed := false
 
 
 func _init(progress_npc_id: StringName = &"") -> void:

@@ -21,6 +21,8 @@ var _archive_panel_final_position := Vector2.ZERO
 
 
 func _ready() -> void:
+	MusicManager.play_home_bgm()
+	rule_button.hide()
 	start_button.pressed.connect(_on_start_button_pressed)
 	rule_button.pressed.connect(_on_rule_button_pressed)
 	rule_panel.get_node("%CloseButton").pressed.connect(_on_rule_panel_close_pressed)
@@ -118,6 +120,8 @@ func _start_game() -> void:
 	if selected_data_path.is_empty():
 		push_error("MainMenu: selected NPC has no NPCData path.")
 		return
+	print("START: switching to gameplay BGM")
+	MusicManager.play_gameplay_bgm()
 	if not SceneRouter.set_next_transition_mode(SceneRouter.START_TRANSITION_MODE):
 		return
 	if not SceneRouter.go_to(&"npc_base", {

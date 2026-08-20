@@ -99,5 +99,53 @@
 			"content": "这里是测试资料文本05。"
 		}
 	],
-	"memory_scene": "res://scenes/memory/npc1_zhang_yuan_memory.tscn"
+	"memory_scene": "res://scenes/memory/npc1_zhang_yuan_memory.tscn",
+	"dossier_photos": [
+		"res://TextureAsset/NPC/DossierPhotos/文字.png",
+		"res://TextureAsset/NPC/DossierPhotos/文字2.png",
+		"res://TextureAsset/NPC/DossierPhotos/文字3.png"
+	],
+	"contract_content_texture": "res://TextureAsset/Contract/ryan_miller_contract.png",
+	"final_dialogues": [
+		{
+			"speaker_name": "Me",
+			"speaker_role": "player",
+			"text": "After reviewing your documents, we've approved your loan application."
+		},
+		{
+			"speaker_name": "Ryan",
+			"speaker_role": "npc",
+			"text": "Really... it was approved? Thank you."
+		},
+		{
+			"speaker_name": "Ryan",
+			"speaker_role": "npc",
+			"text": "I hope I can finally find a job this time."
+		},
+		{
+			"speaker_name": "Me",
+			"speaker_role": "player",
+			"text": "I wish you the best."
+		},
+		{
+			"speaker_name": "Ryan",
+			"speaker_role": "npc",
+			"text": "By the way...\nA friend of mine has been thinking about applying for a time loan too."
+		},
+		{
+			"speaker_name": "Ryan",
+			"speaker_role": "npc",
+			"text": "His situation is a little more complicated than mine. But I think the people here... at least take the time to properly review every application."
+		},
+		{
+			"speaker_name": "Me",
+			"speaker_role": "player",
+			"text": "Thank you for your trust. If he meets the requirements, he's welcome to apply."
+		},
+		{
+			"speaker_name": "Ryan",
+			"speaker_role": "npc",
+			"text": "He should be coming by in the next couple of days. Thank you."
+		}
+	]
 }

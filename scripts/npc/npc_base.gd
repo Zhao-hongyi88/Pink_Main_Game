@@ -4,6 +4,22 @@ extends Control
 ## 公共 NPC 页面。静态内容来自 NPCData，运行时状态来自 GameState 中的 NPCProgress。
 
 const NOTE_ITEM_SCENE: PackedScene = preload("res://scenes/ui/npc/note_card.tscn")
+const CONTRACT_OVERLAY_SCENE: PackedScene = preload(
+	"res://scenes/ui/npc/loan_contract_overlay.tscn"
+)
+const CONTRACT_BOOK_TEXTURE: Texture2D = preload(
+	"res://TextureAsset/Contract/time_loan_contract_book.png"
+)
+const CONTRACT_STAMP_TEXTURE: Texture2D = preload(
+	"res://TextureAsset/Contract/lifetime_repository_approved_stamp.png"
+)
+const DOSSIER_PHOTO_FADE_DURATION := 0.28
+const DOSSIER_PHOTO_RECTS := [
+	Rect2(149.0, 55.0, 48.0, 29.0),
+	Rect2(241.0, 70.0, 62.0, 35.0),
+	Rect2(118.0, 160.0, 84.0, 33.0),
+]
+const DOSSIER_PHOTO_ROTATIONS := [5.0, 7.0, -5.0]
 
 @export_file("*.json") var npc_data_path := ""
 @export_group("Note Entry Animation")
@@ -28,6 +44,10 @@ const NOTE_ITEM_SCENE: PackedScene = preload("res://scenes/ui/npc/note_card.tscn
 @onready var dialogue_text: Label = %DialogueText
 @onready var continue_button: Button = %ContinueButton
 @onready var note_panel: Control = %DossierPanel
+@onready var profile_board: Control = $DossierPanel/ProfileBoard
+@onready var related_title: Label = get_node_or_null(
+	"DossierPanel/RelatedTitle"
+) as Label
 @onready var note_board_area: Control = %RelatedDataArea
 @onready var note_detail_popup: NoteDetailPopup = %NoteDetailPopup
 @onready var memory_button: Button = %MemoryButton
@@ -44,6 +64,7 @@ const NOTE_ITEM_SCENE: PackedScene = preload("res://scenes/ui/npc/note_card.tscn
 var npc_data: NPCData
 var npc_progress: NPCProgress
 var dialogue_manager: DialogueManager
+var final_dialogue_manager: DialogueManager
 var unlock_system: UnlockSystem
 var npc_id: StringName = &""
 var memory_scene_path := ""
@@ -79,8 +100,10 @@ var _valid_unlock_keys: Array[String] = []
 var _note_items: Array[NoteItem] = []
 var _note_items_by_key: Dictionary = {}
 var _note_entry_tweens: Dictionary = {}
+var _dossier_photo_nodes: Array[TextureRect] = []
 var _intro_tween: Tween
 var _identity_tween: Tween
+var _dossier_photo_tween: Tween
 var _awaiting_intro_reveal := false
 var _intro_animation_playing := false
 var _dialogue_final_position := Vector2.ZERO
@@ -89,6 +112,9 @@ var _dossier_final_position := Vector2.ZERO
 var _auto_note_interaction_locked := false
 var _active_auto_note_key := ""
 var _active_after_note_background := ""
+var _contract_book_button: TextureButton
+var _contract_overlay: LoanContractOverlay
+var _final_dialogue_active := false
 
 
 func _ready() -> void:
@@ -104,6 +130,7 @@ func _ready() -> void:
 		return
 	_extract_valid_unlock_keys()
 	_build_note_items()
+	_setup_dossier_photos()
 	if not _bind_npc_progress():
 		_show_load_error()
 		return
@@ -113,7 +140,11 @@ func _ready() -> void:
 	if not _setup_dialogue_manager():
 		_show_load_error()
 		return
+	if not _setup_contract_flow():
+		_show_load_error()
+		return
 	_restore_page_state()
+	_restore_contract_flow_state()
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -205,6 +236,54 @@ func _setup_dialogue_manager() -> bool:
 	return dialogue_manager.setup(npc_data.dialogues, npc_progress)
 
 
+func _setup_contract_flow() -> bool:
+	if not _has_contract_flow():
+		return true
+
+	final_dialogue_manager = DialogueManager.new()
+	if not final_dialogue_manager.setup(
+		npc_data.final_dialogues,
+		npc_progress,
+		DialogueManager.TRACK_FINAL
+	):
+		push_error("NPCBase: failed to initialize final dialogue flow.")
+		return false
+
+	_contract_book_button = TextureButton.new()
+	_contract_book_button.name = "TimeLoanContractButton"
+	_contract_book_button.position = Vector2(36.0, 250.0)
+	_contract_book_button.size = Vector2(295.0, 393.0)
+	_contract_book_button.texture_normal = CONTRACT_BOOK_TEXTURE
+	_contract_book_button.ignore_texture_size = true
+	_contract_book_button.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
+	_contract_book_button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+	_contract_book_button.tooltip_text = "Time Loan Contract"
+	_contract_book_button.pressed.connect(_on_contract_book_pressed)
+	_contract_book_button.hide()
+	note_panel.add_child(_contract_book_button)
+
+	var overlay_instance := CONTRACT_OVERLAY_SCENE.instantiate()
+	if overlay_instance is not LoanContractOverlay:
+		push_error("NPCBase: LoanContractOverlay scene has an invalid root type.")
+		overlay_instance.queue_free()
+		return false
+	_contract_overlay = overlay_instance as LoanContractOverlay
+	_contract_overlay.closed.connect(_on_contract_overlay_closed)
+	_contract_overlay.stamp_animation_finished.connect(
+		_on_contract_stamp_animation_finished
+	)
+	add_child(_contract_overlay)
+	return true
+
+
+func _has_contract_flow() -> bool:
+	return (
+		npc_data != null
+		and not npc_data.contract_content_texture.is_empty()
+		and not npc_data.final_dialogues.is_empty()
+	)
+
+
 func _apply_dialogue_background(dialogue: Dictionary) -> bool:
 	return _apply_background_path(
 		_get_effective_dialogue_background(dialogue),
@@ -294,6 +373,83 @@ func _build_note_items() -> void:
 		_note_items_by_key[note_key] = note_item
 
 
+func _setup_dossier_photos() -> void:
+	for photo_node in _dossier_photo_nodes:
+		photo_node.queue_free()
+	_dossier_photo_nodes.clear()
+	if npc_data == null:
+		return
+	profile_board.clip_contents = true
+	for index in npc_data.dossier_photos.size():
+		if index >= DOSSIER_PHOTO_RECTS.size():
+			break
+		var texture_resource := load(npc_data.dossier_photos[index])
+		if not texture_resource is Texture2D:
+			push_error("NPCBase: dossier photo is not Texture2D: %s" % npc_data.dossier_photos[index])
+			continue
+		var photo_node := TextureRect.new()
+		photo_node.name = "DossierPhoto%02d" % (index + 1)
+		photo_node.position = DOSSIER_PHOTO_RECTS[index].position
+		photo_node.size = DOSSIER_PHOTO_RECTS[index].size
+		photo_node.pivot_offset = photo_node.size * 0.5
+		photo_node.rotation = deg_to_rad(DOSSIER_PHOTO_ROTATIONS[index])
+		photo_node.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		photo_node.texture = texture_resource as Texture2D
+		photo_node.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		photo_node.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		photo_node.z_index = 2
+		photo_node.hide()
+		profile_board.add_child(photo_node)
+		_dossier_photo_nodes.append(photo_node)
+
+
+func _restore_dossier_photos(show_photos: bool) -> void:
+	if _dossier_photo_tween != null and _dossier_photo_tween.is_valid():
+		_dossier_photo_tween.kill()
+	_dossier_photo_tween = null
+	for photo_node in _dossier_photo_nodes:
+		photo_node.modulate.a = 1.0
+		photo_node.visible = show_photos
+
+
+func _reveal_dossier_photos_then_enable_memory(grab_memory_focus: bool) -> void:
+	if _dossier_photo_nodes.is_empty():
+		_show_memory_button(grab_memory_focus)
+		return
+	var photos_already_visible := true
+	for photo_node in _dossier_photo_nodes:
+		if not photo_node.visible or not is_equal_approx(photo_node.modulate.a, 1.0):
+			photos_already_visible = false
+			break
+	if photos_already_visible:
+		_show_memory_button(grab_memory_focus)
+		return
+	if _dossier_photo_tween != null and _dossier_photo_tween.is_valid():
+		return
+	for photo_node in _dossier_photo_nodes:
+		photo_node.modulate.a = 0.0
+		photo_node.show()
+	_dossier_photo_tween = create_tween().set_parallel(true)
+	_dossier_photo_tween.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+	for photo_node in _dossier_photo_nodes:
+		_dossier_photo_tween.tween_property(
+			photo_node, "modulate:a", 1.0, DOSSIER_PHOTO_FADE_DURATION
+		)
+	_dossier_photo_tween.chain().tween_callback(
+		_show_memory_button.bind(grab_memory_focus)
+	)
+
+
+func _show_memory_button(grab_memory_focus: bool) -> void:
+	_dossier_photo_tween = null
+	if npc_progress == null or not npc_progress.memory_ready:
+		return
+	memory_button.show()
+	memory_button.disabled = false
+	if grab_memory_focus:
+		memory_button.grab_focus()
+
+
 func _restore_page_state() -> void:
 	_cancel_intro_tween()
 	_cancel_identity_tween()
@@ -312,6 +468,7 @@ func _restore_page_state() -> void:
 		_cancel_note_entry_tween(note_item.note_key)
 		_set_note_final_visual(note_item)
 		note_item.hide()
+	_restore_dossier_photos(npc_progress != null and npc_progress.dialogue_completed)
 
 	_refresh_dialogue_ui(false, false, false)
 	_restore_dialogue_background()
@@ -322,6 +479,38 @@ func _restore_page_state() -> void:
 		_show_conversation_direct()
 	else:
 		_prepare_first_entry()
+
+
+func _restore_contract_flow_state() -> void:
+	if not _has_contract_flow() or npc_progress == null:
+		return
+	if npc_progress.contract_reviewed and not npc_progress.final_dialogue_completed:
+		_start_final_dialogue()
+		return
+	_final_dialogue_active = false
+	_refresh_contract_flow_ui()
+
+
+func _refresh_contract_flow_ui() -> void:
+	if not _has_contract_flow() or _contract_book_button == null:
+		return
+	var show_contract_book := (
+		npc_progress.memory_completed
+		and not npc_progress.contract_reviewed
+		and not npc_progress.final_dialogue_completed
+	)
+	_contract_book_button.visible = show_contract_book
+	_contract_book_button.disabled = not show_contract_book
+
+	var show_related_data := not show_contract_book and not _final_dialogue_active
+	if related_title != null:
+		related_title.visible = show_related_data
+	note_board_area.visible = show_related_data
+	if show_contract_book or _final_dialogue_active or npc_progress.final_dialogue_completed:
+		memory_button.hide()
+		memory_button.disabled = true
+	if show_contract_book:
+		note_panel.show()
 
 
 func _restore_revealed_notes() -> void:
@@ -590,6 +779,9 @@ func _is_dialogue_advance_blocked() -> bool:
 
 
 func advance_dialogue() -> void:
+	if _final_dialogue_active:
+		_advance_final_dialogue()
+		return
 	if _is_dialogue_advance_blocked():
 		return
 	var result := dialogue_manager.advance()
@@ -600,6 +792,24 @@ func advance_dialogue() -> void:
 	if not unlock_key.is_empty():
 		unlock_info(unlock_key)
 	_refresh_dialogue_ui(bool(result.get("dialogue_completed", false)))
+
+
+func _advance_final_dialogue() -> void:
+	if (
+		final_dialogue_manager == null
+		or npc_progress == null
+		or npc_progress.final_dialogue_completed
+		or not dialogue_panel.visible
+		or (_contract_overlay != null and _contract_overlay.visible)
+	):
+		return
+	var result := final_dialogue_manager.advance()
+	if not bool(result.get("accepted", false)):
+		return
+	if bool(result.get("dialogue_completed", false)):
+		_complete_chapter_one()
+		return
+	_refresh_final_dialogue_ui()
 
 
 # 保留旧页面入口，兼容已有测试与外部调用；所有推进逻辑仍集中在 advance_dialogue()。
@@ -650,10 +860,7 @@ func _refresh_dialogue_ui(
 	memory_button.hide()
 	memory_button.disabled = true
 	if npc_progress.memory_ready:
-		memory_button.show()
-		memory_button.disabled = false
-		if grab_memory_focus:
-			memory_button.grab_focus()
+		_reveal_dossier_photos_then_enable_memory(grab_memory_focus)
 
 
 func _refresh_speaker_display(dialogue: Dictionary) -> void:
@@ -768,12 +975,80 @@ func _finalize_current_dialogue() -> void:
 	_refresh_dialogue_ui(bool(result.get("dialogue_completed", false)), false, false)
 
 
+func _on_contract_book_pressed() -> void:
+	if (
+		not _has_contract_flow()
+		or npc_progress == null
+		or not npc_progress.memory_completed
+		or npc_progress.contract_reviewed
+		or _contract_overlay == null
+	):
+		return
+	var content_resource := load(npc_data.contract_content_texture)
+	if content_resource is not Texture2D:
+		push_error(
+			"NPCBase: contract_content_texture is not Texture2D: %s"
+			% npc_data.contract_content_texture
+		)
+		return
+	_contract_overlay.open_contract(
+		content_resource as Texture2D,
+		CONTRACT_STAMP_TEXTURE,
+		npc_progress.contract_stamped
+	)
+
+
+func _on_contract_stamp_animation_finished() -> void:
+	if npc_progress != null:
+		npc_progress.contract_stamped = true
+
+
+func _on_contract_overlay_closed() -> void:
+	if npc_progress == null or not npc_progress.contract_stamped:
+		return
+	npc_progress.contract_reviewed = true
+	_start_final_dialogue()
+
+
+func _start_final_dialogue() -> void:
+	if (
+		final_dialogue_manager == null
+		or npc_progress == null
+		or npc_progress.final_dialogue_completed
+	):
+		return
+	_final_dialogue_active = true
+	_set_conversation_final_visual()
+	_show_speaker_plate()
+	dialogue_panel.show()
+	_refresh_contract_flow_ui()
+	_refresh_final_dialogue_ui()
+
+
+func _refresh_final_dialogue_ui() -> void:
+	if not _final_dialogue_active or final_dialogue_manager == null:
+		return
+	var current_dialogue := final_dialogue_manager.get_current_dialogue()
+	dialogue_text.text = final_dialogue_manager.get_current_text()
+	_refresh_speaker_display(current_dialogue)
+	continue_button.disabled = npc_progress.final_dialogue_completed
+	memory_button.hide()
+	memory_button.disabled = true
+
+
+func _complete_chapter_one() -> void:
+	_final_dialogue_active = false
+	_refresh_contract_flow_ui()
+	SceneRouter.go_to(&"home")
+
+
 func _on_memory_pressed() -> void:
 	if not memory_ready:
 		return
 	SceneRouter.go_to_scene(memory_scene_path, {
 		"return_npc_data_path": npc_data_path,
 		"npc_id": String(npc_data.npc_id),
+		"return_to_npc_on_complete": _has_contract_flow(),
 	})
 
 

@@ -9,6 +9,34 @@
 [ext_resource type="PackedScene" uid="uid://co64gqrnj81sy" path="res://scenes/ui/start_button.tscn" id="6_start"]
 [ext_resource type="Script" uid="uid://d2ghfiodtl6ru" path="res://scripts/ui/button_hover_effect.gd" id="8_button_hover"]
 
+[sub_resource type="Gradient" id="Gradient_bxtry"]
+offsets = PackedFloat32Array(0, 0.8043478, 0.995992, 1)
+colors = PackedColorArray(1, 1, 1, 1, 0.12043685, 0.12043685, 0.12043685, 1, 0.078156315, 0.078156315, 0.078156315, 1, 0, 0, 0, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_7xecm"]
+gradient = SubResource("Gradient_bxtry")
+fill = 1
+fill_from = Vector2(0.52136755, 0.5071225)
+fill_to = Vector2(0.68945867, 0.82905984)
+
+[sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_bxtry"]
+polygon = PackedVector2Array(2.2427979, -44.946575, 22.107628, -67.41986, 25.31163, -68.72266, 44.535667, -69.374054, 55.749687, -81.09925, 59.274086, -82.402054, 75.294106, -82.402054, 86.508125, -93.15015, 90.35293, -94.77864, 134.5682, -93.801544, 134.5682, -108.13233, -14.097633, -110.08653)
+
+[sub_resource type="Gradient" id="Gradient_75pso"]
+colors = PackedColorArray(1, 1, 1, 1, 0, 0, 0, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_eu6sv"]
+gradient = SubResource("Gradient_75pso")
+fill = 1
+fill_from = Vector2(0.4900285, 0.52991456)
+fill_to = Vector2(0.21082622, 0.93732196)
+
+[sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_75pso"]
+polygon = PackedVector2Array(-6.40802, -8.142502, 4.8059998, -1.302803, 1.9223938, 10.748085, -1.9224243, 27.684479, 31.399231, 10.748085, 30.758453, -13.679398, -4.485626, -23.124691, -23.70964, -12.702297)
+
+[sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_cnht7"]
+polygon = PackedVector2Array(-23.276163, 24.308605, -2.4183044, -0.24308395, 1.5114365, -1.4585152, 18.439556, 6.563324, 21.462433, -7.0494957, 2.1160126, -17.016022, -23.88074, -10.452698, -25.996754, 7.7787514)
+
 [sub_resource type="StyleBoxFlat" id="StyleBox_button"]
 bg_color = Color(0.203922, 0.12549, 0.231373, 1)
 border_width_left = 1
@@ -43,11 +71,104 @@ texture = ExtResource("2_bxtry")
 expand_mode = 1
 stretch_mode = 6
 
+[node name="PointLight2D" type="PointLight2D" parent="Background" unique_id=604777262]
+position = Vector2(267.00003, 323.00003)
+scale = Vector2(3.1210935, 3.070312)
+energy = 2.55
+texture = SubResource("GradientTexture2D_7xecm")
+
+[node name="PointLight2D" type="PointLight2D" parent="Background/PointLight2D" unique_id=1952763668]
+position = Vector2(-139.6364, -77.63507)
+scale = Vector2(1.9575914, 6.757647)
+energy = 0.47
+shadow_enabled = true
+texture = SubResource("GradientTexture2D_7xecm")
+texture_scale = 0.47
+
+[node name="LightOccluder2D" type="LightOccluder2D" parent="Background/PointLight2D" unique_id=1822442808]
+occluder = SubResource("OccluderPolygon2D_bxtry")
+
+[node name="PointLight2D2" type="PointLight2D" parent="Background/PointLight2D" unique_id=123289646]
+color = Color(0.56875443, 0.36570504, 1.92523e-07, 1)
+energy = 0.0
+texture = SubResource("GradientTexture2D_eu6sv")
+
+[node name="PointLight2D2" type="PointLight2D" parent="Background/PointLight2D/PointLight2D2" unique_id=1585052483]
+position = Vector2(164.04504, -49.506374)
+color = Color(1, 0.67282444, 0.4893095, 1)
+texture = SubResource("GradientTexture2D_eu6sv")
+
+[node name="PointLight2D2" type="PointLight2D" parent="Background" unique_id=898658689]
+position = Vector2(451.99997, 506)
+scale = Vector2(4.404296, 5.441406)
+color = Color(1, 0.6745098, 0.35686275, 1)
+energy = 0.6
+texture = SubResource("GradientTexture2D_7xecm")
+
+[node name="PointLight2D3" type="PointLight2D" parent="Background" unique_id=1007637523]
+position = Vector2(845, 233.00002)
+scale = Vector2(3.1210935, 3.070312)
+color = Color(0.6895398, 0.89581275, 1, 1)
+energy = 1.49
+shadow_enabled = true
+texture = SubResource("GradientTexture2D_7xecm")
+
+[node name="LightOccluder2D" type="LightOccluder2D" parent="Background/PointLight2D3" unique_id=150750953]
+occluder = SubResource("OccluderPolygon2D_75pso")
+
+[node name="PointLight2D4" type="PointLight2D" parent="Background" unique_id=1071191296]
+position = Vector2(342, 117.00001)
+scale = Vector2(5.116211, 5.7050776)
+color = Color(1, 0.6745098, 0.35686275, 1)
+energy = 0.93
+shadow_enabled = true
+shadow_filter = 2
+shadow_filter_smooth = 20.0
+texture = SubResource("GradientTexture2D_7xecm")
+
+[node name="PointLight2D5" type="PointLight2D" parent="Background" unique_id=83363066]
+position = Vector2(447.00003, 74)
+scale = Vector2(5.116211, 5.7050776)
+color = Color(1, 0.6745098, 0.35686275, 1)
+energy = 0.77
+shadow_enabled = true
+shadow_filter = 2
+shadow_filter_smooth = 19.7
+texture = SubResource("GradientTexture2D_7xecm")
+
+[node name="PointLight2D6" type="PointLight2D" parent="Background" unique_id=1477374143]
+position = Vector2(543, 37)
+scale = Vector2(5.116211, 5.7050776)
+color = Color(1, 0.6745098, 0.35686275, 1)
+energy = 0.69
+shadow_enabled = true
+shadow_filter = 2
+shadow_filter_smooth = 20.0
+texture = SubResource("GradientTexture2D_7xecm")
+
+[node name="PointLight2D7" type="PointLight2D" parent="Background" unique_id=2088452904]
+color = Color(0.9999998, 0.6913544, 0.21138766, 1)
+texture = SubResource("GradientTexture2D_eu6sv")
+
+[node name="PointLight2D8" type="PointLight2D" parent="Background" unique_id=641127882]
+position = Vector2(149, 233)
+scale = Vector2(3.3081055, 4.1137695)
+color = Color(1, 0.6745098, 0.35686275, 1)
+energy = 0.85
+shadow_enabled = true
+shadow_filter = 2
+shadow_filter_smooth = 33.3
+texture = SubResource("GradientTexture2D_7xecm")
+
+[node name="LightOccluder2D" type="LightOccluder2D" parent="Background/PointLight2D8" unique_id=380449133]
+occluder = SubResource("OccluderPolygon2D_cnht7")
+
 [node name="HomeWorld" parent="." unique_id=633021012 instance=ExtResource("5_home_world")]
 unique_name_in_owner = true
 
 [node name="RuleButton" type="Button" parent="." unique_id=590130274]
 unique_name_in_owner = true
+visible = false
 layout_mode = 1
 offset_left = 42.0
 offset_top = 38.0
@@ -93,3 +214,16 @@ grow_horizontal = 0
 [node name="RulePanel" parent="." unique_id=1310916042 instance=ExtResource("3_rules")]
 unique_name_in_owner = true
 layout_mode = 1
+
+[node name="light" type="Node2D" parent="." unique_id=592024886]
+
+[node name="PointLight2D" type="PointLight2D" parent="light" unique_id=1544833566]
+position = Vector2(494, 290)
+scale = Vector2(3.1210935, 3.070312)
+color = Color(0.9372549, 0.61960787, 0.4509804, 1)
+energy = 1.09
+texture = SubResource("GradientTexture2D_7xecm")
+
+[node name="DirectionalLight2D" type="DirectionalLight2D" parent="light" unique_id=892163842]
+energy = 0.38
+blend_mode = 1

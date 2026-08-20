@@ -25,7 +25,7 @@ offset_bottom = 164.0
 grow_horizontal = 2
 theme_override_colors/font_color = Color(0.93, 0.95, 1, 1)
 theme_override_font_sizes/font_size = 32
-text = "回忆场景：秋招现场"
+text = "Memory Scene: Fall Recruitment"
 horizontal_alignment = 1
 vertical_alignment = 1
 
@@ -38,7 +38,7 @@ offset_bottom = 202.0
 grow_horizontal = 2
 theme_override_colors/font_color = Color(0.57, 0.66, 0.79, 1)
 theme_override_font_sizes/font_size = 18
-text = "调查两个与 NPC_A 求职经历相关的物件"
+text = "Investigate two objects related to NPC_A's job search."
 horizontal_alignment = 1
 
 [node name="ObservationPoints" type="Control" parent="."]
@@ -58,8 +58,8 @@ offset_right = 550.0
 offset_bottom = 468.0
 theme_override_colors/font_color = Color(0.91, 0.95, 1, 1)
 theme_override_font_sizes/font_size = 22
-text = "招聘公告\n\n点击调查"
-tooltip_text = "查看招聘公告"
+text = "Recruitment Notice\n\nClick to Investigate"
+tooltip_text = "View Recruitment Notice"
 
 [node name="JobSearchRecord" type="Button" parent="ObservationPoints"]
 layout_mode = 0
@@ -73,5 +73,5 @@ offset_bottom = 468.0
 grow_horizontal = 0
 theme_override_colors/font_color = Color(0.91, 0.95, 1, 1)
 theme_override_font_sizes/font_size = 22
-text = "求职记录\n\n点击调查"
-tooltip_text = "查看求职记录"
+text = "Job Search Record\n\nClick to Investigate"
+tooltip_text = "View Job Search Record"

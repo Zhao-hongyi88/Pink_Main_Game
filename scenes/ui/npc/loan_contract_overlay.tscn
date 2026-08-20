@@ -1,0 +1,79 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/ui/npc/loan_contract_overlay.gd" id="1_contract_overlay"]
+
+[node name="LoanContractOverlay" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 0
+script = ExtResource("1_contract_overlay")
+
+[node name="DimBackground" type="ColorRect" parent="."]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.68)
+
+[node name="ContractRoot" type="Control" parent="."]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -191.0
+offset_top = -270.0
+offset_right = 191.0
+offset_bottom = 270.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 0
+
+[node name="ContractTexture" type="TextureRect" parent="ContractRoot"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="ApprovalStamp" type="TextureRect" parent="ContractRoot"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 81.0
+offset_top = 214.0
+offset_right = 311.0
+offset_bottom = 444.0
+rotation = -0.0872665
+pivot_offset = Vector2(115, 115)
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="CloseButton" type="Button" parent="ContractRoot"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 338.0
+offset_top = 8.0
+offset_right = 382.0
+offset_bottom = 52.0
+mouse_default_cursor_shape = 2
+theme_override_colors/font_color = Color(0.92, 0.86, 0.76, 1)
+theme_override_colors/font_hover_color = Color(1, 0.96, 0.88, 1)
+theme_override_colors/font_disabled_color = Color(0.45, 0.42, 0.38, 0.7)
+theme_override_font_sizes/font_size = 28
+text = "×"
+flat = true

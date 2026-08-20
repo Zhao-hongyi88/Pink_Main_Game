@@ -75,5 +75,30 @@
 			"content": "Lisa Wilson placeholder additional information."
 		}
 	],
-	"memory_scene": "res://scenes/memory/npc4_su_qing_memory.tscn"
+	"memory_scene": "res://scenes/memory/npc4_su_qing_memory.tscn",
+	"dossier_photos": [
+		"res://TextureAsset/NPC/DossierPhotos/文字10.png",
+		"res://TextureAsset/NPC/DossierPhotos/文字11.png",
+		"res://TextureAsset/NPC/DossierPhotos/文字12.png"
+	],
+	"contract_content_texture": "res://TextureAsset/Contract/lisa_wilson_contract.png",
+	"final_dialogues": [
+		{"speaker_name": "Me", "speaker_role": "player", "text": "After reviewing your documents, the Corporate Time Loan has been approved."},
+		{"speaker_name": "Lisa", "speaker_role": "npc", "text": "(Looking down at the confirmation notice.) That was approved faster than I expected."},
+		{"speaker_name": "Me", "speaker_role": "player", "text": "The time credits will be released within the stated timeframe."},
+		{"speaker_name": "Lisa", "speaker_role": "npc", "text": "Mm."},
+		{"speaker_name": "Lisa", "speaker_role": "npc", "text": "..."},
+		{"speaker_name": "Lisa", "speaker_role": "npc", "text": "Then the project can keep moving forward."},
+		{"speaker_name": "Me", "speaker_role": "player", "text": "Please note that regular operating reports are required while the corporate time credits are in use."},
+		{"speaker_name": "Lisa", "speaker_role": "npc", "text": "Things are probably going to get very busy."},
+		{"speaker_name": "Me", "speaker_role": "player", "text": "As the person in charge, you'll also need to take part in the follow-up allocation of time."},
+		{"speaker_name": "Lisa", "speaker_role": "npc", "text": "... Of course."},
+		{"speaker_name": "Lisa", "speaker_role": "npc", "text": "The loan is approved, and I'll be the first one working overtime."},
+		{"speaker_name": "Lisa", "speaker_role": "npc", "text": "Of course, everyone will be busier."},
+		{"speaker_name": "Lisa", "speaker_role": "npc", "text": "..."},
+		{"speaker_name": "Lisa", "speaker_role": "npc", "text": "But this is the company's choice."},
+		{"speaker_name": "Me", "speaker_role": "player", "text": "..."},
+		{"speaker_name": "Me", "speaker_role": "player", "text": "I hope the project goes well."},
+		{"speaker_name": "Lisa", "speaker_role": "npc", "text": "Thank you."}
+	]
 }
