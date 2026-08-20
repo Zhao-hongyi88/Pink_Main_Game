@@ -1,0 +1,53 @@
+[gd_scene format=3 uid="uid://co64gqrnj81sy"]
+
+[ext_resource type="Script" uid="uid://ceuivxwqh8key" path="res://scripts/ui/start_button.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://bu1ecm2gvi51q" path="res://TextureAsset/Level1/大-export.png" id="2_utj1v"]
+[ext_resource type="Texture2D" uid="uid://koiwxbkovc1a" path="res://TextureAsset/Level1/START-export.png" id="3_l1qwe"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBox_start_transparent"]
+
+[node name="StartButton" type="Button" unique_id=1489101121]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(214, 231)
+focus_mode = 0
+theme_override_styles/normal = SubResource("StyleBox_start_transparent")
+theme_override_styles/pressed = SubResource("StyleBox_start_transparent")
+theme_override_styles/hover = SubResource("StyleBox_start_transparent")
+theme_override_styles/disabled = SubResource("StyleBox_start_transparent")
+theme_override_styles/focus = SubResource("StyleBox_start_transparent")
+script = ExtResource("1_script")
+
+[node name="Gear_Back" type="TextureRect" parent="." unique_id=1069852190]
+unique_name_in_owner = true
+layout_mode = 0
+offset_right = 98.0
+offset_bottom = 98.0
+pivot_offset = Vector2(49, 49)
+mouse_filter = 2
+texture = ExtResource("2_utj1v")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Gear_Front" type="TextureRect" parent="." unique_id=1560949852]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 17.0
+offset_top = 34.0
+offset_right = 214.0
+offset_bottom = 231.0
+pivot_offset = Vector2(98.5, 98.5)
+mouse_filter = 2
+texture = ExtResource("2_utj1v")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="StartImage" type="TextureRect" parent="." unique_id=760208189]
+layout_mode = 0
+offset_left = 66.0
+offset_top = 109.0
+offset_right = 166.0
+offset_bottom = 157.0
+mouse_filter = 2
+texture = ExtResource("3_l1qwe")
+expand_mode = 1
+stretch_mode = 5

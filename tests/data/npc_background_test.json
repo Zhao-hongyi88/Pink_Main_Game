@@ -1,0 +1,47 @@
+{
+	"npc_id": "npc_background_test",
+	"display_name": "背景切换测试",
+	"dialogue_name": "测试NPC",
+	"initial_background": "res://tests/resources/dialogue_background_a.tres",
+	"name_unlock_key": "basic_info",
+	"dialogues": [
+		{
+			"speaker_name": "Me",
+			"speaker_role": "player",
+			"text": "Dialogue A",
+			"unlock_key": "",
+			"background": "res://tests/resources/dialogue_background_b.tres"
+		},
+		{
+			"text": "Dialogue B",
+			"unlock_key": ""
+		},
+		{
+			"speaker_name": "测试NPC",
+			"text": "Dialogue C",
+			"unlock_key": "basic_info",
+			"background": "res://tests/resources/dialogue_background_c.tres",
+			"open_note_key": "basic_info",
+			"after_note_background": "res://tests/resources/dialogue_background_d.tres"
+		},
+		{
+			"text": "Dialogue D",
+			"unlock_key": "work_info"
+		},
+		{
+			"text": "Dialogue E",
+			"unlock_key": "",
+			"background": "res://tests/resources/missing_dialogue_background.tres"
+		}
+	],
+	"notes": [
+		{"key": "basic_info", "header": "基本信息", "content": "背景切换测试 NPC"},
+		{"key": "work_info", "header": "职业信息", "content": "测试背景切换逻辑"}
+	],
+	"memory_scene": "res://scenes/memory/npc1_zhang_yuan_memory.tscn",
+	"dossier_photos": [
+		"res://TextureAsset/NPC/DossierPhotos/文字.png",
+		"res://TextureAsset/NPC/DossierPhotos/文字2.png",
+		"res://TextureAsset/NPC/DossierPhotos/文字3.png"
+	]
+}

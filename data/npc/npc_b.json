@@ -1,0 +1,99 @@
+{
+	"npc_id": "npc_li_lei",
+	"display_name": "Mike Carter",
+	"dialogue_name": "Mike",
+	"portrait": "",
+	"profile_photo": "res://TextureAsset/NPC/Profile/mike_profile.png",
+	"initial_background": "res://TextureAsset/Level1/Mike/mike_loan_01_arrival.png",
+	"name_unlock_key": "basic_info",
+	"dialogues": [
+		{
+			"speaker_name": "Me",
+			"speaker_role": "player",
+      "text": "Hello. What can I help you with today?",
+			"unlock_key": "",
+			"background": "res://TextureAsset/Level1/Mike/mike_loan_02_counter.png"
+		},
+		{
+			"speaker_name": "Mike",
+      "text": "Hello. I'd like to apply for an eighteen-month family medical time loan.",
+			"unlock_key": ""
+		},
+		{
+			"speaker_name": "Me",
+			"speaker_role": "player",
+      "text": "Of course.\nIs the loan for your own medical care, or for a family member?",
+			"unlock_key": ""
+		},
+		{
+			"speaker_name": "Mike",
+      "text": "It's for my mother, Mary.",
+			"unlock_key": ""
+		},
+		{
+			"speaker_name": "Me",
+			"speaker_role": "player",
+      "text": "Eighteen months of time credit.\nIs it intended to support long-term treatment?",
+			"unlock_key": ""
+		},
+		{
+			"speaker_name": "Mike",
+      "text": "Yes.\nShe has a chronic illness and needs continued support to sustain her time.",
+			"unlock_key": ""
+		},
+		{
+			"speaker_name": "Me",
+			"speaker_role": "player",
+      "text": "Understood.\nPlease confirm that the time credit will be repaid through your future labor time.",
+			"unlock_key": ""
+		},
+		{
+			"speaker_name": "Mike",
+      "text": "I understand. I reviewed the time-repayment rules before coming here to apply.",
+			"unlock_key": ""
+		},
+		{
+			"speaker_name": "Mike",
+      "text": "(Hands over the documents) Here are my application documents.",
+			"unlock_key": "basic_info",
+			"background": "res://TextureAsset/Level1/Mike/mike_loan_03_submit_documents.png",
+			"open_note_key": "basic_info",
+			"after_note_background": "res://TextureAsset/Level1/Mike/mike_loan_04_after_submit.png"
+		},
+		{
+			"speaker_name": "Me",
+			"speaker_role": "player",
+      "text": "All right.\nYour documents have been registered.\nPlease wait for the review.",
+			"unlock_key": ""
+		}
+	],
+	"notes": [
+		{
+			"key": "basic_info",
+			"header": "Basic Information",
+			"content": "Name: Mike\nAge: 24\nAddress: Pendulum Falls, Westland State\nEmail: Mike@email.com\nTime Credit Rating: B\n\nLoan History:\n• Medical Time Loan (Ongoing)\n• Current Application: Family Medical Time Loan (12 Months)"
+		},
+		{
+			"key": "b_extra_info",
+			"header": "Additional Information",
+			"content": "Mike Carter placeholder additional information."
+		}
+	],
+	"memory_scene": "res://scenes/memory/npc2_li_lei_memory.tscn",
+	"dossier_photos": [
+		"res://TextureAsset/NPC/DossierPhotos/文字4.png",
+		"res://TextureAsset/NPC/DossierPhotos/文字5.png",
+		"res://TextureAsset/NPC/DossierPhotos/文字6.png"
+	],
+	"contract_content_texture": "res://TextureAsset/Contract/mike_carter_contract.png",
+	"final_dialogues": [
+		{"speaker_name": "Mike", "speaker_role": "npc", "text": "Was it approved?"},
+		{"speaker_name": "Me", "speaker_role": "player", "text": "After reviewing your documents, we've approved your loan application."},
+		{"speaker_name": "Mike", "speaker_role": "npc", "text": "Good. Thank you."},
+		{"speaker_name": "Me", "speaker_role": "player", "text": "Please keep track of the repayment schedule."},
+		{"speaker_name": "Mike", "speaker_role": "npc", "text": "I will. Thank you for the reminder."},
+		{"speaker_name": "Mike", "speaker_role": "npc", "text": "At least... I won't have to worry for a while."},
+		{"speaker_name": "Me", "speaker_role": "player", "text": "I hope your mother recovers soon."},
+		{"speaker_name": "Mike", "speaker_role": "npc", "text": "Thank you. I should go. I need to get back to the company this afternoon."}
+	]
+}

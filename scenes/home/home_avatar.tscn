@@ -1,0 +1,21 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scripts/home/home_avatar.gd" id="1_script"]
+[ext_resource type="SpriteFrames" path="res://TextureAsset/HomeAvatar/home_avatar_frames.tres" id="2_frames"]
+
+[node name="HomeAvatar" type="CharacterBody2D"]
+script = ExtResource("1_script")
+
+[node name="AvatarVisual" type="AnimatedSprite2D" parent="."]
+unique_name_in_owner = true
+position = Vector2(0, -56)
+scale = Vector2(0.5, 0.5)
+sprite_frames = ExtResource("2_frames")
+animation = &"idle"
+flip_h = false
+
+[node name="NavigationAgent2D" type="NavigationAgent2D" parent="."]
+unique_name_in_owner = true
+path_desired_distance = 3.0
+target_desired_distance = 6.0
+radius = 18.0

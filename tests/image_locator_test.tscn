@@ -1,0 +1,10 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scripts/debug/image_locator.gd" id="1_locator"]
+[ext_resource type="PackedScene" path="res://scenes/npc/npc_base.tscn" id="2_npc_base"]
+
+[node name="ImageLocatorTest" type="Node"]
+script = ExtResource("1_locator")
+
+[node name="NPCBase" parent="." instance=ExtResource("2_npc_base")]
+npc_data_path = "res://data/npc/npc_a.json"

@@ -1,0 +1,39 @@
+; Engine configuration file.
+; It's best edited using the editor UI and not directly,
+; since the parameters that go here are not all obvious.
+;
+; Format:
+;   [section] ; section goes between []
+;   param=value ; assign values to parameters
+
+config_version=5
+
+[application]
+
+config/name="Pink_Game"
+run/main_scene="res://scenes/intro/intro_sequence.tscn"
+config/features=PackedStringArray("4.7", "Forward Plus")
+config/icon="res://icon.svg"
+
+[autoload]
+
+SaveService="*res://core/save/save_service.gd"
+SceneRouter="*res://core/navigation/scene_router.gd"
+GameState="*res://autoload/game_state.gd"
+MainAxisService="*res://systems/main_axis/main_axis_service.gd"
+MusicManager="*uid://bhnppsuqa0s7g"
+
+[display]
+
+window/size/mode=3
+window/size/window_width_override=1920
+window/size/window_height_override=1080
+window/stretch/mode="viewport"
+
+[physics]
+
+3d/physics_engine="Jolt Physics"
+
+[rendering]
+
+rendering_device/driver.windows="d3d12"

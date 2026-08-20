@@ -1,0 +1,77 @@
+[gd_scene load_steps=2 format=3 uid="uid://npc_a_memory_001"]
+
+[ext_resource type="PackedScene" uid="uid://memory_base_001" path="res://scenes/memory/memory_base.tscn" id="1_memory_base"]
+[ext_resource type="Script" path="res://scripts/memory/npc_a/npc_a_memory.gd" id="2_npc_a"]
+
+[node name="NPCAMemory" instance=ExtResource("1_memory_base")]
+script = ExtResource("2_npc_a")
+
+[node name="Background" type="ColorRect" parent="." index="0"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0.055, 0.071, 0.12, 1)
+
+[node name="SceneTitle" type="Label" parent="Background"]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_top = 112.0
+offset_bottom = 164.0
+grow_horizontal = 2
+theme_override_colors/font_color = Color(0.93, 0.95, 1, 1)
+theme_override_font_sizes/font_size = 32
+text = "Memory Scene: Fall Recruitment"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="SceneHint" type="Label" parent="Background"]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_top = 170.0
+offset_bottom = 202.0
+grow_horizontal = 2
+theme_override_colors/font_color = Color(0.57, 0.66, 0.79, 1)
+theme_override_font_sizes/font_size = 18
+text = "Investigate two objects related to NPC_A's job search."
+horizontal_alignment = 1
+
+[node name="ObservationPoints" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="RecruitmentNotice" type="Button" parent="ObservationPoints"]
+layout_mode = 0
+offset_left = 210.0
+offset_top = 292.0
+offset_right = 550.0
+offset_bottom = 468.0
+theme_override_colors/font_color = Color(0.91, 0.95, 1, 1)
+theme_override_font_sizes/font_size = 22
+text = "Recruitment Notice\n\nClick to Investigate"
+tooltip_text = "View Recruitment Notice"
+
+[node name="JobSearchRecord" type="Button" parent="ObservationPoints"]
+layout_mode = 0
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -550.0
+offset_top = 292.0
+offset_right = -210.0
+offset_bottom = 468.0
+grow_horizontal = 0
+theme_override_colors/font_color = Color(0.91, 0.95, 1, 1)
+theme_override_font_sizes/font_size = 22
+text = "Job Search Record\n\nClick to Investigate"
+tooltip_text = "View Job Search Record"

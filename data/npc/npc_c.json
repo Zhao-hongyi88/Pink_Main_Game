@@ -1,0 +1,123 @@
+{
+	"npc_id": "npc_liu_guilan",
+	"display_name": "Mary Carter",
+	"dialogue_name": "Mary",
+	"portrait": "",
+	"profile_photo": "res://TextureAsset/NPC/Profile/mary_profile.png",
+	"initial_background": "res://TextureAsset/Level1/Mary/mary_loan_01_arrival.png",
+	"dialogue_complete_on_end": true,
+	"name_unlock_key": "basic_info",
+	"dialogues": [
+		{
+			"speaker_name": "Me",
+			"speaker_role": "player",
+      "text": "Hello. What can I help you with today?",
+			"unlock_key": "",
+			"background": "res://TextureAsset/Level1/Mary/mary_loan_02_counter.png"
+		},
+		{
+			"speaker_name": "Mary",
+      "text": "Hello. I'd like to apply for a life-extension time loan.",
+			"unlock_key": ""
+		},
+		{
+			"speaker_name": "Me",
+			"speaker_role": "player",
+      "text": "Of course.\nWill the loan be for your own use?",
+			"unlock_key": ""
+		},
+		{
+			"speaker_name": "Mary",
+      "text": "Yes.",
+			"unlock_key": ""
+		},
+		{
+			"speaker_name": "Me",
+			"speaker_role": "player",
+      "text": "All right. How much time credit would you like to apply for?",
+			"unlock_key": ""
+		},
+		{
+			"speaker_name": "Mary",
+      "text": "One year, I think.",
+			"unlock_key": ""
+		},
+		{
+			"speaker_name": "Me",
+			"speaker_role": "player",
+      "text": "All right, but I need to remind you: under the regulations, if you cannot repay the loan on your own in the future, your family may be required to share the obligation.",
+			"unlock_key": ""
+		},
+		{
+			"speaker_name": "Mary",
+      "text": "...",
+			"unlock_key": ""
+		},
+		{
+			"speaker_name": "Mary",
+      "text": "Then make it six months.",
+			"unlock_key": ""
+		},
+		{
+			"speaker_name": "Me",
+			"speaker_role": "player",
+      "text": "Are you sure you want to reduce the amount?",
+			"unlock_key": ""
+		},
+		{
+			"speaker_name": "Mary",
+      "text": "Yes. Six months should be enough for now.",
+			"unlock_key": ""
+		},
+		{
+			"speaker_name": "Me",
+			"speaker_role": "player",
+      "text": "Your loan application has been submitted. Please hand over your application documents.\nPlease wait for the review result.",
+			"unlock_key": ""
+		},
+		{
+			"speaker_name": "Mary",
+      "text": "(Hands over the documents) Of course. Here are my documents.",
+			"unlock_key": "basic_info",
+			"background": "res://TextureAsset/Level1/Mary/mary_loan_03_submit_documents.png",
+			"open_note_key": "basic_info",
+			"after_note_background": "res://TextureAsset/Level1/Mary/mary_loan_04_after_submit.png",
+			"complete_on_note_close": false
+		}
+	],
+	"notes": [
+		{
+			"key": "basic_info",
+			"header": "Basic Information",
+			"content": "Name: Mary\nAge: 52\nAddress: Pendulum Falls, Westland State\nEmail: Mary@email.com\nTime Credit Rating: C\n\nLoan History:\n• Life Extension Time Loan (Repaid)\n• Current Application: Life Extension Time Loan (18 Months)"
+		},
+		{
+			"key": "c_status_info",
+			"header": "Status Information",
+			"content": "Mary Carter placeholder status information."
+		},
+		{
+			"key": "c_extra_info",
+			"header": "Additional Information",
+			"content": "Mary Carter placeholder additional information."
+		}
+	],
+	"memory_scene": "res://scenes/memory/npc3_liu_guilan_memory.tscn",
+	"dossier_photos": [
+		"res://TextureAsset/NPC/DossierPhotos/文字7.png",
+		"res://TextureAsset/NPC/DossierPhotos/文字8.png",
+		"res://TextureAsset/NPC/DossierPhotos/文字9.png"
+	],
+	"contract_content_texture": "res://TextureAsset/Contract/mary_carter_contract.png",
+	"final_dialogues": [
+		{"speaker_name": "Me", "speaker_role": "player", "text": "After reviewing your documents, we've approved your loan application."},
+		{"speaker_name": "Mary", "speaker_role": "npc", "text": "(She nods gently and gathers the rest of her documents.) Thank you."},
+		{"speaker_name": "Mary", "speaker_role": "npc", "text": "This... is enough."},
+		{"speaker_name": "Mary", "speaker_role": "npc", "text": "(She stands and turns to leave.)"},
+		{"speaker_name": "Me", "speaker_role": "player", "text": "Wait."},
+		{"speaker_name": "Me", "speaker_role": "player", "text": "..."},
+		{"speaker_name": "Me", "speaker_role": "player", "text": "I hope you recover soon."},
+		{"speaker_name": "Mary", "speaker_role": "npc", "text": "(Turning back to look at me.) Thank you."},
+		{"speaker_name": "Me", "speaker_role": "player", "text": "(I lower my gaze to the two files on the desk: Mike. Mary.)"}
+	]
+}

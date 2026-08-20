@@ -1,0 +1,220 @@
+[gd_scene format=3 uid="uid://b8hjsoh3ek4av"]
+
+[ext_resource type="PackedScene" path="res://scenes/memory/memory_base.tscn" id="1_base"]
+[ext_resource type="Script" uid="uid://co1ur7y0k4xdy" path="res://scripts/memory/npc3_liu_guilan_memory.gd" id="2_memory"]
+[ext_resource type="Script" uid="uid://cevu8580mceir" path="res://scripts/memory/memory_observation_point.gd" id="3_point"]
+[ext_resource type="Resource" uid="uid://gn1tb4gv4njm" path="res://data/memory/npc3/employee_overtime_statistics.tres" id="4_data_a"]
+[ext_resource type="Resource" uid="uid://dxc3p48clfc3t" path="res://data/memory/npc3/li_lei_employee_file.tres" id="5_data_b"]
+[ext_resource type="Resource" uid="uid://cdd6h471tfhwd" path="res://data/memory/npc3/project_leader_list.tres" id="6_data_c"]
+[ext_resource type="Texture2D" uid="uid://b64gkbvnfx5fo" path="res://TextureAsset/Memory/NPC3/liu_guilan_memory_background.png" id="7_background"]
+[ext_resource type="Texture2D" uid="uid://ccl8fxrgmo5hh" path="res://TextureAsset/Memory/Common/unexplored_marker.png" id="8_marker"]
+[ext_resource type="Texture2D" uid="uid://dtpxorrbhcnu0" path="res://TextureAsset/Memory/NPC1/secondary_location_marker.png" id="9_secondary_marker"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_point"]
+size = Vector2(67, 70)
+
+[sub_resource type="Gradient" id="Gradient_ruul5"]
+offsets = PackedFloat32Array(0, 0.268, 1)
+colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 0.956, 1, 1, 1, 0)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_bjqgx"]
+gradient = SubResource("Gradient_ruul5")
+fill = 1
+fill_from = Vector2(0.5086705, 0.47976878)
+fill_to = Vector2(0.88150287, 0.18208092)
+
+[sub_resource type="Gradient" id="Gradient_6tw3n"]
+offsets = PackedFloat32Array(0.392, 1)
+colors = PackedColorArray(1, 1, 1, 0.38056678, 1, 1, 1, 0)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_8jovo"]
+gradient = SubResource("Gradient_6tw3n")
+fill = 1
+fill_from = Vector2(0.50289017, 0.49421966)
+fill_to = Vector2(0.6416185, 0.89017344)
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_secondary_marker"]
+light_mode = 1
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_secondary_marker"]
+radius = 24.0
+
+[node name="LiuGuilanMemory" unique_id=1476103393 instance=ExtResource("1_base")]
+script = ExtResource("2_memory")
+
+[node name="Background" type="TextureRect" parent="." index="0" unique_id=593994635]
+modulate = Color(0.4922372, 0.49223727, 0.49223727, 1)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("7_background")
+expand_mode = 1
+stretch_mode = 6
+
+[node name="SceneTitle" type="Label" parent="Background" index="0" unique_id=1609138705]
+visible = false
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_top = 82.0
+offset_bottom = 126.0
+grow_horizontal = 2
+theme_override_font_sizes/font_size = 30
+text = "Mary Carter · Memory"
+horizontal_alignment = 1
+
+[node name="ObservationPoints" type="Node2D" parent="." index="1" unique_id=1353027353]
+
+[node name="EmployeeOvertimeStatistics" type="Area2D" parent="ObservationPoints" index="0" unique_id=2106172196]
+unique_name_in_owner = true
+position = Vector2(106, 188)
+script = ExtResource("3_point")
+observation_data = ExtResource("4_data_a")
+
+[node name="Visual" type="Polygon2D" parent="ObservationPoints/EmployeeOvertimeStatistics" index="0" unique_id=1972576763]
+visible = false
+color = Color(0.35, 0.58, 0.53, 1)
+polygon = PackedVector2Array(-110, -60, 110, -60, 110, 60, -110, 60)
+
+[node name="Label" type="Label" parent="ObservationPoints/EmployeeOvertimeStatistics" index="1" unique_id=2104733150]
+visible = false
+offset_left = -100.0
+offset_top = -18.0
+offset_right = 100.0
+offset_bottom = 18.0
+text = "Business Operation Report"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="ObservationPoints/EmployeeOvertimeStatistics" index="2" unique_id=1814595555]
+shape = SubResource("RectangleShape2D_point")
+
+[node name="UnexploredMarker" type="Sprite2D" parent="ObservationPoints/EmployeeOvertimeStatistics" index="3" unique_id=26128199]
+scale = Vector2(0.2, 0.2)
+texture = ExtResource("8_marker")
+
+[node name="LiLeiEmployeeFile" type="Area2D" parent="ObservationPoints" index="1" unique_id=720223975]
+unique_name_in_owner = true
+position = Vector2(606, 199)
+script = ExtResource("3_point")
+observation_data = ExtResource("5_data_b")
+
+[node name="Visual" type="Polygon2D" parent="ObservationPoints/LiLeiEmployeeFile" index="0" unique_id=669511495]
+visible = false
+color = Color(0.43, 0.63, 0.56, 1)
+polygon = PackedVector2Array(-110, -60, 110, -60, 110, 60, -110, 60)
+
+[node name="Label" type="Label" parent="ObservationPoints/LiLeiEmployeeFile" index="1" unique_id=1987081828]
+visible = false
+offset_left = -100.0
+offset_top = -18.0
+offset_right = 100.0
+offset_bottom = 18.0
+text = "Layoff File"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="ObservationPoints/LiLeiEmployeeFile" index="2" unique_id=76706250]
+position = Vector2(-2.5, -4)
+shape = SubResource("RectangleShape2D_point")
+
+[node name="UnexploredMarker" type="Sprite2D" parent="ObservationPoints/LiLeiEmployeeFile" index="3" unique_id=481586918]
+scale = Vector2(0.2, 0.2)
+texture = ExtResource("8_marker")
+
+[node name="ProjectLeaderList" type="Area2D" parent="ObservationPoints" index="2" unique_id=1282589437]
+unique_name_in_owner = true
+position = Vector2(756, 281)
+script = ExtResource("3_point")
+observation_data = ExtResource("6_data_c")
+
+[node name="Visual" type="Polygon2D" parent="ObservationPoints/ProjectLeaderList" index="0" unique_id=211494647]
+visible = false
+color = Color(0.28, 0.49, 0.45, 1)
+polygon = PackedVector2Array(-110, -60, 110, -60, 110, 60, -110, 60)
+
+[node name="Label" type="Label" parent="ObservationPoints/ProjectLeaderList" index="1" unique_id=163806411]
+visible = false
+offset_left = -100.0
+offset_top = -18.0
+offset_right = 100.0
+offset_bottom = 18.0
+text = "Ryan's Probation Review"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="ObservationPoints/ProjectLeaderList" index="2" unique_id=703940259]
+shape = SubResource("RectangleShape2D_point")
+
+[node name="UnexploredMarker" type="Sprite2D" parent="ObservationPoints/ProjectLeaderList" index="3" unique_id=363113704]
+scale = Vector2(0.2, 0.2)
+texture = ExtResource("8_marker")
+
+[node name="MemoryInfoPanel" parent="MemoryUI" index="3"]
+layout_mode = 3
+
+[node name="DialogueBox" parent="MemoryUI/MemoryInfoPanel" index="2"]
+anchors_preset = 0
+
+[node name="DialogueContinueButton" parent="MemoryUI/MemoryInfoPanel/DialogueBox" index="2"]
+anchor_top = 1.0
+anchor_bottom = 1.0
+grow_vertical = 0
+
+[node name="DialogueCloseButton" parent="MemoryUI/MemoryInfoPanel/DialogueBox" index="3"]
+anchor_top = 1.0
+anchor_bottom = 1.0
+grow_vertical = 0
+
+[node name="ImagePlaceholders" parent="MemoryUI/MemoryInfoPanel/Panel" index="5"]
+anchor_top = 1.0
+
+[node name="PointLight2D" type="PointLight2D" parent="." index="3" unique_id=22373072]
+position = Vector2(477, 219)
+scale = Vector2(1.15625, 1.25)
+color = Color(0.9999985, 0.9997819, 0.7408638, 1)
+energy = 1.48
+texture = SubResource("GradientTexture2D_bjqgx")
+
+[node name="PointLight2D" type="PointLight2D" parent="PointLight2D" index="0" unique_id=2107101493]
+position = Vector2(296, 324)
+color = Color(0.9999985, 0.9997819, 0.7408638, 1)
+energy = 1.1
+texture = SubResource("GradientTexture2D_bjqgx")
+
+[node name="PointLight2D2" type="PointLight2D" parent="." index="4" unique_id=23944632]
+position = Vector2(285, 184)
+scale = Vector2(5.398438, 4.982422)
+energy = 12.19
+texture = SubResource("GradientTexture2D_8jovo")
+
+[node name="SecondaryMarkers" type="Node2D" parent="." index="5" unique_id=30597125]
+z_index = 5
+
+[node name="DaughterMessageMarker" type="Area2D" parent="SecondaryMarkers" index="0" unique_id=2043399065]
+unique_name_in_owner = true
+position = Vector2(681, 319)
+
+[node name="MarkerVisual" type="Sprite2D" parent="SecondaryMarkers/DaughterMessageMarker" index="0" unique_id=1832816074]
+material = SubResource("CanvasItemMaterial_secondary_marker")
+scale = Vector2(0.28, 0.28)
+texture = ExtResource("9_secondary_marker")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="SecondaryMarkers/DaughterMessageMarker" index="1" unique_id=1281050836]
+shape = SubResource("CircleShape2D_secondary_marker")
+
+[node name="ParentChildInvitationMarker" type="Area2D" parent="SecondaryMarkers" index="1" unique_id=299340307]
+unique_name_in_owner = true
+position = Vector2(909, 216)
+
+[node name="MarkerVisual" type="Sprite2D" parent="SecondaryMarkers/ParentChildInvitationMarker" index="0" unique_id=1341300423]
+material = SubResource("CanvasItemMaterial_secondary_marker")
+scale = Vector2(0.28, 0.28)
+texture = ExtResource("9_secondary_marker")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="SecondaryMarkers/ParentChildInvitationMarker" index="1" unique_id=614369326]
+shape = SubResource("CircleShape2D_secondary_marker")

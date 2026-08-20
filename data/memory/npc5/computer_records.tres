@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="MemoryObservationData" format=3 uid="uid://c8e3ulkp8ektm"]
+
+[ext_resource type="Script" uid="uid://hrlf8lmpg2qq" path="res://scripts/memory/memory_observation_data.gd" id="1_observation_data"]
+[ext_resource type="Texture2D" uid="uid://dyan80tkmyssn" path="res://TextureAsset/Memory/NPC1/JobSearchRecord/info_panel_background.png" id="2_panel_background"]
+[ext_resource type="Texture2D" uid="uid://ho8lvv2d3r6e" path="res://TextureAsset/Memory/NPC5/ComputerRecords/computer_icon.png" id="3_computer_icon"]
+
+[resource]
+script = ExtResource("1_observation_data")
+observation_id = &"computer_records"
+title = "Computer Records"
+info = ""
+info_page_titles = PackedStringArray("Tom Helps Ryan Edit His Resume", "Tom Transfers Time to Ryan", "Tom Transfers Time to Mike", "Tom Donates Time Through the Company", "Tom's Care Record for Mary")
+info_pages = PackedStringArray("Tom:\nHey Ryan, I looked over your resume.\nI made a few changes. Mostly just cleaned up the wording and added some of your project experience.\nDon't make yourself sound smaller than you are.\n\nRyan:\nThanks, Tom. I wasn't sure if my experience was enough.\n\nTom:\nEveryone starts somewhere.\nSend it out again. You'll have a better chance this time.", "Transfer Type: Personal Time Transfer\nDate: 07/03/225\nSender: Tom\nRecipient: Ryan\nAmount: 2 Months\nPurpose: Temporary support for daily expenses during job searching period.", "Transfer Type: Personal Time Transfer\nDate: 06/18/225\nSender: Tom\nRecipient: Mike\nAmount: 3 Months\nPurpose: Family Medical Expenses Support\n\nNote\nMike, use this for your mom's treatment.\nDon't worry about paying me back right now.\nAlso, take care of yourself. You've been working too much lately.\n— Tom", "Transfer Type: Company-Organized Charity Donation\nDate: 09/12/224\nSender: Tom\nRecipient: Lisa\nAmount: 1 Month\nPurpose: Flood Disaster Reconstruction Support\n\nNote\nEmployee contribution to support emergency relief and reconstruction efforts after the Clock Valley flood.\nThe donation will be used for community rebuilding, infrastructure repair, and support for affected residents.", "Date | Caregiver | Relationship | Check-in Time | Check-out Time\n04/18/255 | TOM | Family Friend | 08:55 AM | 02:15 PM\n05/09/255 | TOM | Family Friend | 10:20 AM | 12:45 PM\n06/15/255 | TOM | Family Friend | 08:35 AM | 03:10 PM\n07/14/255 | TOM | Family Friend | 09:05 AM | 01:30 PM\n08/03/255 | TOM | Family Friend | 09:40 AM | 02:25 PM")
+images = Array[Texture2D]([])
+image_placeholders = PackedStringArray()
+dialogue = PackedStringArray("These records show that Tom has been transferring his own time to other people for a long time.", "These acts of help are not one-time transactions, but have continued across different stages of their lives.", "From the records, it seems that Tom believes a person's time can help others through difficult times.")
+info_panel_background = ExtResource("2_panel_background")
+info_icon = ExtResource("3_computer_icon")

@@ -1,0 +1,62 @@
+[gd_scene format=3 uid="uid://c40begripg0ni"]
+
+[ext_resource type="Script" uid="uid://dcygdu1nhktpg" path="res://scripts/ui/time_display.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://bo8v862p54ir5" path="res://scenes/main/时间显示-钟.png" id="2_742oq"]
+[ext_resource type="Texture2D" uid="uid://csposgaf6d1oa" path="res://TextureAsset/Level1/时间显示-框.png" id="3_tdkw5"]
+
+[node name="TimeDisplay" type="Control" unique_id=1945900242]
+custom_minimum_size = Vector2(294, 120)
+layout_mode = 3
+anchors_preset = 0
+offset_right = 294.0
+offset_bottom = 120.0
+script = ExtResource("1_script")
+
+[node name="ClockTexture" type="TextureRect" parent="." unique_id=1146373934]
+z_index = 1
+layout_mode = 0
+offset_right = 132.0
+offset_bottom = 120.0
+mouse_filter = 2
+texture = ExtResource("2_742oq")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="TimeFrameTexture" type="TextureRect" parent="." unique_id=215126199]
+layout_mode = 0
+offset_left = 90.0
+offset_top = 19.0
+offset_right = 278.0
+offset_bottom = 97.0
+mouse_filter = 2
+texture = ExtResource("3_tdkw5")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="TimeTitle" type="Label" parent="." unique_id=1941887647]
+unique_name_in_owner = true
+z_index = 2
+layout_mode = 0
+offset_left = 108.0
+offset_top = 32.0
+offset_right = 256.0
+offset_bottom = 59.0
+theme_override_colors/font_color = Color(0.2, 0.164706, 0.121569, 1)
+theme_override_font_sizes/font_size = 14
+text = "TIME LEFT"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="TimeValue" type="Label" parent="." unique_id=1230472134]
+unique_name_in_owner = true
+z_index = 2
+layout_mode = 0
+offset_left = 112.0
+offset_top = 46.0
+offset_right = 260.0
+offset_bottom = 89.0
+theme_override_colors/font_color = Color(0.141176, 0.113725, 0.0784314, 1)
+theme_override_font_sizes/font_size = 22
+text = "78H 23Min"
+horizontal_alignment = 1
+vertical_alignment = 1

@@ -1,0 +1,24 @@
+{
+	"npcs": [
+		{
+			"npc_id": "npc_zhang_yuan",
+			"data_path": "res://data/npc/npc_a.json"
+		},
+		{
+			"npc_id": "npc_li_lei",
+			"data_path": "res://data/npc/npc_b.json"
+		},
+		{
+			"npc_id": "npc_liu_guilan",
+			"data_path": "res://data/npc/npc_c.json"
+		},
+		{
+			"npc_id": "npc_su_qing",
+			"data_path": "res://data/npc/npc_d.json"
+		},
+		{
+			"npc_id": "npc_wang_jianguo",
+			"data_path": "res://data/npc/npc_e.json"
+		}
+	]
+}

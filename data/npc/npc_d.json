@@ -1,0 +1,104 @@
+{
+	"npc_id": "npc_su_qing",
+	"display_name": "Lisa Wilson",
+	"dialogue_name": "Lisa",
+	"portrait": "",
+	"profile_photo": "res://TextureAsset/NPC/Profile/lisa_profile.png",
+	"initial_background": "res://TextureAsset/Level1/Lisa/lisa_loan_01_arrival.png",
+	"dialogue_complete_on_end": true,
+	"name_unlock_key": "basic_info",
+	"dialogues": [
+		{
+			"speaker_name": "Lisa",
+      "text": "Hello.\nI represent Time Life Corporation. I'm here to apply for a time-credit loan.",
+			"unlock_key": "",
+			"background": "res://TextureAsset/Level1/Lisa/lisa_loan_02_counter.png"
+		},
+		{
+			"speaker_name": "Me",
+			"speaker_role": "player",
+      "text": "Certainly.\nHow much time credit are you seeking?",
+			"unlock_key": ""
+		},
+		{
+			"speaker_name": "Lisa",
+      "text": "Thirty years.",
+			"unlock_key": ""
+		},
+		{
+			"speaker_name": "Me",
+			"speaker_role": "player",
+      "text": "Will this time credit be used for corporate operations?",
+			"unlock_key": ""
+		},
+		{
+			"speaker_name": "Lisa",
+      "text": "Yes.\nPrimarily for project expansion and personnel allocation.",
+			"unlock_key": ""
+		},
+		{
+			"speaker_name": "Me",
+			"speaker_role": "player",
+      "text": "Repayment will be deducted from the company's future time revenue.\nDo you confirm that you understand the relevant terms?",
+			"unlock_key": ""
+		},
+		{
+			"speaker_name": "Lisa",
+      "text": "I understand.",
+			"unlock_key": ""
+		},
+		{
+			"speaker_name": "Me",
+			"speaker_role": "player",
+      "text": "All right. Your corporate time-loan application meets the requirements, but I need to review the documents you submit before proceeding.",
+			"unlock_key": ""
+		},
+		{
+			"speaker_name": "Lisa",
+      "text": "(Hands over the documents) Of course. Here are my documents.",
+			"unlock_key": "basic_info",
+			"background": "res://TextureAsset/Level1/Lisa/lisa_loan_03_submit_documents.png",
+			"open_note_key": "basic_info",
+			"after_note_background": "res://TextureAsset/Level1/Lisa/lisa_loan_04_after_submit.png",
+			"complete_on_note_close": false
+		}
+	],
+	"notes": [
+		{
+			"key": "basic_info",
+			"header": "Basic Information",
+			"content": "Name: Lisa\nAge: 40\nAddress: Pendulum Falls, Westland State\nEmail: Lisa@email.com\nTime Credit Rating: AA\n\nLoan History:\n• Corporate Time Loan (Approved)\n• Current Application: Corporate Production Time Loan (6 Months)"
+		},
+		{
+			"key": "d_extra_info",
+			"header": "Additional Information",
+			"content": "Lisa Wilson placeholder additional information."
+		}
+	],
+	"memory_scene": "res://scenes/memory/npc4_su_qing_memory.tscn",
+	"dossier_photos": [
+		"res://TextureAsset/NPC/DossierPhotos/文字10.png",
+		"res://TextureAsset/NPC/DossierPhotos/文字11.png",
+		"res://TextureAsset/NPC/DossierPhotos/文字12.png"
+	],
+	"contract_content_texture": "res://TextureAsset/Contract/lisa_wilson_contract.png",
+	"final_dialogues": [
+		{"speaker_name": "Me", "speaker_role": "player", "text": "After reviewing your documents, the Corporate Time Loan has been approved."},
+		{"speaker_name": "Lisa", "speaker_role": "npc", "text": "(Looking down at the confirmation notice.) That was approved faster than I expected."},
+		{"speaker_name": "Me", "speaker_role": "player", "text": "The time credits will be released within the stated timeframe."},
+		{"speaker_name": "Lisa", "speaker_role": "npc", "text": "Mm."},
+		{"speaker_name": "Lisa", "speaker_role": "npc", "text": "..."},
+		{"speaker_name": "Lisa", "speaker_role": "npc", "text": "Then the project can keep moving forward."},
+		{"speaker_name": "Me", "speaker_role": "player", "text": "Please note that regular operating reports are required while the corporate time credits are in use."},
+		{"speaker_name": "Lisa", "speaker_role": "npc", "text": "Things are probably going to get very busy."},
+		{"speaker_name": "Me", "speaker_role": "player", "text": "As the person in charge, you'll also need to take part in the follow-up allocation of time."},
+		{"speaker_name": "Lisa", "speaker_role": "npc", "text": "... Of course."},
+		{"speaker_name": "Lisa", "speaker_role": "npc", "text": "The loan is approved, and I'll be the first one working overtime."},
+		{"speaker_name": "Lisa", "speaker_role": "npc", "text": "Of course, everyone will be busier."},
+		{"speaker_name": "Lisa", "speaker_role": "npc", "text": "..."},
+		{"speaker_name": "Lisa", "speaker_role": "npc", "text": "But this is the company's choice."},
+		{"speaker_name": "Me", "speaker_role": "player", "text": "..."},
+		{"speaker_name": "Me", "speaker_role": "player", "text": "I hope the project goes well."},
+		{"speaker_name": "Lisa", "speaker_role": "npc", "text": "Thank you."}
+	]
+}

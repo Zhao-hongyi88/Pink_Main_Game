@@ -1,0 +1,1073 @@
+class_name NPCBase
+extends Control
+
+## 公共 NPC 页面。静态内容来自 NPCData，运行时状态来自 GameState 中的 NPCProgress。
+
+const NOTE_ITEM_SCENE: PackedScene = preload("res://scenes/ui/npc/note_card.tscn")
+const CONTRACT_OVERLAY_SCENE: PackedScene = preload(
+	"res://scenes/ui/npc/loan_contract_overlay.tscn"
+)
+const CONTRACT_BOOK_TEXTURE: Texture2D = preload(
+	"res://TextureAsset/Contract/time_loan_contract_book.png"
+)
+const CONTRACT_STAMP_TEXTURE: Texture2D = preload(
+	"res://TextureAsset/Contract/lifetime_repository_approved_stamp.png"
+)
+const DOSSIER_PHOTO_FADE_DURATION := 0.28
+const DOSSIER_PHOTO_RECTS := [
+	Rect2(149.0, 55.0, 48.0, 29.0),
+	Rect2(241.0, 70.0, 62.0, 35.0),
+	Rect2(118.0, 160.0, 84.0, 33.0),
+]
+const DOSSIER_PHOTO_ROTATIONS := [5.0, 7.0, -5.0]
+
+@export_file("*.json") var npc_data_path := ""
+@export_group("Note Entry Animation")
+@export_range(0.1, 1.0, 0.01) var note_entry_duration := 0.36
+@export var note_entry_offset := Vector2(18.0, -14.0)
+@export var note_entry_start_scale := Vector2(0.88, 0.88)
+@export_range(0.0, 20.0, 0.5) var note_entry_rotation_degrees := 4.0
+@export var note_slot_textures: Array[Texture2D] = []
+@export_group("First Entry Animation")
+@export_range(0.0, 0.5, 0.01) var dialogue_reveal_delay := 0.10
+@export_range(0.1, 1.0, 0.01) var dialogue_reveal_duration := 0.30
+@export_group("Identity Reveal Animation")
+@export_range(0.1, 1.0, 0.01) var identity_reveal_duration := 0.40
+
+@onready var background: TextureRect = $Background
+@onready var name_plate: Control = %NamePlate
+@onready var npc_name: Label = %NPCName
+@onready var identity_label: Label = %IdentityLabel
+@onready var profile_photo: TextureRect = %ProfilePhoto
+@onready var dialogue_panel: Control = %DialoguePanel
+@onready var speaker_name: Label = %SpeakerName
+@onready var dialogue_text: Label = %DialogueText
+@onready var continue_button: Button = %ContinueButton
+@onready var note_panel: Control = %DossierPanel
+@onready var profile_board: Control = $DossierPanel/ProfileBoard
+@onready var related_title: Label = get_node_or_null(
+	"DossierPanel/RelatedTitle"
+) as Label
+@onready var note_board_area: Control = %RelatedDataArea
+@onready var note_detail_popup: NoteDetailPopup = %NoteDetailPopup
+@onready var memory_button: Button = %MemoryButton
+@onready var exit_button: Button = %ExitButton
+@onready var _note_anchors: Array[Control] = [
+	%RelatedSlot01,
+	%RelatedSlot02,
+	%RelatedSlot03,
+	%RelatedSlot04,
+	%RelatedSlot05,
+	%RelatedSlot06,
+]
+
+var npc_data: NPCData
+var npc_progress: NPCProgress
+var dialogue_manager: DialogueManager
+var final_dialogue_manager: DialogueManager
+var unlock_system: UnlockSystem
+var npc_id: StringName = &""
+var memory_scene_path := ""
+
+# 兼容页面现有公开状态名，但唯一数据源是 NPCProgress。
+var current_dialogue_index: int:
+	get:
+		return npc_progress.current_dialogue_index if npc_progress != null else 0
+
+var dialogue_completed: bool:
+	get:
+		return npc_progress.dialogue_completed if npc_progress != null else false
+
+var unlocked_keys: Dictionary:
+	get:
+		return npc_progress.unlocked_keys if npc_progress != null else {}
+
+var revealed_note_count: int:
+	get:
+		return npc_progress.revealed_note_keys.size() if npc_progress != null else 0
+
+var memory_ready: bool:
+	get:
+		return npc_progress.memory_ready if npc_progress != null else false
+
+var memory_completed: bool:
+	get:
+		return npc_progress.memory_completed if npc_progress != null else false
+
+var _name_unlock_key: StringName = &""
+var _note_data: Array[Dictionary] = []
+var _valid_unlock_keys: Array[String] = []
+var _note_items: Array[NoteItem] = []
+var _note_items_by_key: Dictionary = {}
+var _note_entry_tweens: Dictionary = {}
+var _dossier_photo_nodes: Array[TextureRect] = []
+var _intro_tween: Tween
+var _identity_tween: Tween
+var _dossier_photo_tween: Tween
+var _awaiting_intro_reveal := false
+var _intro_animation_playing := false
+var _dialogue_final_position := Vector2.ZERO
+var _name_plate_final_position := Vector2.ZERO
+var _dossier_final_position := Vector2.ZERO
+var _auto_note_interaction_locked := false
+var _active_auto_note_key := ""
+var _active_after_note_background := ""
+var _contract_book_button: TextureButton
+var _contract_overlay: LoanContractOverlay
+var _final_dialogue_active := false
+
+
+func _ready() -> void:
+	_cache_visual_layout()
+	continue_button.pressed.connect(advance_dialogue)
+	dialogue_panel.gui_input.connect(_on_dialogue_panel_gui_input)
+	note_detail_popup.popup_closed.connect(_on_note_detail_popup_closed)
+	memory_button.pressed.connect(_on_memory_pressed)
+	exit_button.pressed.connect(_on_exit_pressed)
+	_consume_navigation_payload()
+	if not _load_npc_data(npc_data_path):
+		_show_load_error()
+		return
+	_extract_valid_unlock_keys()
+	_build_note_items()
+	_setup_dossier_photos()
+	if not _bind_npc_progress():
+		_show_load_error()
+		return
+	if not _setup_unlock_system():
+		_show_load_error()
+		return
+	if not _setup_dialogue_manager():
+		_show_load_error()
+		return
+	if not _setup_contract_flow():
+		_show_load_error()
+		return
+	_restore_page_state()
+	_restore_contract_flow_state()
+
+
+func _unhandled_input(event: InputEvent) -> void:
+	if not _awaiting_intro_reveal:
+		return
+	if event is not InputEventMouseButton:
+		return
+	var mouse_event := event as InputEventMouseButton
+	if mouse_event.button_index != MOUSE_BUTTON_LEFT or not mouse_event.pressed:
+		return
+	_reveal_first_conversation()
+	get_viewport().set_input_as_handled()
+
+
+func _cache_visual_layout() -> void:
+	_dialogue_final_position = dialogue_panel.position
+	_name_plate_final_position = name_plate.position
+	_dossier_final_position = note_panel.position
+
+
+func _consume_navigation_payload() -> void:
+	var payload := SceneRouter.take_payload()
+	var payload_data_path := str(payload.get("npc_data_path", "")).strip_edges()
+	if not payload_data_path.is_empty():
+		npc_data_path = payload_data_path
+
+
+func _load_npc_data(path: String) -> bool:
+	if path.is_empty():
+		push_error("NPCBase: 没有传入 npc_data_path。")
+		return false
+
+	var loaded_data := NPCData.load_from_json(path)
+	if not loaded_data.is_valid():
+		push_error("NPCBase: %s" % loaded_data.get_error_message())
+		return false
+
+	npc_data = loaded_data
+	npc_id = npc_data.npc_id
+	_refresh_profile_photo()
+	npc_name.text = "???"
+	_name_unlock_key = npc_data.name_unlock_key
+	memory_scene_path = npc_data.memory_scene
+	_note_data = npc_data.notes.duplicate(true)
+	identity_label.text = _get_identity_display_text()
+	speaker_name.text = "???"
+	return true
+
+
+func _refresh_profile_photo() -> void:
+	profile_photo.texture = null
+	if npc_data == null or npc_data.profile_photo.is_empty():
+		return
+	var photo_resource := load(npc_data.profile_photo)
+	if not photo_resource is Texture2D:
+		push_warning(
+			"NPCBase: profile_photo 不是 Texture2D，保持照片为空：%s" % npc_data.profile_photo
+		)
+		return
+	profile_photo.texture = photo_resource
+
+
+func _get_identity_display_text() -> String:
+	for note: Dictionary in _note_data:
+		if StringName(str(note.get("key", "")).strip_edges()) != _name_unlock_key:
+			continue
+		var header := str(note.get("header", "")).strip_edges()
+		var content := str(note.get("content", "")).strip_edges()
+		if header.is_empty():
+			return content
+		if content.is_empty():
+			return header
+		return "%s · %s" % [header, content]
+	return npc_data.display_name
+
+
+func _bind_npc_progress() -> bool:
+	npc_progress = GameState.get_or_create_npc_progress(npc_data.npc_id)
+	return npc_progress != null
+
+
+func _setup_unlock_system() -> bool:
+	unlock_system = UnlockSystem.new()
+	return unlock_system.setup(_valid_unlock_keys, npc_progress)
+
+
+func _setup_dialogue_manager() -> bool:
+	dialogue_manager = DialogueManager.new()
+	return dialogue_manager.setup(npc_data.dialogues, npc_progress)
+
+
+func _setup_contract_flow() -> bool:
+	if not _has_contract_flow():
+		return true
+
+	final_dialogue_manager = DialogueManager.new()
+	if not final_dialogue_manager.setup(
+		npc_data.final_dialogues,
+		npc_progress,
+		DialogueManager.TRACK_FINAL
+	):
+		push_error("NPCBase: failed to initialize final dialogue flow.")
+		return false
+
+	_contract_book_button = TextureButton.new()
+	_contract_book_button.name = "TimeLoanContractButton"
+	_contract_book_button.position = Vector2(36.0, 250.0)
+	_contract_book_button.size = Vector2(295.0, 393.0)
+	_contract_book_button.texture_normal = CONTRACT_BOOK_TEXTURE
+	_contract_book_button.ignore_texture_size = true
+	_contract_book_button.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
+	_contract_book_button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+	_contract_book_button.tooltip_text = "Time Loan Contract"
+	_contract_book_button.pressed.connect(_on_contract_book_pressed)
+	_contract_book_button.hide()
+	note_panel.add_child(_contract_book_button)
+
+	var overlay_instance := CONTRACT_OVERLAY_SCENE.instantiate()
+	if overlay_instance is not LoanContractOverlay:
+		push_error("NPCBase: LoanContractOverlay scene has an invalid root type.")
+		overlay_instance.queue_free()
+		return false
+	_contract_overlay = overlay_instance as LoanContractOverlay
+	_contract_overlay.closed.connect(_on_contract_overlay_closed)
+	_contract_overlay.stamp_animation_finished.connect(
+		_on_contract_stamp_animation_finished
+	)
+	add_child(_contract_overlay)
+	return true
+
+
+func _has_contract_flow() -> bool:
+	return (
+		npc_data != null
+		and not npc_data.contract_content_texture.is_empty()
+		and not npc_data.final_dialogues.is_empty()
+	)
+
+
+func _apply_dialogue_background(dialogue: Dictionary) -> bool:
+	return _apply_background_path(
+		_get_effective_dialogue_background(dialogue),
+		"Dialogue background"
+	)
+
+
+func _get_effective_dialogue_background(dialogue: Dictionary) -> String:
+	var effective_background := str(dialogue.get("background", "")).strip_edges()
+	if _is_note_interaction_completed(dialogue):
+		var after_note_background := str(
+			dialogue.get("after_note_background", "")
+		).strip_edges()
+		if not after_note_background.is_empty():
+			effective_background = after_note_background
+	return effective_background
+
+
+func _apply_initial_background() -> bool:
+	if npc_data == null:
+		return false
+	return _apply_background_path(npc_data.initial_background, "initial_background")
+
+
+func _apply_background_path(background_path: String, field_label: String) -> bool:
+	if background_path.is_empty():
+		return false
+	if not ResourceLoader.exists(background_path, "Texture2D"):
+		push_warning("NPCBase: %s 路径无效，保留当前背景：%s" % [field_label, background_path])
+		return false
+	var background_resource := load(background_path)
+	if not background_resource is Texture2D:
+		push_warning("NPCBase: %s 不是 Texture2D，保留当前背景：%s" % [field_label, background_path])
+		return false
+	background.texture = background_resource
+	return true
+
+
+func _restore_dialogue_background() -> void:
+	if npc_data == null or npc_progress == null or npc_data.dialogues.is_empty():
+		return
+	_apply_initial_background()
+	if not _has_dialogue_progress():
+		return
+	var last_dialogue_index := mini(
+		npc_progress.current_dialogue_index,
+		npc_data.dialogues.size() - 1
+	)
+	for dialogue_index in range(last_dialogue_index + 1):
+		var dialogue: Dictionary = npc_data.dialogues[dialogue_index]
+		_apply_background_path(
+			_get_effective_dialogue_background(dialogue),
+			"restored dialogue background"
+		)
+
+
+func _extract_valid_unlock_keys() -> void:
+	_valid_unlock_keys.clear()
+	for note: Dictionary in _note_data:
+		var note_key := str(note.get("key", "")).strip_edges()
+		if note_key.is_empty() or _valid_unlock_keys.has(note_key):
+			continue
+		_valid_unlock_keys.append(note_key)
+
+
+func _build_note_items() -> void:
+	_note_items.clear()
+	_note_items_by_key.clear()
+	for note: Dictionary in _note_data:
+		var note_key := str(note.get("key", "")).strip_edges()
+		if note_key.is_empty():
+			push_warning("NPCBase: 忽略没有 key 的 Note。")
+			continue
+		if _note_items_by_key.has(note_key):
+			push_warning("NPCBase: 忽略重复的 Note key：%s" % note_key)
+			continue
+		var note_item: NoteItem = NOTE_ITEM_SCENE.instantiate()
+		note_item.setup(
+			str(note.get("header", "")),
+			str(note.get("content", "")),
+			note_key
+		)
+		note_item.note_selected.connect(_on_note_selected)
+		note_item.hide()
+		note_board_area.add_child(note_item)
+		_note_items.append(note_item)
+		_note_items_by_key[note_key] = note_item
+
+
+func _setup_dossier_photos() -> void:
+	for photo_node in _dossier_photo_nodes:
+		photo_node.queue_free()
+	_dossier_photo_nodes.clear()
+	if npc_data == null:
+		return
+	profile_board.clip_contents = true
+	for index in npc_data.dossier_photos.size():
+		if index >= DOSSIER_PHOTO_RECTS.size():
+			break
+		var texture_resource := load(npc_data.dossier_photos[index])
+		if not texture_resource is Texture2D:
+			push_error("NPCBase: dossier photo is not Texture2D: %s" % npc_data.dossier_photos[index])
+			continue
+		var photo_node := TextureRect.new()
+		photo_node.name = "DossierPhoto%02d" % (index + 1)
+		photo_node.position = DOSSIER_PHOTO_RECTS[index].position
+		photo_node.size = DOSSIER_PHOTO_RECTS[index].size
+		photo_node.pivot_offset = photo_node.size * 0.5
+		photo_node.rotation = deg_to_rad(DOSSIER_PHOTO_ROTATIONS[index])
+		photo_node.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		photo_node.texture = texture_resource as Texture2D
+		photo_node.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		photo_node.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		photo_node.z_index = 2
+		photo_node.hide()
+		profile_board.add_child(photo_node)
+		_dossier_photo_nodes.append(photo_node)
+
+
+func _restore_dossier_photos(show_photos: bool) -> void:
+	if _dossier_photo_tween != null and _dossier_photo_tween.is_valid():
+		_dossier_photo_tween.kill()
+	_dossier_photo_tween = null
+	for photo_node in _dossier_photo_nodes:
+		photo_node.modulate.a = 1.0
+		photo_node.visible = show_photos
+
+
+func _reveal_dossier_photos_then_enable_memory(grab_memory_focus: bool) -> void:
+	if _dossier_photo_nodes.is_empty():
+		_show_memory_button(grab_memory_focus)
+		return
+	var photos_already_visible := true
+	for photo_node in _dossier_photo_nodes:
+		if not photo_node.visible or not is_equal_approx(photo_node.modulate.a, 1.0):
+			photos_already_visible = false
+			break
+	if photos_already_visible:
+		_show_memory_button(grab_memory_focus)
+		return
+	if _dossier_photo_tween != null and _dossier_photo_tween.is_valid():
+		return
+	for photo_node in _dossier_photo_nodes:
+		photo_node.modulate.a = 0.0
+		photo_node.show()
+	_dossier_photo_tween = create_tween().set_parallel(true)
+	_dossier_photo_tween.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+	for photo_node in _dossier_photo_nodes:
+		_dossier_photo_tween.tween_property(
+			photo_node, "modulate:a", 1.0, DOSSIER_PHOTO_FADE_DURATION
+		)
+	_dossier_photo_tween.chain().tween_callback(
+		_show_memory_button.bind(grab_memory_focus)
+	)
+
+
+func _show_memory_button(grab_memory_focus: bool) -> void:
+	_dossier_photo_tween = null
+	if npc_progress == null or not npc_progress.memory_ready:
+		return
+	memory_button.show()
+	memory_button.disabled = false
+	if grab_memory_focus:
+		memory_button.grab_focus()
+
+
+func _restore_page_state() -> void:
+	_cancel_intro_tween()
+	_cancel_identity_tween()
+	_auto_note_interaction_locked = false
+	_active_auto_note_key = ""
+	_active_after_note_background = ""
+	_awaiting_intro_reveal = false
+	dialogue_panel.hide()
+	name_plate.hide()
+	npc_name.hide()
+	identity_label.hide()
+	speaker_name.text = "???"
+	note_panel.hide()
+	note_detail_popup.hide()
+	for note_item in _note_items:
+		_cancel_note_entry_tween(note_item.note_key)
+		_set_note_final_visual(note_item)
+		note_item.hide()
+	_restore_dossier_photos(npc_progress != null and npc_progress.dialogue_completed)
+
+	_refresh_dialogue_ui(false, false, false)
+	_restore_dialogue_background()
+	_restore_revealed_notes()
+	if _is_name_unlocked():
+		_show_identity_info(false)
+	if _has_dialogue_progress():
+		_show_conversation_direct()
+	else:
+		_prepare_first_entry()
+
+
+func _restore_contract_flow_state() -> void:
+	if not _has_contract_flow() or npc_progress == null:
+		return
+	if npc_progress.contract_reviewed and not npc_progress.final_dialogue_completed:
+		_start_final_dialogue()
+		return
+	_final_dialogue_active = false
+	_refresh_contract_flow_ui()
+
+
+func _refresh_contract_flow_ui() -> void:
+	if not _has_contract_flow() or _contract_book_button == null:
+		return
+	var show_contract_book := (
+		npc_progress.memory_completed
+		and not npc_progress.contract_reviewed
+		and not npc_progress.final_dialogue_completed
+	)
+	_contract_book_button.visible = show_contract_book
+	_contract_book_button.disabled = not show_contract_book
+
+	var show_related_data := not show_contract_book and not _final_dialogue_active
+	if related_title != null:
+		related_title.visible = show_related_data
+	note_board_area.visible = show_related_data
+	if show_contract_book or _final_dialogue_active or npc_progress.final_dialogue_completed:
+		memory_button.hide()
+		memory_button.disabled = true
+	if show_contract_book:
+		note_panel.show()
+
+
+func _restore_revealed_notes() -> void:
+	var displayed_keys: Dictionary = {}
+	var displayed_count := 0
+	for note_key in npc_progress.revealed_note_keys:
+		var normalized_key := note_key.strip_edges()
+		if normalized_key.is_empty():
+			push_warning("NPCBase: 跳过空的历史 revealed_note_key。")
+			continue
+		if displayed_keys.has(normalized_key):
+			push_warning("NPCBase: 跳过重复的历史 revealed_note_key：%s" % normalized_key)
+			continue
+		if not bool(npc_progress.unlocked_keys.get(normalized_key, false)):
+			push_warning("NPCBase: 历史资料 key 未处于解锁状态，跳过 UI：%s" % normalized_key)
+			continue
+		if not _note_items_by_key.has(normalized_key):
+			push_warning("NPCBase: 合法历史 key 没有对应 NoteItem，跳过 UI：%s" % normalized_key)
+			continue
+		_show_note_item(normalized_key, displayed_count)
+		displayed_count += 1
+		displayed_keys[normalized_key] = true
+
+
+
+func _is_name_unlocked() -> bool:
+	return not _name_unlock_key.is_empty() and bool(
+		npc_progress.unlocked_keys.get(String(_name_unlock_key), false)
+	)
+
+
+func _has_dialogue_progress() -> bool:
+	return (
+		npc_progress.current_dialogue_index > 0
+		or npc_progress.dialogue_completed
+		or not npc_progress.unlocked_keys.is_empty()
+		or not npc_progress.revealed_note_keys.is_empty()
+	)
+
+
+func _prepare_first_entry() -> void:
+	_awaiting_intro_reveal = true
+	_set_conversation_final_visual()
+	dialogue_panel.hide()
+
+
+func _show_conversation_direct() -> void:
+	_awaiting_intro_reveal = false
+	_set_conversation_final_visual()
+	_show_speaker_plate()
+	dialogue_panel.show()
+
+
+func _reveal_first_conversation() -> void:
+	if not _awaiting_intro_reveal:
+		return
+	_awaiting_intro_reveal = false
+	_cancel_intro_tween()
+	_intro_animation_playing = true
+	_refresh_dialogue_ui(false, true, true)
+	_show_speaker_plate()
+	dialogue_panel.show()
+	dialogue_panel.position = _dialogue_final_position + Vector2(0.0, 15.0)
+	dialogue_panel.modulate.a = 0.0
+
+	_intro_tween = create_tween()
+	_intro_tween.set_parallel(true)
+	_intro_tween.set_trans(Tween.TRANS_SINE)
+	_intro_tween.set_ease(Tween.EASE_OUT)
+	_intro_tween.tween_property(
+		dialogue_panel, "position", _dialogue_final_position, dialogue_reveal_duration
+	).set_delay(dialogue_reveal_delay)
+	_intro_tween.tween_property(
+		dialogue_panel, "modulate:a", 1.0, dialogue_reveal_duration
+	).set_delay(dialogue_reveal_delay)
+	_intro_tween.finished.connect(_on_intro_animation_finished)
+
+
+func _on_intro_animation_finished() -> void:
+	_intro_animation_playing = false
+	_intro_tween = null
+	_set_conversation_final_visual()
+
+
+func _set_conversation_final_visual() -> void:
+	dialogue_panel.position = _dialogue_final_position
+	dialogue_panel.modulate.a = 1.0
+
+
+func _show_speaker_plate() -> void:
+	name_plate.position = _name_plate_final_position
+	name_plate.scale = Vector2.ONE
+	name_plate.modulate.a = 1.0
+	npc_name.show()
+	name_plate.show()
+
+
+func _cancel_intro_tween() -> void:
+	if _intro_tween != null and _intro_tween.is_valid():
+		_intro_tween.kill()
+	_intro_tween = null
+	_intro_animation_playing = false
+
+
+func _show_identity_info(animate := false) -> void:
+	_cancel_identity_tween()
+	identity_label.show()
+	note_panel.show()
+	if not animate:
+		_set_identity_final_visual()
+		return
+
+	note_panel.position = _dossier_final_position + Vector2(70.0, 0.0)
+	note_panel.modulate.a = 0.0
+	_identity_tween = create_tween()
+	_identity_tween.set_parallel(true)
+	_identity_tween.set_trans(Tween.TRANS_SINE)
+	_identity_tween.set_ease(Tween.EASE_OUT)
+	_identity_tween.tween_property(
+		note_panel, "position", _dossier_final_position, identity_reveal_duration
+	)
+	_identity_tween.tween_property(
+		note_panel, "modulate:a", 1.0, identity_reveal_duration
+	)
+
+
+func _set_identity_final_visual() -> void:
+	note_panel.position = _dossier_final_position
+	note_panel.modulate.a = 1.0
+
+
+func _cancel_identity_tween() -> void:
+	if _identity_tween != null and _identity_tween.is_valid():
+		_identity_tween.kill()
+	_identity_tween = null
+
+
+func _show_note_item(note_key: String, order_index: int, animate_entry := false) -> void:
+	var note_item: NoteItem = _note_items_by_key[note_key]
+	if order_index < 0 or order_index >= _note_anchors.size():
+		_cancel_note_entry_tween(note_key)
+		note_item.hide()
+		push_warning("NPCBase: 资料板锚点不足，暂不显示资料：%s" % note_key)
+		return
+	var target_anchor := _note_anchors[order_index]
+	if order_index < note_slot_textures.size() and note_slot_textures[order_index] != null:
+		var note_background := note_item.get_node_or_null("NoteBackground") as TextureRect
+		if note_background != null:
+			note_background.texture = note_slot_textures[order_index]
+	if note_item.get_parent() != target_anchor:
+		note_item.reparent(target_anchor, false)
+	note_item.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	note_item.show()
+	note_item.pivot_offset = note_item.size * 0.5
+	if animate_entry:
+		_play_note_entry_animation(note_key, note_item)
+	else:
+		_cancel_note_entry_tween(note_key)
+		_set_note_final_visual(note_item)
+
+
+func _play_note_entry_animation(note_key: String, note_item: NoteItem) -> void:
+	_cancel_note_entry_tween(note_key)
+	var final_position := Vector2.ZERO
+	var final_rotation := 0.0
+	note_item.position = final_position + note_entry_offset
+	note_item.scale = note_entry_start_scale
+	note_item.rotation = final_rotation - deg_to_rad(note_entry_rotation_degrees)
+	note_item.modulate.a = 0.0
+	note_item.disabled = true
+
+	var entry_tween := create_tween()
+	entry_tween.set_parallel(true)
+	entry_tween.set_trans(Tween.TRANS_SINE)
+	entry_tween.set_ease(Tween.EASE_OUT)
+	entry_tween.tween_property(note_item, "position", final_position, note_entry_duration)
+	entry_tween.tween_property(note_item, "scale", Vector2.ONE, note_entry_duration)
+	entry_tween.tween_property(note_item, "rotation", final_rotation, note_entry_duration)
+	entry_tween.tween_property(note_item, "modulate:a", 1.0, note_entry_duration)
+	_note_entry_tweens[note_key] = entry_tween
+	entry_tween.finished.connect(
+		_on_note_entry_animation_finished.bind(note_key, note_item, entry_tween)
+	)
+
+
+func _on_note_entry_animation_finished(
+	note_key: String,
+	note_item: NoteItem,
+	entry_tween: Tween
+) -> void:
+	if _note_entry_tweens.get(note_key) != entry_tween:
+		return
+	_note_entry_tweens.erase(note_key)
+	if is_instance_valid(note_item):
+		_set_note_final_visual(note_item)
+
+
+func _cancel_note_entry_tween(note_key: String) -> void:
+	var entry_tween: Tween = _note_entry_tweens.get(note_key)
+	if entry_tween != null and entry_tween.is_valid():
+		entry_tween.kill()
+	_note_entry_tweens.erase(note_key)
+
+
+func _set_note_final_visual(note_item: NoteItem) -> void:
+	note_item.position = Vector2.ZERO
+	note_item.scale = Vector2.ONE
+	note_item.rotation = 0.0
+	note_item.modulate.a = 1.0
+	note_item.disabled = false
+
+
+func _on_note_selected(note_key: String, header: String, content: String) -> void:
+	if npc_progress == null or not bool(npc_progress.unlocked_keys.get(note_key, false)):
+		return
+	_open_note_detail(note_key, header, content)
+
+
+func _open_note_detail(note_key: String, header: String, content: String) -> void:
+	var preview_texture: Texture2D
+	var note_item := _note_items_by_key.get(note_key) as NoteItem
+	if note_item != null:
+		var note_background := note_item.get_node_or_null("NoteBackground") as TextureRect
+		if note_background != null:
+			preview_texture = note_background.texture
+	note_detail_popup.open_note(note_key, header, content, preview_texture)
+
+
+func _open_note_detail_by_key(note_key: String) -> bool:
+	for note: Dictionary in _note_data:
+		if str(note.get("key", "")) != note_key:
+			continue
+		_open_note_detail(
+			note_key,
+			str(note.get("header", "")),
+			str(note.get("content", ""))
+		)
+		return true
+	return false
+
+
+func _on_dialogue_panel_gui_input(event: InputEvent) -> void:
+	if event is not InputEventMouseButton:
+		return
+	var mouse_event := event as InputEventMouseButton
+	if mouse_event.button_index != MOUSE_BUTTON_LEFT or not mouse_event.pressed:
+		return
+	advance_dialogue()
+	dialogue_panel.accept_event()
+
+
+func _is_dialogue_advance_blocked() -> bool:
+	return (
+		dialogue_manager == null
+		or npc_progress == null
+		or _awaiting_intro_reveal
+		or _intro_animation_playing
+		or _auto_note_interaction_locked
+		or (_identity_tween != null and _identity_tween.is_valid())
+		or not _note_entry_tweens.is_empty()
+		or note_detail_popup.visible
+		or npc_progress.dialogue_completed
+		or _is_temporary_dialogue_end()
+		or not dialogue_panel.visible
+	)
+
+
+func advance_dialogue() -> void:
+	if _final_dialogue_active:
+		_advance_final_dialogue()
+		return
+	if _is_dialogue_advance_blocked():
+		return
+	var result := dialogue_manager.advance()
+	if not bool(result.get("accepted", false)):
+		_refresh_dialogue_ui()
+		return
+	var unlock_key := str(result.get("unlock_key", ""))
+	if not unlock_key.is_empty():
+		unlock_info(unlock_key)
+	_refresh_dialogue_ui(bool(result.get("dialogue_completed", false)))
+
+
+func _advance_final_dialogue() -> void:
+	if (
+		final_dialogue_manager == null
+		or npc_progress == null
+		or npc_progress.final_dialogue_completed
+		or not dialogue_panel.visible
+		or (_contract_overlay != null and _contract_overlay.visible)
+	):
+		return
+	var result := final_dialogue_manager.advance()
+	if not bool(result.get("accepted", false)):
+		return
+	if bool(result.get("dialogue_completed", false)):
+		_complete_chapter_one()
+		return
+	_refresh_final_dialogue_ui()
+
+
+# 保留旧页面入口，兼容已有测试与外部调用；所有推进逻辑仍集中在 advance_dialogue()。
+func _on_continue_pressed() -> void:
+	advance_dialogue()
+
+
+func unlock_info(unlock_key: String) -> bool:
+	var result := unlock_system.request_unlock(unlock_key)
+	if not bool(result.get("newly_unlocked", false)):
+		return false
+
+	var unlocked_key := str(result.get("key", ""))
+	if _note_items_by_key.has(unlocked_key):
+		_show_note_item(unlocked_key, _get_note_ui_order_index(unlocked_key), true)
+	else:
+		push_warning("NPCBase: 合法 key 没有对应 NoteItem，跳过 UI：%s" % unlocked_key)
+	if StringName(unlocked_key) == _name_unlock_key:
+		_show_identity_info(true)
+	return true
+
+
+func _get_note_ui_order_index(target_key: String) -> int:
+	var order_index := 0
+	for note_key in npc_progress.revealed_note_keys:
+		if note_key == target_key:
+			break
+		if bool(npc_progress.unlocked_keys.get(note_key, false)) and _note_items_by_key.has(note_key):
+			order_index += 1
+	return order_index
+
+
+func _refresh_dialogue_ui(
+	grab_memory_focus := false,
+	apply_background := true,
+	process_dialogue_actions := true
+) -> void:
+	# 当前阶段 memory_ready 与 dialogue_completed 保持严格同步。
+	npc_progress.memory_ready = npc_progress.dialogue_completed
+	var current_dialogue := dialogue_manager.get_current_dialogue()
+	if apply_background:
+		_apply_dialogue_background(current_dialogue)
+	dialogue_text.text = dialogue_manager.get_current_text()
+	if process_dialogue_actions:
+		_process_current_dialogue_actions(current_dialogue)
+	_refresh_speaker_display(current_dialogue)
+	_update_continue_button_state()
+	memory_button.hide()
+	memory_button.disabled = true
+	if npc_progress.memory_ready:
+		_reveal_dossier_photos_then_enable_memory(grab_memory_focus)
+
+
+func _refresh_speaker_display(dialogue: Dictionary) -> void:
+	var visible_speaker := _get_visible_speaker_name(dialogue)
+	npc_name.text = visible_speaker
+	# 保留旧隐藏节点的文本镜像，避免破坏现有场景/测试引用。
+	speaker_name.text = visible_speaker
+
+
+func _get_visible_speaker_name(dialogue: Dictionary) -> String:
+	var speaker_role := str(dialogue.get("speaker_role", "npc")).strip_edges().to_lower()
+	var configured_name := str(dialogue.get("speaker_name", "")).strip_edges()
+	if speaker_role == "player":
+		return configured_name if not configured_name.is_empty() else "Me"
+	return (
+		npc_data.dialogue_name
+		if npc_data.dialogue_speaker_known_from_start or _is_name_unlocked()
+		else "???"
+	)
+
+
+func _process_current_dialogue_actions(dialogue: Dictionary) -> void:
+	var open_note_key := str(dialogue.get("open_note_key", "")).strip_edges()
+	if open_note_key.is_empty() or _is_note_interaction_completed(dialogue):
+		return
+	if not unlock_info(open_note_key):
+		return
+	_auto_note_interaction_locked = true
+	_active_auto_note_key = open_note_key
+	_active_after_note_background = str(
+		dialogue.get("after_note_background", "")
+	).strip_edges()
+	if not _open_note_detail_by_key(open_note_key):
+		_auto_note_interaction_locked = false
+		_active_auto_note_key = ""
+		_active_after_note_background = ""
+
+
+func _is_note_interaction_completed(dialogue: Dictionary) -> bool:
+	if npc_progress == null:
+		return false
+	var open_note_key := str(dialogue.get("open_note_key", "")).strip_edges()
+	return (
+		not open_note_key.is_empty()
+		and bool(npc_progress.unlocked_keys.get(open_note_key, false))
+		and npc_progress.revealed_note_keys.has(open_note_key)
+	)
+
+
+func _is_temporary_dialogue_end() -> bool:
+	return (
+		npc_data != null
+		and dialogue_manager != null
+		and npc_progress != null
+		and not npc_data.dialogue_complete_on_end
+		and not npc_progress.dialogue_completed
+		and not dialogue_manager.has_next()
+	)
+
+
+func _update_continue_button_state() -> void:
+	continue_button.disabled = (
+		npc_progress == null
+		or npc_progress.dialogue_completed
+		or _auto_note_interaction_locked
+		or _is_temporary_dialogue_end()
+	)
+
+
+func _on_note_detail_popup_closed() -> void:
+	if not _auto_note_interaction_locked:
+		return
+	var should_finalize_dialogue := _should_finalize_dialogue_after_auto_note()
+	if not _active_after_note_background.is_empty():
+		_apply_background_path(_active_after_note_background, "after_note_background")
+	_auto_note_interaction_locked = false
+	_active_auto_note_key = ""
+	_active_after_note_background = ""
+	if should_finalize_dialogue:
+		_finalize_current_dialogue()
+		return
+	_update_continue_button_state()
+
+
+func _should_finalize_dialogue_after_auto_note() -> bool:
+	if (
+		npc_data == null
+		or dialogue_manager == null
+		or npc_progress == null
+		or not npc_data.dialogue_complete_on_end
+		or npc_progress.dialogue_completed
+		or dialogue_manager.has_next()
+	):
+		return false
+	var current_dialogue := dialogue_manager.get_current_dialogue()
+	return (
+		not _active_auto_note_key.is_empty()
+		and str(current_dialogue.get("open_note_key", "")).strip_edges()
+		== _active_auto_note_key
+		and bool(current_dialogue.get("complete_on_note_close", true))
+	)
+
+
+func _finalize_current_dialogue() -> void:
+	var result := dialogue_manager.advance()
+	if not bool(result.get("accepted", false)):
+		_refresh_dialogue_ui(false, false, false)
+		return
+	var unlock_key := str(result.get("unlock_key", "")).strip_edges()
+	if not unlock_key.is_empty():
+		unlock_info(unlock_key)
+	_refresh_dialogue_ui(bool(result.get("dialogue_completed", false)), false, false)
+
+
+func _on_contract_book_pressed() -> void:
+	if (
+		not _has_contract_flow()
+		or npc_progress == null
+		or not npc_progress.memory_completed
+		or npc_progress.contract_reviewed
+		or _contract_overlay == null
+	):
+		return
+	var content_resource := load(npc_data.contract_content_texture)
+	if content_resource is not Texture2D:
+		push_error(
+			"NPCBase: contract_content_texture is not Texture2D: %s"
+			% npc_data.contract_content_texture
+		)
+		return
+	_contract_overlay.open_contract(
+		content_resource as Texture2D,
+		CONTRACT_STAMP_TEXTURE,
+		npc_progress.contract_stamped
+	)
+
+
+func _on_contract_stamp_animation_finished() -> void:
+	if npc_progress != null:
+		npc_progress.contract_stamped = true
+
+
+func _on_contract_overlay_closed() -> void:
+	if npc_progress == null or not npc_progress.contract_stamped:
+		return
+	npc_progress.contract_reviewed = true
+	_start_final_dialogue()
+
+
+func _start_final_dialogue() -> void:
+	if (
+		final_dialogue_manager == null
+		or npc_progress == null
+		or npc_progress.final_dialogue_completed
+	):
+		return
+	_final_dialogue_active = true
+	_set_conversation_final_visual()
+	_show_speaker_plate()
+	dialogue_panel.show()
+	_refresh_contract_flow_ui()
+	_refresh_final_dialogue_ui()
+
+
+func _refresh_final_dialogue_ui() -> void:
+	if not _final_dialogue_active or final_dialogue_manager == null:
+		return
+	var current_dialogue := final_dialogue_manager.get_current_dialogue()
+	dialogue_text.text = final_dialogue_manager.get_current_text()
+	_refresh_speaker_display(current_dialogue)
+	continue_button.disabled = npc_progress.final_dialogue_completed
+	memory_button.hide()
+	memory_button.disabled = true
+
+
+func _complete_chapter_one() -> void:
+	_final_dialogue_active = false
+	_refresh_contract_flow_ui()
+	SceneRouter.go_to(&"home")
+
+
+func _on_memory_pressed() -> void:
+	if not memory_ready:
+		return
+	SceneRouter.go_to_scene(memory_scene_path, {
+		"return_npc_data_path": npc_data_path,
+		"npc_id": String(npc_data.npc_id),
+		"return_to_npc_on_complete": _has_contract_flow(),
+	})
+
+
+func _on_exit_pressed() -> void:
+	SceneRouter.go_to(&"home")
+
+
+func _show_load_error() -> void:
+	_awaiting_intro_reveal = false
+	_cancel_intro_tween()
+	_cancel_identity_tween()
+	name_plate.hide()
+	npc_name.text = "NPC DATA ERROR"
+	npc_name.hide()
+	identity_label.hide()
+	speaker_name.text = "NPC DATA ERROR"
+	dialogue_text.text = "无法读取 NPC 数据。"
+	continue_button.disabled = true
+	note_panel.hide()
+	note_detail_popup.hide()
+	memory_button.hide()
+	memory_button.disabled = true

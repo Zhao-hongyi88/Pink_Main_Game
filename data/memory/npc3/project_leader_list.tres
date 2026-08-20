@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="MemoryObservationData" format=3 uid="uid://cdd6h471tfhwd"]
+
+[ext_resource type="Script" uid="uid://hrlf8lmpg2qq" path="res://scripts/memory/memory_observation_data.gd" id="1_observation_data"]
+[ext_resource type="Texture2D" uid="uid://dyan80tkmyssn" path="res://TextureAsset/Memory/NPC1/JobSearchRecord/info_panel_background.png" id="2_panel_background"]
+[ext_resource type="Texture2D" uid="uid://dlpr54tbnwty6" path="res://TextureAsset/Memory/NPC3/ProjectLeaderList/leader_list_icon.png" id="3_leader_list_icon"]
+
+[resource]
+script = ExtResource("1_observation_data")
+observation_id = &"project_leader_list"
+title = "Ryan's Probation Review"
+info = ""
+info_page_titles = PackedStringArray("Probation Review Form  1 / 4", "Review Summary  2 / 4", "Improvement Areas  3 / 4", "Manager Comment  4 / 4")
+info_pages = PackedStringArray("Probation Review Form\n\nEmployee Name: Ryan Zhang\nPosition: Junior Operations Associate\nDepartment: Operations Department\n\nReviewer: Lisa\nReview Period: 90 Days\nReview Date: 08/01/2026\n\nPerformance Rating\nRating: Meets Requirements", "Review Summary\nRyan has adapted to the team and understands basic department procedures.\nHe is able to complete assigned tasks with guidance but still requires more experience in independent problem-solving.\n\nStrengths\n• Quick learner\n• Responsible attitude\n• Good team adaptation", "Improvement Areas\n• Gain more practical experience\n• Improve independent decision-making", "Manager Comment\nLisa:\nRyan has met the basic requirements of his current position.\nHe shows potential for further development with additional experience and training.\n\nFinal Recommendation\nProbation Result: Pass\nRecommendation: Continue Employment")
+images = Array[Texture2D]([])
+image_placeholders = PackedStringArray()
+dialogue = PackedStringArray("According to the review record, he is not an unqualified employee.", "His ability and effort have been recorded, but these factors do not completely determine the final outcome.")
+info_panel_background = ExtResource("2_panel_background")
+info_icon = ExtResource("3_leader_list_icon")
+open_with_icon_preview = true

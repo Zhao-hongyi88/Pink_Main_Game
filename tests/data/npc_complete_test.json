@@ -1,0 +1,28 @@
+{
+	"npc_id": "npc_zhang_yuan",
+	"display_name": "Ryan Miller",
+	"dialogue_name": "Ryan",
+	"portrait": "",
+	"profile_photo": "res://TextureAsset/NPC/Profile/ryan_profile.png",
+	"name_unlock_key": "basic_info",
+	"dialogues": [
+		{"text": "这里是测试对话01。", "unlock_key": ""},
+		{"text": "这里是测试对话02。", "unlock_key": "basic_info"},
+		{"text": "这里是测试对话03。", "unlock_key": ""},
+		{"text": "这里是测试对话04。", "unlock_key": "work_info"},
+		{"text": "这里是测试对话05。", "unlock_key": ""}
+	],
+	"notes": [
+		{"key": "basic_info", "header": "基本信息", "content": "姓名：Ryan Miller"},
+		{"key": "additional_info", "header": "补充信息", "content": "性别：未知\n年龄：未知"},
+		{"key": "work_info", "header": "职业信息", "content": "职业：测试职业"},
+		{"key": "experience_summary", "header": "经历摘要", "content": "这里是测试资料文本04。"},
+		{"key": "extra_info", "header": "补充资料", "content": "这里是测试资料文本05。"}
+	],
+	"memory_scene": "res://scenes/memory/npc1_zhang_yuan_memory.tscn",
+	"dossier_photos": [
+		"res://TextureAsset/NPC/DossierPhotos/文字.png",
+		"res://TextureAsset/NPC/DossierPhotos/文字2.png",
+		"res://TextureAsset/NPC/DossierPhotos/文字3.png"
+	]
+}

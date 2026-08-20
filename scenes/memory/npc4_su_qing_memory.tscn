@@ -1,0 +1,137 @@
+[gd_scene format=3 uid="uid://cv3k06qtnm6ih"]
+
+[ext_resource type="PackedScene" path="res://scenes/memory/memory_base.tscn" id="1_base"]
+[ext_resource type="Script" uid="uid://ds24mi3dk24g6" path="res://scripts/memory/npc4_su_qing_memory.gd" id="2_memory"]
+[ext_resource type="Script" uid="uid://cevu8580mceir" path="res://scripts/memory/memory_observation_point.gd" id="3_point"]
+[ext_resource type="Resource" uid="uid://cwn6xtq4lk4x1" path="res://data/memory/npc4/table_phone.tres" id="4_data_a"]
+[ext_resource type="Resource" uid="uid://dd8mwf0jo3u6" path="res://data/memory/npc4/hospital_care_record.tres" id="6_data_c"]
+[ext_resource type="Texture2D" uid="uid://04d2lr8pxccd" path="res://TextureAsset/Memory/NPC4/su_qing_hospital_scene.png" id="7_background"]
+[ext_resource type="Texture2D" uid="uid://ccl8fxrgmo5hh" path="res://TextureAsset/Memory/Common/unexplored_marker.png" id="8_marker"]
+[ext_resource type="Texture2D" uid="uid://dtpxorrbhcnu0" path="res://TextureAsset/Memory/NPC1/secondary_location_marker.png" id="9_dialogue_marker"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_point"]
+size = Vector2(80, 70)
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_dialogue_marker"]
+light_mode = 1
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_dialogue_marker"]
+radius = 24.0
+
+[node name="SuQingMemory" unique_id=1043829086 instance=ExtResource("1_base")]
+script = ExtResource("2_memory")
+
+[node name="Background" type="TextureRect" parent="." index="0" unique_id=94281847]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("7_background")
+expand_mode = 1
+stretch_mode = 6
+
+[node name="SceneTitle" type="Label" parent="Background" index="0" unique_id=1536398748]
+visible = false
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_top = 82.0
+offset_bottom = 126.0
+grow_horizontal = 2
+theme_override_font_sizes/font_size = 30
+text = "Lisa Wilson · Memory"
+horizontal_alignment = 1
+
+[node name="ObservationPoints" type="Node2D" parent="." index="1" unique_id=549285416]
+
+[node name="TablePhone" type="Area2D" parent="ObservationPoints" index="0" unique_id=1471343165]
+unique_name_in_owner = true
+position = Vector2(661, 564)
+script = ExtResource("3_point")
+observation_data = ExtResource("4_data_a")
+
+[node name="Visual" type="Polygon2D" parent="ObservationPoints/TablePhone" index="0" unique_id=1012645566]
+visible = false
+color = Color(0.66, 0.37, 0.53, 1)
+polygon = PackedVector2Array(-110, -60, 110, -60, 110, 60, -110, 60)
+
+[node name="Label" type="Label" parent="ObservationPoints/TablePhone" index="1" unique_id=1682270153]
+visible = false
+offset_left = -100.0
+offset_top = -18.0
+offset_right = 100.0
+offset_bottom = 18.0
+text = "Phone on the Table"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="ObservationPoints/TablePhone" index="2" unique_id=1485837528]
+shape = SubResource("RectangleShape2D_point")
+
+[node name="UnexploredMarker" type="Sprite2D" parent="ObservationPoints/TablePhone" index="3" unique_id=244140305]
+scale = Vector2(0.2, 0.2)
+texture = ExtResource("8_marker")
+
+[node name="HospitalCareRecord" type="Area2D" parent="ObservationPoints" index="1" unique_id=1804419003]
+unique_name_in_owner = true
+position = Vector2(346, 415)
+script = ExtResource("3_point")
+observation_data = ExtResource("6_data_c")
+
+[node name="Visual" type="Polygon2D" parent="ObservationPoints/HospitalCareRecord" index="0" unique_id=1781137167]
+visible = false
+color = Color(0.58, 0.3, 0.48, 1)
+polygon = PackedVector2Array(-110, -60, 110, -60, 110, 60, -110, 60)
+
+[node name="Label" type="Label" parent="ObservationPoints/HospitalCareRecord" index="1" unique_id=310740769]
+visible = false
+offset_left = -100.0
+offset_top = -18.0
+offset_right = 100.0
+offset_bottom = 18.0
+text = "Hospital Care Record"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="ObservationPoints/HospitalCareRecord" index="2" unique_id=125175843]
+shape = SubResource("RectangleShape2D_point")
+
+[node name="UnexploredMarker" type="Sprite2D" parent="ObservationPoints/HospitalCareRecord" index="3" unique_id=1712370249]
+scale = Vector2(0.2, 0.2)
+texture = ExtResource("8_marker")
+
+[node name="MemoryInfoPanel" parent="MemoryUI" index="3"]
+layout_mode = 3
+
+[node name="DialogueBox" parent="MemoryUI/MemoryInfoPanel" index="2"]
+anchors_preset = 0
+
+[node name="DialogueContinueButton" parent="MemoryUI/MemoryInfoPanel/DialogueBox" index="2"]
+anchor_top = 1.0
+anchor_bottom = 1.0
+grow_vertical = 0
+
+[node name="DialogueCloseButton" parent="MemoryUI/MemoryInfoPanel/DialogueBox" index="3"]
+anchor_top = 1.0
+anchor_bottom = 1.0
+grow_vertical = 0
+
+[node name="ImagePlaceholders" parent="MemoryUI/MemoryInfoPanel/Panel" index="5"]
+anchor_top = 1.0
+
+[node name="DialogueMarker" type="Area2D" parent="." index="3" unique_id=1347928338]
+unique_name_in_owner = true
+z_index = 5
+
+[node name="GoldRing" type="Sprite2D" parent="DialogueMarker" index="0" unique_id=282298995]
+material = SubResource("CanvasItemMaterial_dialogue_marker")
+position = Vector2(756, 399)
+scale = Vector2(0.28, 0.28)
+texture = ExtResource("9_dialogue_marker")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="DialogueMarker" index="1" unique_id=893291011]
+position = Vector2(756, 399)
+shape = SubResource("CircleShape2D_dialogue_marker")

@@ -1,0 +1,151 @@
+{
+	"npc_id": "npc_zhang_yuan",
+	"display_name": "Ryan Miller",
+	"dialogue_name": "Ryan",
+	"portrait": "",
+	"profile_photo": "res://TextureAsset/NPC/Profile/ryan_profile.png",
+	"initial_background": "res://TextureAsset/Level1/Ryan/ryan_loan_01_arrival.png",
+	"name_unlock_key": "basic_info",
+	"dialogues": [
+		{
+			"speaker_name": "Me",
+			"speaker_role": "player",
+	  "text": "Hello. What can I help you with today?",
+			"unlock_key": "",
+			"background": "res://TextureAsset/Level1/Ryan/ryan_loan_02_counter.png"
+		},
+		{
+			"speaker_name": "Ryan",
+	  "text": "I'd like to apply for a small loan.",
+			"unlock_key": ""
+		},
+		{
+			"speaker_name": "Me",
+			"speaker_role": "player",
+	  "text": "Of course. What will the loan be used for?",
+			"unlock_key": ""
+		},
+		{
+			"speaker_name": "Ryan",
+	  "text": "Training.\nA course offered by a professional certification institute.\nThey said completing it could improve my time-value rating.",
+			"unlock_key": ""
+		},
+		{
+			"speaker_name": "Me",
+			"speaker_role": "player",
+	  "text": "Just a reminder: a training loan must be repaid with your future labor time. If the training falls short of expectations, repayment may become more difficult.",
+			"unlock_key": ""
+		},
+		{
+			"speaker_name": "Ryan",
+	  "text": "(After a brief silence) I understand.",
+			"unlock_key": ""
+		},
+		{
+			"speaker_name": "Me",
+			"speaker_role": "player",
+	  "text": "Why did you choose this training provider?",
+			"unlock_key": ""
+		},
+		{
+			"speaker_name": "Ryan",
+	  "text": "Because they promised to help raise my time-value rating.",
+			"unlock_key": ""
+		},
+		{
+			"speaker_name": "Ryan",
+	  "text": "I just want my time...\nto have at least one chance to be needed.",
+			"unlock_key": ""
+		},
+		{
+			"speaker_name": "Me",
+			"speaker_role": "player",
+	  "text": "Your loan application has been submitted. Please hand over your application documents.\nPlease wait for the review result.",
+			"unlock_key": ""
+		},
+		{
+			"speaker_name": "Ryan",
+	  "text": "(Hands over the documents) Of course. Here are my documents.",
+			"unlock_key": "basic_info",
+			"background": "res://TextureAsset/Level1/Ryan/ryan_loan_03_submit_documents.png",
+			"open_note_key": "basic_info",
+			"after_note_background": "res://TextureAsset/Level1/Ryan/ryan_loan_04_after_submit.png"
+		}
+	],
+	"notes": [
+		{
+			"key": "basic_info",
+			"header": "Basic Information",
+			"content": "Name: Ryan\nAge: 22\nAddress: Pendulum Falls, Westland State\nEmail: Ryan@email.com\nTime Credit Rating: C\n\nLoan History:\n• No previous loans\n• Current Application: Career Development Time Loan (18 Months)"
+		},
+		{
+			"key": "additional_info",
+			"header": "补充信息",
+			"content": "性别：未知\n年龄：未知"
+		},
+		{
+			"key": "work_info",
+			"header": "职业信息",
+			"content": "职业：测试职业"
+		},
+		{
+			"key": "experience_summary",
+			"header": "经历摘要",
+			"content": "这里是测试资料文本04。"
+		},
+		{
+			"key": "extra_info",
+			"header": "补充资料",
+			"content": "这里是测试资料文本05。"
+		}
+	],
+	"memory_scene": "res://scenes/memory/npc1_zhang_yuan_memory.tscn",
+	"dossier_photos": [
+		"res://TextureAsset/NPC/DossierPhotos/文字.png",
+		"res://TextureAsset/NPC/DossierPhotos/文字2.png",
+		"res://TextureAsset/NPC/DossierPhotos/文字3.png"
+	],
+	"contract_content_texture": "res://TextureAsset/Contract/ryan_miller_contract.png",
+	"final_dialogues": [
+		{
+			"speaker_name": "Me",
+			"speaker_role": "player",
+			"text": "After reviewing your documents, we've approved your loan application."
+		},
+		{
+			"speaker_name": "Ryan",
+			"speaker_role": "npc",
+			"text": "Really... it was approved? Thank you."
+		},
+		{
+			"speaker_name": "Ryan",
+			"speaker_role": "npc",
+			"text": "I hope I can finally find a job this time."
+		},
+		{
+			"speaker_name": "Me",
+			"speaker_role": "player",
+			"text": "I wish you the best."
+		},
+		{
+			"speaker_name": "Ryan",
+			"speaker_role": "npc",
+			"text": "By the way...\nA friend of mine has been thinking about applying for a time loan too."
+		},
+		{
+			"speaker_name": "Ryan",
+			"speaker_role": "npc",
+			"text": "His situation is a little more complicated than mine. But I think the people here... at least take the time to properly review every application."
+		},
+		{
+			"speaker_name": "Me",
+			"speaker_role": "player",
+			"text": "Thank you for your trust. If he meets the requirements, he's welcome to apply."
+		},
+		{
+			"speaker_name": "Ryan",
+			"speaker_role": "npc",
+			"text": "He should be coming by in the next couple of days. Thank you."
+		}
+	]
+}
