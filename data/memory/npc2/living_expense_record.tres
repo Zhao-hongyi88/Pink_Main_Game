@@ -1,0 +1,24 @@
+[gd_resource type="Resource" script_class="MemoryObservationData" format=3 uid="uid://bksc8n8ja3l4v"]
+
+[ext_resource type="Script" uid="uid://hrlf8lmpg2qq" path="res://scripts/memory/memory_observation_data.gd" id="1_observation_data"]
+[ext_resource type="Texture2D" uid="uid://dyan80tkmyssn" path="res://TextureAsset/Memory/NPC1/JobSearchRecord/info_panel_background.png" id="2_panel_background"]
+[ext_resource type="Texture2D" uid="uid://bmd2yajf1w456" path="res://TextureAsset/Memory/NPC2/LivingExpenseRecord/expense_icon.png" id="3_expense_icon"]
+
+[resource]
+script = ExtResource("1_observation_data")
+observation_id = &"living_expense_record"
+title = "Living Expense Record"
+info = "Expense Category                              Monthly Cost
+
+Housing                                          3 Days 8 Hours
+Food & Daily Necessities                   2 Days 12 Hours
+Transportation                                18 Hours
+Medical Treatment (Mother)           8 Days 6 Hours
+Medical Appointments                    2 Days 14 Hours
+Other Necessary Expenses             12 Hours"
+images = Array[Texture2D]([])
+image_placeholders = PackedStringArray()
+dialogue = PackedStringArray("The records show that his income has not declined significantly, but his disposable time and resources are steadily decreasing.", "Rent, living expenses, and medical costs are gradually fixing the course of his future plans.")
+info_panel_background = ExtResource("2_panel_background")
+info_icon = ExtResource("3_expense_icon")
+open_with_icon_preview = true

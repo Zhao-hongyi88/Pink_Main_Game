@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="MemoryObservationData" format=3 uid="uid://dx5vxfmp6twrc"]
+
+[ext_resource type="Script" uid="uid://hrlf8lmpg2qq" path="res://scripts/memory/memory_observation_data.gd" id="1_observation_data"]
+[ext_resource type="Texture2D" uid="uid://dyan80tkmyssn" path="res://TextureAsset/Memory/NPC1/JobSearchRecord/info_panel_background.png" id="2_panel_background"]
+[ext_resource type="Texture2D" uid="uid://dnjxm3veqc3gb" path="res://TextureAsset/Memory/NPC2/MotherMessage/message_icon.png" id="3_message_icon"]
+
+[resource]
+script = ExtResource("1_observation_data")
+observation_id = &"mother_message"
+title = "Message from Mother"
+info = ""
+info_page_titles = PackedStringArray("Message from Mother  1 / 3", "Message from Mother  2 / 3", "Message from Mother  3 / 3")
+info_pages = PackedStringArray("Mike:\nMom, don't worry about the treatment costs.\nI've got it covered.", "Mary:\nYou always say that.\nI'm more worried about you.\nYou've been working too much lately. Make sure you're taking care of yourself too.", "Mike:\nI'm fine, Mom.\nDon't worry about me. Just focus on getting better.\n\nMike:\nI know you're trying to help.\nBut I'm okay. I don't want you wearing yourself out because of me.")
+images = Array[Texture2D]([])
+image_placeholders = PackedStringArray()
+dialogue = PackedStringArray("Most of the messages are simple everyday greetings.", "Liu Guilan rarely mentions her treatment. Instead, she asks more often about Li Lei's work.", "Sometimes, family members choose to hide their difficulties not because they do not need help.")
+info_panel_background = ExtResource("2_panel_background")
+info_icon = ExtResource("3_message_icon")
+open_with_icon_preview = true

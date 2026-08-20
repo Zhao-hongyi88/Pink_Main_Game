@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="MemoryObservationData" format=3 uid="uid://bk5evjjq2g81j"]
+
+[ext_resource type="Script" uid="uid://hrlf8lmpg2qq" path="res://scripts/memory/memory_observation_data.gd" id="1_observation_data"]
+[ext_resource type="Texture2D" uid="uid://dyan80tkmyssn" path="res://TextureAsset/Memory/NPC1/JobSearchRecord/info_panel_background.png" id="2_panel_background"]
+[ext_resource type="Texture2D" uid="uid://djkm0odhdpwch" path="res://TextureAsset/Memory/NPC2/UnfinishedPersonalPlan/plan_icon.png" id="3_plan_icon"]
+
+[resource]
+script = ExtResource("1_observation_data")
+observation_id = &"unfinished_personal_plan"
+title = "Unfinished Personal Plan"
+info = ""
+info_page_titles = PackedStringArray("Personal Plan  1 / 4", "Personal Plan  2 / 4", "Personal Plan  3 / 4", "Personal Plan  4 / 4")
+info_pages = PackedStringArray("Name: Mike\nCreated Date: January 255\nStatus: Incomplete\n\n1. Career Development\n\nPlan:\n• Complete advanced workplace training.\n• Take project management courses.\n• Apply for a senior employee position within the department.", "1. Career Development\n\nStatus: Delayed\n\nNote:\nTraining schedule repeatedly postponed due to increased overtime responsibilities.", "2. Family Plan\n\nPlan:\n• Take Mom on a short trip.\n• Help improve her living environment.\n\nStatus: Incomplete\n\nNote:\nMost plans postponed due to work schedule and treatment arrangements.", "3. Time Reserve Plan\n\nPlan:\n• Save additional earned time every month.\n• Establish a personal time reserve.\n\nStatus: Incomplete\n\nNote:\nUnable to begin the plan due to continuous family medical expenses and limited available time after maintaining daily work requirements.")
+images = Array[Texture2D]([])
+image_placeholders = PackedStringArray()
+dialogue = PackedStringArray("These plans originally belonged to him.", "But as his responsibilities increased, he began postponing his personal choices again and again.", "Before repaying the time loan, he had already surrendered part of his freedom in advance.")
+info_panel_background = ExtResource("2_panel_background")
+info_icon = ExtResource("3_plan_icon")
+open_with_icon_preview = true

@@ -1,21 +1,43 @@
-[gd_scene load_steps=9 format=3]
+[gd_scene format=3 uid="uid://d7qmn4lt5336"]
 
 [ext_resource type="PackedScene" path="res://scenes/memory/memory_base.tscn" id="1_base"]
-[ext_resource type="Script" path="res://scripts/memory/npc1_zhang_yuan_memory.gd" id="2_memory"]
-[ext_resource type="Script" path="res://scripts/memory/memory_observation_point.gd" id="3_point"]
-[ext_resource type="Resource" path="res://data/memory/npc1/study_record.tres" id="4_data_a"]
-[ext_resource type="Resource" path="res://data/memory/npc1/degree_certificate.tres" id="5_data_b"]
-[ext_resource type="Resource" path="res://data/memory/npc1/interview_result.tres" id="6_data_c"]
-[ext_resource type="Texture2D" path="res://TextureAsset/Memory/NPC1/zhang_yuan_memory_background.png" id="7_background"]
-[ext_resource type="Texture2D" path="res://TextureAsset/Memory/Common/unexplored_marker.png" id="8_unexplored_marker"]
+[ext_resource type="Script" uid="uid://bpj5khltnyrjh" path="res://scripts/memory/npc1_zhang_yuan_memory.gd" id="2_memory"]
+[ext_resource type="Script" uid="uid://cevu8580mceir" path="res://scripts/memory/memory_observation_point.gd" id="3_point"]
+[ext_resource type="Resource" uid="uid://mc20lpf2imd6" path="res://data/memory/npc1/personal_practice_report.tres" id="4_data_a"]
+[ext_resource type="Resource" uid="uid://cftfry83pj1up" path="res://data/memory/npc1/time_loan_application.tres" id="5_data_b"]
+[ext_resource type="Resource" uid="uid://u1r6c4b1uemo" path="res://data/memory/npc1/job_search_record.tres" id="6_data_c"]
+[ext_resource type="Texture2D" uid="uid://dsmcvhps74fqv" path="res://TextureAsset/Memory/NPC1/zhang_yuan_memory_background.png" id="7_background"]
+[ext_resource type="Texture2D" uid="uid://ccl8fxrgmo5hh" path="res://TextureAsset/Memory/Common/unexplored_marker.png" id="8_unexplored_marker"]
+[ext_resource type="Texture2D" uid="uid://dtpxorrbhcnu0" path="res://TextureAsset/Memory/NPC1/secondary_location_marker.png" id="9_secondary_marker"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_point"]
-size = Vector2(220, 120)
+size = Vector2(82, 86)
 
-[node name="ZhangYuanMemory" instance=ExtResource("1_base")]
+[sub_resource type="Gradient" id="Gradient_5k3ok"]
+offsets = PackedFloat32Array(0.484, 1)
+colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 0)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_jre5i"]
+gradient = SubResource("Gradient_5k3ok")
+width = 512
+height = 512
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(1, 0.5)
+metadata/_snap_enabled = true
+metadata/_snap_count = 62
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_secondary_marker"]
+light_mode = 1
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_secondary_marker"]
+radius = 24.0
+
+[node name="ZhangYuanMemory" unique_id=1660919922 instance=ExtResource("1_base")]
 script = ExtResource("2_memory")
 
-[node name="Background" type="TextureRect" parent="." index="0"]
+[node name="Background" type="TextureRect" parent="." index="0" unique_id=924215150]
+modulate = Color(0.48700923, 0.48700923, 0.4870091, 1)
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -27,7 +49,7 @@ texture = ExtResource("7_background")
 expand_mode = 1
 stretch_mode = 6
 
-[node name="SceneTitle" type="Label" parent="Background"]
+[node name="SceneTitle" type="Label" parent="Background" index="0" unique_id=440318872]
 layout_mode = 1
 anchors_preset = 10
 anchor_right = 1.0
@@ -37,97 +59,178 @@ grow_horizontal = 2
 theme_override_font_sizes/font_size = 30
 text = "Ryan Miller · Memory"
 horizontal_alignment = 1
-mouse_filter = 2
 
-[node name="ObservationPoints" type="Node2D" parent="." index="1"]
+[node name="ObservationPoints" type="Node2D" parent="." index="1" unique_id=1778579585]
 
-[node name="StudyRecord" type="Area2D" parent="ObservationPoints"]
+[node name="PersonalPracticeReport" type="Area2D" parent="ObservationPoints" index="0" unique_id=261616581]
 unique_name_in_owner = true
-position = Vector2(537, 349)
+position = Vector2(328, 403)
 script = ExtResource("3_point")
 observation_data = ExtResource("4_data_a")
 
-[node name="Visual" type="Polygon2D" parent="ObservationPoints/StudyRecord"]
+[node name="Visual" type="Polygon2D" parent="ObservationPoints/PersonalPracticeReport" index="0" unique_id=699621138]
 visible = false
-polygon = PackedVector2Array(-110, -60, 110, -60, 110, 60, -110, 60)
 color = Color(0.3, 0.48, 0.7, 1)
+polygon = PackedVector2Array(-110, -60, 110, -60, 110, 60, -110, 60)
 
-[node name="Label" type="Label" parent="ObservationPoints/StudyRecord"]
+[node name="Label" type="Label" parent="ObservationPoints/PersonalPracticeReport" index="1" unique_id=562817320]
 visible = false
 offset_left = -100.0
 offset_top = -18.0
 offset_right = 100.0
 offset_bottom = 18.0
-text = "学习记录"
+text = "Personal Time Report"
 horizontal_alignment = 1
 vertical_alignment = 1
-mouse_filter = 2
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="ObservationPoints/StudyRecord"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="ObservationPoints/PersonalPracticeReport" index="2" unique_id=861844193]
+position = Vector2(0, -5)
 shape = SubResource("RectangleShape2D_point")
 
-[node name="UnexploredMarker" type="Sprite2D" parent="ObservationPoints/StudyRecord"]
-position = Vector2(0, 0)
+[node name="UnexploredMarker" type="Sprite2D" parent="ObservationPoints/PersonalPracticeReport" index="3" unique_id=2010175192]
 scale = Vector2(0.2, 0.2)
 texture = ExtResource("8_unexplored_marker")
 
-[node name="DegreeCertificate" type="Area2D" parent="ObservationPoints"]
+[node name="TimeLoanApplication" type="Area2D" parent="ObservationPoints" index="1" unique_id=906659889]
 unique_name_in_owner = true
-position = Vector2(204, 426)
+position = Vector2(907, 380)
 script = ExtResource("3_point")
 observation_data = ExtResource("5_data_b")
 
-[node name="Visual" type="Polygon2D" parent="ObservationPoints/DegreeCertificate"]
+[node name="Visual" type="Polygon2D" parent="ObservationPoints/TimeLoanApplication" index="0" unique_id=1927450394]
 visible = false
-polygon = PackedVector2Array(-110, -60, 110, -60, 110, 60, -110, 60)
 color = Color(0.36, 0.55, 0.72, 1)
+polygon = PackedVector2Array(-110, -60, 110, -60, 110, 60, -110, 60)
 
-[node name="Label" type="Label" parent="ObservationPoints/DegreeCertificate"]
+[node name="Label" type="Label" parent="ObservationPoints/TimeLoanApplication" index="1" unique_id=2136103188]
 visible = false
 offset_left = -100.0
 offset_top = -18.0
 offset_right = 100.0
 offset_bottom = 18.0
-text = "毕业学位证书"
+text = "Time Loan Application"
 horizontal_alignment = 1
 vertical_alignment = 1
-mouse_filter = 2
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="ObservationPoints/DegreeCertificate"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="ObservationPoints/TimeLoanApplication" index="2" unique_id=114197322]
 shape = SubResource("RectangleShape2D_point")
 
-[node name="UnexploredMarker" type="Sprite2D" parent="ObservationPoints/DegreeCertificate"]
-position = Vector2(0, 0)
+[node name="UnexploredMarker" type="Sprite2D" parent="ObservationPoints/TimeLoanApplication" index="3" unique_id=864208363]
 scale = Vector2(0.2, 0.2)
 texture = ExtResource("8_unexplored_marker")
 
-[node name="InterviewResult" type="Area2D" parent="ObservationPoints"]
+[node name="JobSearchRecord" type="Area2D" parent="ObservationPoints" index="2" unique_id=970910647]
 unique_name_in_owner = true
-position = Vector2(900, 292)
+position = Vector2(793, 349)
 script = ExtResource("3_point")
 observation_data = ExtResource("6_data_c")
 
-[node name="Visual" type="Polygon2D" parent="ObservationPoints/InterviewResult"]
+[node name="Visual" type="Polygon2D" parent="ObservationPoints/JobSearchRecord" index="0" unique_id=1622085617]
 visible = false
-polygon = PackedVector2Array(-110, -60, 110, -60, 110, 60, -110, 60)
 color = Color(0.27, 0.43, 0.65, 1)
+polygon = PackedVector2Array(-110, -60, 110, -60, 110, 60, -110, 60)
 
-[node name="Label" type="Label" parent="ObservationPoints/InterviewResult"]
+[node name="Label" type="Label" parent="ObservationPoints/JobSearchRecord" index="1" unique_id=602594875]
 visible = false
 offset_left = -100.0
 offset_top = -18.0
 offset_right = 100.0
 offset_bottom = 18.0
-text = "面试结果"
+text = "Job Search Record"
 horizontal_alignment = 1
 vertical_alignment = 1
-mouse_filter = 2
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="ObservationPoints/InterviewResult"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="ObservationPoints/JobSearchRecord" index="2" unique_id=1349406887]
 shape = SubResource("RectangleShape2D_point")
 
-[node name="UnexploredMarker" type="Sprite2D" parent="ObservationPoints/InterviewResult"]
-position = Vector2(0, 0)
+[node name="UnexploredMarker" type="Sprite2D" parent="ObservationPoints/JobSearchRecord" index="3" unique_id=1827092962]
 scale = Vector2(0.2, 0.2)
 texture = ExtResource("8_unexplored_marker")
 
+[node name="MemoryInfoPanel" parent="MemoryUI" index="3"]
+layout_mode = 3
+
+[node name="DialogueBox" parent="MemoryUI/MemoryInfoPanel" index="2"]
+anchors_preset = 0
+
+[node name="DialogueContinueButton" parent="MemoryUI/MemoryInfoPanel/DialogueBox" index="2"]
+anchor_top = 1.0
+anchor_bottom = 1.0
+grow_vertical = 0
+
+[node name="DialogueCloseButton" parent="MemoryUI/MemoryInfoPanel/DialogueBox" index="3"]
+anchor_top = 1.0
+anchor_bottom = 1.0
+grow_vertical = 0
+
+[node name="ImagePlaceholders" parent="MemoryUI/MemoryInfoPanel/Panel" index="5"]
+anchor_top = 1.0
+
+[node name="PointLight2D" type="PointLight2D" parent="." index="3" unique_id=440011278]
+position = Vector2(525, 249)
+color = Color(1, 1, 0.7294118, 1)
+energy = 5.1
+texture = SubResource("GradientTexture2D_jre5i")
+texture_scale = 0.69
+
+[node name="PointLight2D" type="PointLight2D" parent="PointLight2D" index="0" unique_id=1714371627]
+position = Vector2(-19, 99)
+color = Color(1, 1, 0.7294118, 1)
+energy = 5.1
+texture = SubResource("GradientTexture2D_jre5i")
+texture_scale = 0.69
+
+[node name="PointLight2D" type="PointLight2D" parent="PointLight2D/PointLight2D" index="0" unique_id=329709448]
+position = Vector2(21, -25)
+color = Color(1, 1, 0.7294118, 1)
+energy = 5.1
+texture = SubResource("GradientTexture2D_jre5i")
+texture_scale = 0.69
+
+[node name="PointLight2D" type="PointLight2D" parent="PointLight2D/PointLight2D/PointLight2D" index="0" unique_id=1576544620]
+position = Vector2(-58, 73)
+color = Color(1, 1, 0.7294118, 1)
+energy = 5.1
+texture = SubResource("GradientTexture2D_jre5i")
+texture_scale = 0.69
+
+[node name="PointLight2D" type="PointLight2D" parent="PointLight2D/PointLight2D/PointLight2D/PointLight2D" index="0" unique_id=150464238]
+position = Vector2(58, 17)
+color = Color(1, 1, 0.7294118, 1)
+energy = 5.1
+texture = SubResource("GradientTexture2D_jre5i")
+texture_scale = 0.69
+
+[node name="PointLight2D" type="PointLight2D" parent="PointLight2D/PointLight2D/PointLight2D/PointLight2D/PointLight2D" index="0" unique_id=1748277185]
+position = Vector2(-14, -53)
+color = Color(1, 1, 0.7294118, 1)
+energy = 5.1
+texture = SubResource("GradientTexture2D_jre5i")
+texture_scale = 0.69
+
+[node name="SecondaryMarkers" type="Node2D" parent="." index="4" unique_id=1015317670]
+z_index = 5
+
+[node name="GraduationCertificateMarker" type="Area2D" parent="SecondaryMarkers" index="0" unique_id=477480458]
+unique_name_in_owner = true
+position = Vector2(480, 205)
+
+[node name="MarkerVisual" type="Sprite2D" parent="SecondaryMarkers/GraduationCertificateMarker" index="0" unique_id=327679268]
+material = SubResource("CanvasItemMaterial_secondary_marker")
+scale = Vector2(0.28, 0.28)
+texture = ExtResource("9_secondary_marker")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="SecondaryMarkers/GraduationCertificateMarker" index="1" unique_id=1616966177]
+shape = SubResource("CircleShape2D_secondary_marker")
+
+[node name="AwardCertificateMarker" type="Area2D" parent="SecondaryMarkers" index="1" unique_id=1594123895]
+unique_name_in_owner = true
+position = Vector2(1047, 199)
+
+[node name="MarkerVisual" type="Sprite2D" parent="SecondaryMarkers/AwardCertificateMarker" index="0" unique_id=1227278947]
+material = SubResource("CanvasItemMaterial_secondary_marker")
+scale = Vector2(0.28, 0.28)
+texture = ExtResource("9_secondary_marker")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="SecondaryMarkers/AwardCertificateMarker" index="1" unique_id=490186867]
+shape = SubResource("CircleShape2D_secondary_marker")

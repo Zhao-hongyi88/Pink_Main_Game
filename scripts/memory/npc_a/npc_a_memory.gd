@@ -1,24 +1,24 @@
 class_name NPCAMemory
 extends "res://scripts/memory/memory_base.gd"
 
-## NPC_A 的第一个正式 Memory 纵向样板。
-## 只维护本回忆的调查数据和 UI 节点绑定，不复制基类流程。
+## NPC_A's first formal vertical Memory slice.
+## Maintains only this memory's investigation data and UI bindings without duplicating base flow.
 
 const OBSERVATION_DATA: Dictionary = {
 	"recruitment_notice": {
-		"title": "招聘公告",
+		"title": "Recruitment Notice",
 		"dialogue": [
-			"2026 秋季校园招聘。",
-			"岗位：策划 / 程序 / 美术。",
-			"备注：有完整项目经验者优先。",
+			"2026 Fall Campus Recruitment.",
+			"Positions: Design / Programming / Art.",
+			"Note: Complete project experience preferred.",
 		],
 	},
 	"job_search_record": {
-		"title": "求职记录",
+		"title": "Job Search Record",
 		"dialogue": [
-			"投递次数：17。",
-			"收到回复：3。",
-			"进入面试：1。",
+			"Applications submitted: 17.",
+			"Responses received: 3.",
+			"Interviews reached: 1.",
 		],
 	},
 }
