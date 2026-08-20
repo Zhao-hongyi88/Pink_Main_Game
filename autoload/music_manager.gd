@@ -5,8 +5,8 @@ extends Node
 var home_bgm = preload("res://Music/BGM/home_bgm.mp3")
 var gameplay_bgm = preload("res://Music/BGM/gameplay_bgm.mp3")
 
-func _ready():
-	play_home_bgm()
+func stop_bgm() -> void:
+	bgm_player.stop()
 
 func play_home_bgm():
 	if bgm_player.stream != home_bgm:
