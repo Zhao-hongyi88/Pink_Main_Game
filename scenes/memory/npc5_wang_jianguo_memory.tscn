@@ -1,9 +1,9 @@
-[gd_scene format=3 uid="uid://ba0je3ob5mfg5"]
+[gd_scene format=3 uid="uid://bwys31qgvgru6"]
 
 [ext_resource type="PackedScene" path="res://scenes/memory/memory_base.tscn" id="1_base"]
 [ext_resource type="Script" uid="uid://bl1aiqmvrpg1a" path="res://scripts/memory/npc5_wang_jianguo_memory.gd" id="2_memory"]
 [ext_resource type="Script" uid="uid://cevu8580mceir" path="res://scripts/memory/memory_observation_point.gd" id="3_point"]
-[ext_resource type="Resource" path="res://data/memory/npc5/computer_records.tres" id="4_data"]
+[ext_resource type="Resource" uid="uid://c8e3ulkp8ektm" path="res://data/memory/npc5/computer_records.tres" id="4_data"]
 [ext_resource type="Texture2D" uid="uid://dsmlm5cr56rvh" path="res://TextureAsset/Memory/NPC5/wang_jianguo_memory_background.png" id="5_background"]
 [ext_resource type="Texture2D" uid="uid://ccl8fxrgmo5hh" path="res://TextureAsset/Memory/Common/unexplored_marker.png" id="6_marker"]
 
@@ -61,21 +61,21 @@ horizontal_alignment = 1
 position = Vector2(353, 289.00003)
 scale = Vector2(1.1367185, 1.1518748)
 color = Color(0.9999985, 0.9997819, 0.7408638, 1)
-energy = 9.83
+energy = 1.27
 texture = SubResource("GradientTexture2D_6gcru")
 
 [node name="PointLight2D" type="PointLight2D" parent="Background/PointLight2D" index="0" unique_id=75513807]
 position = Vector2(25.512054, -3.4726257)
 scale = Vector2(1.1367185, 1.1518748)
 color = Color(0.9999985, 0.9997819, 0.7408638, 1)
-energy = 9.83
+energy = 1.27
 texture = SubResource("GradientTexture2D_6gcru")
 
 [node name="PointLight2D2" type="PointLight2D" parent="Background" index="2" unique_id=511567585]
 position = Vector2(278, 223)
 scale = Vector2(5.6497183, 5.4444246)
 color = Color(0.9878239, 0.8925993, 0.7704754, 1)
-energy = 7.26
+energy = 1.73
 texture = SubResource("GradientTexture2D_somjt")
 
 [node name="ObservationPoints" type="Node2D" parent="." index="1" unique_id=1795621507]

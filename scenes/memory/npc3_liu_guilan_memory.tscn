@@ -1,4 +1,4 @@
-[gd_scene format=3 uid="uid://diwf16mpfk01b"]
+[gd_scene format=3 uid="uid://b8hjsoh3ek4av"]
 
 [ext_resource type="PackedScene" path="res://scenes/memory/memory_base.tscn" id="1_base"]
 [ext_resource type="Script" uid="uid://co1ur7y0k4xdy" path="res://scripts/memory/npc3_liu_guilan_memory.gd" id="2_memory"]
@@ -174,9 +174,10 @@ grow_vertical = 0
 anchor_top = 1.0
 
 [node name="PointLight2D" type="PointLight2D" parent="." index="3" unique_id=22373072]
-position = Vector2(478, 223)
+position = Vector2(477, 219)
+scale = Vector2(1.15625, 1.25)
 color = Color(0.9999985, 0.9997819, 0.7408638, 1)
-energy = 3.88
+energy = 1.48
 texture = SubResource("GradientTexture2D_bjqgx")
 
 [node name="PointLight2D" type="PointLight2D" parent="PointLight2D" index="0" unique_id=2107101493]
